@@ -81,7 +81,8 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <label>Должность / роль<input id="cRole"></label>
  <label>Ссылка на аватар<input id="cAvatar" placeholder="https://..."></label>
  <div class="row"><label>HP<input id="cHp" type="number" value="10"></label><label>Макс. HP<input id="cMaxHp" type="number" value="10"></label></div>
- <label>Бонус<input id="cBonus" placeholder="+2"></label>
+ <div class="row"><label>Бонус<input id="cBonus" placeholder="+2"></label><label>Скорость<input id="cSpeed" placeholder="30 фт."></label></div>
+ <label style="display:flex;grid-template-columns:auto 1fr;align-items:center;gap:8px"><input id="cNpc" type="checkbox" style="width:auto"> NPC — фишку может двигать только мастер</label>
  <label>Предметы<textarea id="cItems" rows="3" placeholder="Палочка, зелье, кинжал…"></textarea></label>
  <div class="dlgActions"><button type="button" class="danger" id="deleteChar">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
@@ -170,7 +171,7 @@ function renderCards(){
  const box=$("#cards"); if(!chars.size){box.innerHTML='<div class="empty">Персонажи пока не добавлены.</div>';return}
  box.innerHTML=[...chars.values()].map(c=>`<article class="card">
   <div class="cardHead"><img class="avatar" src="${esc(c.avatar||"")}" onerror="this.style.visibility='hidden'"><div><h3>${esc(c.name)}</h3><div class="role">${esc(c.role||"")}</div></div></div>
-  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span></div>
+  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span><span class="pill">Скорость ${esc(c.speed||"—")}</span>${c.isNpc?'<span class="pill">NPC</span>':""}</div>
   <div class="items"><b>С собой:</b> ${esc(c.items||"—")}</div>
   ${isMaster()?`<button class="editChar" data-edit="${c.id}">✎</button>`:""}
  </article>`).join("");
@@ -184,14 +185,21 @@ function renderTokens(){
  const box=$("#tokens");box.innerHTML="";
  for(const c of chars.values()){
   const t=tokenData.get(c.id); if(!t)continue;
-  const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;
+  const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;if(t.npc&&!isMaster())el.style.cursor="not-allowed";
   el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px"; if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;
   el.innerHTML=`<span>${esc(c.name)}</span>`;el.addEventListener("pointerdown",dragStart);el.onclick=()=>{selected=c.id;renderTokens();positionRanges()};box.appendChild(el);
  } positionRanges();
 }
 let drag=null;
 function dragStart(e){
- e.preventDefault(); selected=e.currentTarget.dataset.id; const el=e.currentTarget; el.setPointerCapture(e.pointerId);
+ e.preventDefault();
+ const id=e.currentTarget.dataset.id;
+ const td=tokenData.get(id);
+ if(td?.npc && !isMaster()){
+   selected=id; renderTokens(); positionRanges();
+   return;
+ }
+ selected=id; const el=e.currentTarget; el.setPointerCapture(e.pointerId);
  drag={el,id:selected}; el.classList.add("selected");
  const move=ev=>{const r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;let x=(ev.clientX-r.left)/z,y=(ev.clientY-r.top)/z;
   x=Math.max(0,Math.min(settings.mapWidth,x));y=Math.max(0,Math.min(settings.mapHeight,y));el.style.left=x+"px";el.style.top=y+"px";positionRanges(x,y);
@@ -255,10 +263,16 @@ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("di
 
 $("#addChar").onclick=()=>openChar();
 function openChar(id=""){
- const c=chars.get(id)||{};$("#charId").value=id;$("#cName").value=c.name||"";$("#cRole").value=c.role||"";$("#cAvatar").value=c.avatar||"";$("#cHp").value=c.hp??10;$("#cMaxHp").value=c.maxHp??10;$("#cBonus").value=c.bonus||"";$("#cItems").value=c.items||"";$("#deleteChar").style.display=id?"inline-block":"none";$("#charDlg").showModal()
+ const c=chars.get(id)||{};$("#charId").value=id;$("#cName").value=c.name||"";$("#cRole").value=c.role||"";$("#cAvatar").value=c.avatar||"";$("#cHp").value=c.hp??10;$("#cMaxHp").value=c.maxHp??10;$("#cBonus").value=c.bonus||"";$("#cSpeed").value=c.speed||"";$("#cNpc").checked=!!c.isNpc;$("#cItems").value=c.items||"";$("#deleteChar").style.display=id?"inline-block":"none";$("#charDlg").showModal()
 }
-$("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let id=$("#charId").value||crypto.randomUUID();let c={name:$("#cName").value.trim(),role:$("#cRole").value.trim(),avatar:$("#cAvatar").value.trim(),hp:+$("#cHp").value,maxHp:+$("#cMaxHp").value,bonus:$("#cBonus").value.trim(),items:$("#cItems").value.trim()};
- await setDoc(doc(db,"characters",id),c);if(!tokenData.has(id))await setDoc(doc(db,"tokens",id),{x:100+Math.random()*200,y:100+Math.random()*150});$("#charDlg").close()
+$("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let id=$("#charId").value||crypto.randomUUID();let c={name:$("#cName").value.trim(),role:$("#cRole").value.trim(),avatar:$("#cAvatar").value.trim(),hp:+$("#cHp").value,maxHp:+$("#cMaxHp").value,bonus:$("#cBonus").value.trim(),speed:$("#cSpeed").value.trim(),isNpc:$("#cNpc").checked,items:$("#cItems").value.trim()};
+ await setDoc(doc(db,"characters",id),c);
+ if(!tokenData.has(id)){
+   await setDoc(doc(db,"tokens",id),{x:100+Math.random()*200,y:100+Math.random()*150,npc:c.isNpc});
+ }else{
+   await setDoc(doc(db,"tokens",id),{npc:c.isNpc},{merge:true});
+ }
+ $("#charDlg").close()
 };
 $("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("Удалить персонажа и его фишку?")){await deleteDoc(doc(db,"tokens",id));await deleteDoc(doc(db,"characters",id));$("#charDlg").close()}};
 
