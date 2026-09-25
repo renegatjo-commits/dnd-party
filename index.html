@@ -13,8 +13,8 @@ h1{font-size:22px;letter-spacing:.12em;margin:0;color:var(--gold)}.actions{displ
 button,.btn{border:1px solid var(--line);background:#29241c;color:var(--text);padding:9px 12px;border-radius:8px;cursor:pointer}
 button:hover{border-color:var(--gold)}button.active{background:#69562f;border-color:#d9bd79}.master{display:none}.is-master .master{display:inline-block}
 .status{font:12px Arial;color:var(--muted)}
-.cards{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:5px 2px 34px;scrollbar-width:thin}
-.card{position:relative;flex:0 0 245px;background:linear-gradient(145deg,#2a261f,#1d1a15);border:1px solid #554b39;border-radius:13px;padding:12px 12px 38px;box-shadow:0 8px 24px #0005}.card.npc{background:linear-gradient(145deg,#352326,#201719);border-color:#784d53}.card.npc .avatar{border-color:#bd777f}.cardOrder{position:absolute;right:8px;top:8px;display:flex;gap:4px}.cardOrder button{padding:3px 6px;font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px 12px;overflow:visible;padding:5px 2px 34px}
+.card{position:relative;min-width:0;background:linear-gradient(145deg,#2a261f,#1d1a15);border:1px solid #554b39;border-radius:12px;padding:10px 10px 34px;box-shadow:0 8px 24px #0005}.card.npc{background:linear-gradient(145deg,#352326,#201719);border-color:#784d53}.card.npc .avatar{border-color:#bd777f}.cardOrder{position:absolute;right:8px;top:8px;display:flex;gap:4px}.cardOrder button{padding:3px 6px;font-size:11px}
 .cardHead{display:flex;gap:11px;align-items:center}.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:#111}
 .card h3{margin:0 0 4px;font-size:17px}.role{color:#bfb39d;font-style:italic;font-size:12px}.stats{display:flex;gap:7px;margin:11px 0}.pill{background:#15130f;border:1px solid #443d31;border-radius:20px;padding:5px 8px;font:12px Arial}.hp{color:#e9a09a}
 .items{font:12px Arial;line-height:1.45;color:#d8cfbd;min-height:34px}.charBadges{position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);display:flex;justify-content:center;align-items:center;gap:6px;z-index:6}.charBadge{width:52px;height:52px;object-fit:contain;border:0;border-radius:50%;background:transparent;padding:0;filter:drop-shadow(0 3px 4px #0008)}.editChar{position:absolute;right:8px;bottom:8px;padding:4px 7px;font-size:11px;z-index:7}
@@ -32,6 +32,9 @@ dialog{border:1px solid #65583f;border-radius:13px;background:#211e18;color:var(
 dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{display:grid;gap:4px;font:12px Arial;color:#c8beac}.form input,.form textarea{width:100%;background:#12110e;color:#eee;border:1px solid #504737;border-radius:7px;padding:9px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dlgActions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.danger{border-color:#7b423e;color:#f1aaa4}
 .hint{padding:8px 12px;font:11px Arial;color:#9f9686;border-top:1px solid #342f27}
 @media(max-width:650px){.app{padding:10px}.top{align-items:flex-start;flex-direction:column}.card{flex-basis:215px}.viewport{height:65vh}.toolbar{gap:6px}.toolbar button{padding:7px 8px;font-size:12px}}
+
+@media(max-width:700px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:9px 9px 32px}.avatar{width:44px;height:44px}.card h3{font-size:15px}}
+@media(max-width:430px){.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
