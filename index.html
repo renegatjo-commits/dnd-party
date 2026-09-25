@@ -20,7 +20,7 @@ button:hover{border-color:var(--gold)}button.active{background:#69562f;border-co
 .items{font:12px Arial;line-height:1.45;color:#d8cfbd;min-height:34px}.editChar{position:absolute;right:8px;bottom:8px;padding:4px 7px;font-size:11px}
 .boardPanel{border:1px solid var(--line);background:#1c1914;border-radius:14px;overflow:hidden}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid #40392e;background:#252119}
 .toolbar .sep{width:1px;height:26px;background:#51493b}.toolbar label{font:12px Arial;color:#c7bdab}.toolbar input[type=range]{width:110px}
-.viewport{position:relative;width:100%;height:min(70vh,850px);overflow:auto;background:#0b0a08;touch-action:pan-x pan-y}
+.viewport{position:relative;width:100%;height:min(70vh,850px);overflow:auto;background:#0b0a08;touch-action:none;cursor:grab}.viewport.panning{cursor:grabbing}
 .stage{position:relative;transform-origin:0 0;min-width:800px;min-height:600px;background:#17140f}
 .map{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
 .grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,#fff4 1px,transparent 1px),linear-gradient(to bottom,#fff4 1px,transparent 1px);background-size:var(--cell) var(--cell)}
@@ -94,7 +94,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <h2>PNG на карту</h2><input id="overlayId" type="hidden">
  <label>Название<input id="oName" placeholder="Например: сундук"></label>
  <label>Ссылка на PNG<input id="oUrl" required placeholder="https://...png"></label>
- <div class="row"><label>Ширина, px<input id="oWidth" type="number" min="10" value="120"></label><label>Высота, px<input id="oHeight" type="number" min="10" value="120"></label></div>
+ <label>Размер, px <span class="status">(по ширине, пропорции PNG сохраняются автоматически)</span><input id="oWidth" type="number" min="10" value="120"></label>
  <div class="dlgActions"><button type="button" class="danger" id="deleteOverlay">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
 
@@ -223,8 +223,8 @@ function renderOverlays(){
  for(const o of overlayData.values()){
   const el=document.createElement("div"); el.className="overlay"+(isMaster()?" masterMove":"");
   el.dataset.id=o.id; el.style.left=(o.x??150)+"px"; el.style.top=(o.y??150)+"px";
-  el.style.width=(o.width??120)+"px"; el.style.height=(o.height??120)+"px";
-  el.innerHTML=`<img src="${esc(o.url||"")}" alt=""><span class="overlayLabel">${esc(o.name||"")}</span>`;
+  el.style.width=(o.width??120)+"px"; el.style.height="auto";
+  el.innerHTML=`<img src="${esc(o.url||"")}" alt="" style="width:100%;height:auto"><span class="overlayLabel">${esc(o.name||"")}</span>`;
   if(isMaster()){
     el.addEventListener("pointerdown",overlayDragStart);
     el.ondblclick=()=>openOverlay(o.id);
@@ -328,14 +328,14 @@ $("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("�
 $("#addOverlay").onclick=()=>openOverlay();
 function openOverlay(id=""){
  const o=overlayData.get(id)||{};
- $("#overlayId").value=id;$("#oName").value=o.name||"";$("#oUrl").value=o.url||"";$("#oWidth").value=o.width??120;$("#oHeight").value=o.height??120;
+ $("#overlayId").value=id;$("#oName").value=o.name||"";$("#oUrl").value=o.url||"";$("#oWidth").value=o.width??120;
  $("#deleteOverlay").style.display=id?"inline-block":"none";$("#overlayDlg").showModal();
 }
 $("#overlayForm").onsubmit=async e=>{
  e.preventDefault();if(!isMaster())return;
  const id=$("#overlayId").value||crypto.randomUUID();
  const old=overlayData.get(id)||{};
- await setDoc(doc(db,"overlays",id),{name:$("#oName").value.trim(),url:$("#oUrl").value.trim(),width:+$("#oWidth").value,height:+$("#oHeight").value,x:old.x??150,y:old.y??150});
+ await setDoc(doc(db,"overlays",id),{name:$("#oName").value.trim(),url:$("#oUrl").value.trim(),width:+$("#oWidth").value,x:old.x??150,y:old.y??150});
  $("#overlayDlg").close();
 };
 $("#deleteOverlay").onclick=async()=>{
@@ -344,6 +344,30 @@ $("#deleteOverlay").onclick=async()=>{
 
 $("#mapSettings").onclick=()=>{$("#mapUrl").value=settings.mapUrl||"";$("#mapWidth").value=settings.mapWidth;$("#mapHeight").value=settings.mapHeight;$("#cellSize").value=settings.cellSize;$("#mapDlg").showModal()};
 $("#mapForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;await setDoc(doc(db,"game","main"),{mapUrl:$("#mapUrl").value.trim(),mapWidth:+$("#mapWidth").value,mapHeight:+$("#mapHeight").value,cellSize:+$("#cellSize").value},{merge:true});$("#mapDlg").close()};
+
+// Перемещение карты: зажать пустое место/саму карту и тянуть.
+const viewport=$("#viewport");
+let pan=null;
+viewport.addEventListener("pointerdown",e=>{
+  // Фишки, PNG-объекты и элементы управления имеют собственное перетаскивание.
+  if(e.target.closest(".token,.overlay,button,input,label")) return;
+  if(e.button!==0 && e.pointerType==="mouse") return;
+  pan={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop,id:e.pointerId};
+  viewport.setPointerCapture(e.pointerId);
+  viewport.classList.add("panning");
+  e.preventDefault();
+});
+viewport.addEventListener("pointermove",e=>{
+  if(!pan||pan.id!==e.pointerId)return;
+  viewport.scrollLeft=pan.left-(e.clientX-pan.x);
+  viewport.scrollTop=pan.top-(e.clientY-pan.y);
+});
+function endPan(e){
+  if(!pan||pan.id!==e.pointerId)return;
+  pan=null;viewport.classList.remove("panning");
+}
+viewport.addEventListener("pointerup",endPan);
+viewport.addEventListener("pointercancel",endPan);
 
 applyMap();
 </script>
