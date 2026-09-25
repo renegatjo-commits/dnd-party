@@ -13,11 +13,11 @@ h1{font-size:22px;letter-spacing:.12em;margin:0;color:var(--gold)}.actions{displ
 button,.btn{border:1px solid var(--line);background:#29241c;color:var(--text);padding:9px 12px;border-radius:8px;cursor:pointer}
 button:hover{border-color:var(--gold)}button.active{background:#69562f;border-color:#d9bd79}.master{display:none}.is-master .master{display:inline-block}
 .status{font:12px Arial;color:var(--muted)}
-.cards{display:flex;gap:12px;overflow-x:auto;padding:5px 2px 16px;scrollbar-width:thin}
+.cards{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:5px 2px 34px;scrollbar-width:thin}
 .card{position:relative;flex:0 0 245px;background:linear-gradient(145deg,#2a261f,#1d1a15);border:1px solid #554b39;border-radius:13px;padding:12px;box-shadow:0 8px 24px #0005}.card.npc{background:linear-gradient(145deg,#352326,#201719);border-color:#784d53}.card.npc .avatar{border-color:#bd777f}.cardOrder{position:absolute;right:8px;top:8px;display:flex;gap:4px}.cardOrder button{padding:3px 6px;font-size:11px}
 .cardHead{display:flex;gap:11px;align-items:center}.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:#111}
 .card h3{margin:0 0 4px;font-size:17px}.role{color:#bfb39d;font-style:italic;font-size:12px}.stats{display:flex;gap:7px;margin:11px 0}.pill{background:#15130f;border:1px solid #443d31;border-radius:20px;padding:5px 8px;font:12px Arial}.hp{color:#e9a09a}
-.items{font:12px Arial;line-height:1.45;color:#d8cfbd;min-height:34px}.charBadges{display:flex;gap:6px;flex-wrap:wrap;min-height:30px;margin-top:8px;padding-right:30px}.charBadge{width:28px;height:28px;object-fit:contain;border-radius:6px;background:#1118;border:1px solid #514735;padding:2px}.editChar{position:absolute;right:8px;bottom:8px;padding:4px 7px;font-size:11px}
+.items{font:12px Arial;line-height:1.45;color:#d8cfbd;min-height:34px}.charBadges{position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);display:flex;justify-content:center;align-items:center;gap:6px;z-index:6}.charBadge{width:52px;height:52px;object-fit:contain;border:0;border-radius:50%;background:transparent;padding:0;filter:drop-shadow(0 3px 4px #0008)}.editChar{position:absolute;right:8px;bottom:8px;padding:4px 7px;font-size:11px}
 .boardPanel{border:1px solid var(--line);background:#1c1914;border-radius:14px;overflow:hidden}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid #40392e;background:#252119}
 .toolbar .sep{width:1px;height:26px;background:#51493b}.toolbar label{font:12px Arial;color:#c7bdab}.toolbar input[type=range]{width:110px}
 .viewport{position:relative;width:100%;height:min(70vh,850px);overflow:auto;background:#0b0a08;touch-action:none;cursor:grab}.viewport.panning{cursor:grabbing}
@@ -190,7 +190,7 @@ function renderCards(){
  box.innerHTML=list.map((c,i)=>`<article class="card ${c.isNpc?"npc":""}">
   ${isMaster()?`<div class="cardOrder"><button title="Сдвинуть влево" data-left="${c.id}" ${i===0?"disabled":""}>←</button><button title="Сдвинуть вправо" data-right="${c.id}" ${i===list.length-1?"disabled":""}>→</button></div>`:""}
   <div class="cardHead"><img class="avatar" src="${esc(c.avatar||"")}" onerror="this.style.visibility='hidden'"><div><h3>${esc(c.name)}</h3><div class="role">${esc(c.role||"")}</div></div></div>
-  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span><span class="pill">Скорость ${Number(c.speed)||0}</span>${c.isNpc?'<span class="pill">NPC</span>':""}</div>
+  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span><span class="pill">Скорость ${Number(c.speed)||0}</span></div>
   <div class="items"><b>С собой:</b> ${esc(c.items||"—")}</div>
   <div class="charBadges">${String(c.badges||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).map(url=>`<img class="charBadge" src="${esc(url)}" alt="значок">`).join("")}</div>
   ${isMaster()?`<button class="editChar" data-edit="${c.id}">✎</button>`:""}
