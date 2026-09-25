@@ -84,7 +84,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <label>Должность / роль<input id="cRole"></label>
  <label>Ссылка на аватар<input id="cAvatar" placeholder="https://..."></label>
  <div class="row"><label>HP<input id="cHp" type="number" value="10"></label><label>Макс. HP<input id="cMaxHp" type="number" value="10"></label></div>
- <div class="row"><label>Бонус<input id="cBonus" placeholder="+2"></label><label>Скорость<input id="cSpeed" placeholder="30 фт."></label></div>
+ <div class="row"><label>Бонус<input id="cBonus" placeholder="+2"></label><label>Скорость, клеток<input id="cSpeed" type="number" min="0" step="1" placeholder="6"></label></div>
  <label style="display:flex;grid-template-columns:auto 1fr;align-items:center;gap:8px"><input id="cNpc" type="checkbox" style="width:auto"> NPC — фишку может двигать только мастер</label>
  <label>Предметы<textarea id="cItems" rows="3" placeholder="Палочка, зелье, кинжал…"></textarea></label>
  <div class="dlgActions"><button type="button" class="danger" id="deleteChar">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
@@ -189,7 +189,7 @@ function renderCards(){
  box.innerHTML=list.map((c,i)=>`<article class="card ${c.isNpc?"npc":""}">
   ${isMaster()?`<div class="cardOrder"><button title="Сдвинуть влево" data-left="${c.id}" ${i===0?"disabled":""}>←</button><button title="Сдвинуть вправо" data-right="${c.id}" ${i===list.length-1?"disabled":""}>→</button></div>`:""}
   <div class="cardHead"><img class="avatar" src="${esc(c.avatar||"")}" onerror="this.style.visibility='hidden'"><div><h3>${esc(c.name)}</h3><div class="role">${esc(c.role||"")}</div></div></div>
-  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span><span class="pill">Скорость ${esc(c.speed||"—")}</span>${c.isNpc?'<span class="pill">NPC</span>':""}</div>
+  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span><span class="pill">Скорость ${Number(c.speed)||0}</span>${c.isNpc?'<span class="pill">NPC</span>':""}</div>
   <div class="items"><b>С собой:</b> ${esc(c.items||"—")}</div>
   ${isMaster()?`<button class="editChar" data-edit="${c.id}">✎</button>`:""}
  </article>`).join("");
@@ -285,13 +285,9 @@ function positionRanges(x,y){
  for(const id of ["speedRange","castRange","aoeRange"]){const e=$("#"+id);e.style.left=x+"px";e.style.top=y+"px"}
 }
 function speedCells(){
- const c=chars.get(selected); if(!c)return 0;
- const raw=String(c.speed??"").replace(",",".");
- const n=parseFloat(raw.match(/-?\d+(?:\.\d+)?/)?.[0]||"0");
- if(!n)return 0;
- // D&D: если скорость введена в футах (например 30 фт.), 1 клетка = 5 футов.
- // Если написано "6 клеток", используем число напрямую.
- return /клет/i.test(raw)?n:n/5;
+ const c=chars.get(selected);
+ if(!c)return 0;
+ return Math.max(0,Number(c.speed)||0);
 }
 function toggleRange(which){
  if(!selected){alert("Сначала выберите фишку персонажа.");return}
