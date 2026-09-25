@@ -95,6 +95,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <label>Название<input id="oName" placeholder="Например: сундук"></label>
  <label>Ссылка на PNG<input id="oUrl" required placeholder="https://...png"></label>
  <label>Размер, px <span class="status">(по ширине, пропорции PNG сохраняются автоматически)</span><input id="oWidth" type="number" min="10" value="120"></label>
+ <label>Поворот: <span id="oRotationVal">0°</span><input id="oRotation" type="range" min="-180" max="180" step="1" value="0"></label>
  <div class="dlgActions"><button type="button" class="danger" id="deleteOverlay">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
 
@@ -222,7 +223,7 @@ function renderOverlays(){
  const box=$("#overlays"); if(!box)return; box.innerHTML="";
  for(const o of overlayData.values()){
   const el=document.createElement("div"); el.className="overlay"+(isMaster()?" masterMove":"");
-  el.dataset.id=o.id; el.style.left=(o.x??150)+"px"; el.style.top=(o.y??150)+"px";
+  el.dataset.id=o.id; el.style.left=(o.x??150)+"px"; el.style.top=(o.y??150)+"px";el.style.transform=`translate(-50%,-50%) rotate(${Number(o.rotation)||0}deg)`;
   el.style.width=(o.width??120)+"px"; el.style.height="auto";
   el.innerHTML=`<img src="${esc(o.url||"")}" alt="" style="width:100%;height:auto"><span class="overlayLabel">${esc(o.name||"")}</span>`;
   if(isMaster()){
@@ -328,14 +329,15 @@ $("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("�
 $("#addOverlay").onclick=()=>openOverlay();
 function openOverlay(id=""){
  const o=overlayData.get(id)||{};
- $("#overlayId").value=id;$("#oName").value=o.name||"";$("#oUrl").value=o.url||"";$("#oWidth").value=o.width??120;
+ $("#overlayId").value=id;$("#oName").value=o.name||"";$("#oUrl").value=o.url||"";$("#oWidth").value=o.width??120;$("#oRotation").value=o.rotation??0;$("#oRotationVal").textContent=(o.rotation??0)+"°";
  $("#deleteOverlay").style.display=id?"inline-block":"none";$("#overlayDlg").showModal();
 }
+$("#oRotation").oninput=e=>$("#oRotationVal").textContent=e.target.value+"°";
 $("#overlayForm").onsubmit=async e=>{
  e.preventDefault();if(!isMaster())return;
  const id=$("#overlayId").value||crypto.randomUUID();
  const old=overlayData.get(id)||{};
- await setDoc(doc(db,"overlays",id),{name:$("#oName").value.trim(),url:$("#oUrl").value.trim(),width:+$("#oWidth").value,x:old.x??150,y:old.y??150});
+ await setDoc(doc(db,"overlays",id),{name:$("#oName").value.trim(),url:$("#oUrl").value.trim(),width:+$("#oWidth").value,rotation:+$("#oRotation").value,x:old.x??150,y:old.y??150});
  $("#overlayDlg").close();
 };
 $("#deleteOverlay").onclick=async()=>{
