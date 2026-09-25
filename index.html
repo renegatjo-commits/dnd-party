@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>D&D Party Map</title>
+<style>
+:root{--bg:#15130f;--panel:#211e18;--panel2:#2b271f;--line:#554b39;--gold:#d7b56d;--text:#f4ead5;--muted:#aaa08e;--danger:#bd5d57;--cell:64px}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#30291d,#12110e 55%);color:var(--text);font:14px Georgia,serif;min-height:100vh}
+button,input,textarea{font:inherit}.app{max-width:1500px;margin:auto;padding:18px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+h1{font-size:22px;letter-spacing:.12em;margin:0;color:var(--gold)}.actions{display:flex;gap:8px;flex-wrap:wrap}
+button,.btn{border:1px solid var(--line);background:#29241c;color:var(--text);padding:9px 12px;border-radius:8px;cursor:pointer}
+button:hover{border-color:var(--gold)}button.active{background:#69562f;border-color:#d9bd79}.master{display:none}.is-master .master{display:inline-block}
+.status{font:12px Arial;color:var(--muted)}
+.cards{display:flex;gap:12px;overflow-x:auto;padding:5px 2px 16px;scrollbar-width:thin}
+.card{position:relative;flex:0 0 245px;background:linear-gradient(145deg,#2a261f,#1d1a15);border:1px solid #554b39;border-radius:13px;padding:12px;box-shadow:0 8px 24px #0005}
+.cardHead{display:flex;gap:11px;align-items:center}.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:#111}
+.card h3{margin:0 0 4px;font-size:17px}.role{color:#bfb39d;font-style:italic;font-size:12px}.stats{display:flex;gap:7px;margin:11px 0}.pill{background:#15130f;border:1px solid #443d31;border-radius:20px;padding:5px 8px;font:12px Arial}.hp{color:#e9a09a}
+.items{font:12px Arial;line-height:1.45;color:#d8cfbd;min-height:34px}.editChar{position:absolute;right:8px;bottom:8px;padding:4px 7px;font-size:11px}
+.boardPanel{border:1px solid var(--line);background:#1c1914;border-radius:14px;overflow:hidden}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid #40392e;background:#252119}
+.toolbar .sep{width:1px;height:26px;background:#51493b}.toolbar label{font:12px Arial;color:#c7bdab}.toolbar input[type=range]{width:110px}
+.viewport{position:relative;width:100%;height:min(70vh,850px);overflow:auto;background:#0b0a08;touch-action:pan-x pan-y}
+.stage{position:relative;transform-origin:0 0;min-width:800px;min-height:600px;background:#17140f}
+.map{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+.grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,#fff4 1px,transparent 1px),linear-gradient(to bottom,#fff4 1px,transparent 1px);background-size:var(--cell) var(--cell)}
+.token{position:absolute;width:52px;height:52px;border-radius:50%;border:3px solid #f1d28b;background:#28231b center/cover no-repeat;box-shadow:0 3px 12px #000;transform:translate(-50%,-50%);cursor:grab;z-index:5;touch-action:none}
+.token.selected{outline:3px solid #fff8;outline-offset:3px}.token span{position:absolute;left:50%;top:100%;transform:translate(-50%,5px);white-space:nowrap;background:#111d;padding:3px 6px;border-radius:5px;font:11px Arial;color:white;pointer-events:none}
+.range{position:absolute;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;display:none;z-index:2}.range.cast{background:#6fa7ff26;border:2px solid #84b3ff99}.range.aoe{background:#e6a84b38;border:2px solid #ffc66a;z-index:3}
+.empty{padding:20px;color:var(--muted)}
+dialog{border:1px solid #65583f;border-radius:13px;background:#211e18;color:var(--text);width:min(520px,94vw);box-shadow:0 20px 60px #000b}
+dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{display:grid;gap:4px;font:12px Arial;color:#c8beac}.form input,.form textarea{width:100%;background:#12110e;color:#eee;border:1px solid #504737;border-radius:7px;padding:9px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dlgActions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.danger{border-color:#7b423e;color:#f1aaa4}
+.hint{padding:8px 12px;font:11px Arial;color:#9f9686;border-top:1px solid #342f27}
+@media(max-width:650px){.app{padding:10px}.top{align-items:flex-start;flex-direction:column}.card{flex-basis:215px}.viewport{height:65vh}.toolbar{gap:6px}.toolbar button{padding:7px 8px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+ <div class="top">
+  <div><h1>D&D PARTY</h1><div class="status" id="status">Подключение…</div></div>
+  <div class="actions">
+   <button id="masterLogin">Войти как мастер</button>
+   <button id="logout" style="display:none">Выйти</button>
+   <button class="master" id="addChar">+ Персонаж</button>
+   <button class="master" id="mapSettings">Настройки карты</button>
+  </div>
+ </div>
+ <section class="cards" id="cards"><div class="empty">Персонажи пока не добавлены.</div></section>
+ <section class="boardPanel">
+  <div class="toolbar">
+   <button id="castBtn">Дальность: 10 клеток</button>
+   <button id="aoeBtn">Площадь: 3 клетки</button>
+   <button id="clearBtn">Убрать радиусы</button>
+   <span class="sep"></span>
+   <label>Масштаб <input id="zoom" type="range" min="50" max="180" value="100"> <span id="zoomVal">100%</span></label>
+  </div>
+  <div class="viewport" id="viewport">
+   <div class="stage" id="stage">
+    <img class="map" id="map" alt="">
+    <div class="grid"></div>
+    <div class="range cast" id="castRange"></div>
+    <div class="range aoe" id="aoeRange"></div>
+    <div id="tokens"></div>
+   </div>
+  </div>
+  <div class="hint">Выберите фишку кликом. Любой игрок может передвигать фишки. Карточки, персонажей и карту меняет только мастер.</div>
+ </section>
+</div>
+
+<dialog id="loginDlg"><form class="form" id="loginForm">
+ <h2>Вход мастера</h2>
+ <label>Email<input id="email" type="email" required></label>
+ <label>Пароль<input id="password" type="password" required></label>
+ <div class="status" id="loginError"></div>
+ <div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit">Войти</button></div>
+</form></dialog>
+
+<dialog id="charDlg"><form class="form" id="charForm">
+ <h2 id="charTitle">Персонаж</h2><input id="charId" type="hidden">
+ <label>Имя<input id="cName" required></label>
+ <label>Должность / роль<input id="cRole"></label>
+ <label>Ссылка на аватар<input id="cAvatar" placeholder="https://..."></label>
+ <div class="row"><label>HP<input id="cHp" type="number" value="10"></label><label>Макс. HP<input id="cMaxHp" type="number" value="10"></label></div>
+ <label>Бонус<input id="cBonus" placeholder="+2"></label>
+ <label>Предметы<textarea id="cItems" rows="3" placeholder="Палочка, зелье, кинжал…"></textarea></label>
+ <div class="dlgActions"><button type="button" class="danger" id="deleteChar">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
+</form></dialog>
+
+<dialog id="mapDlg"><form class="form" id="mapForm">
+ <h2>Настройки карты</h2>
+ <label>Ссылка на изображение карты<input id="mapUrl" placeholder="https://..."></label>
+ <div class="row"><label>Ширина карты, px<input id="mapWidth" type="number" min="300" value="1280"></label><label>Высота карты, px<input id="mapHeight" type="number" min="300" value="800"></label></div>
+ <label>Размер клетки, px<input id="cellSize" type="number" min="20" max="200" value="64"></label>
+ <div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
+</form></dialog>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyDbMYr99XAJWtpVBzU2WBqham-0_RykFK8",
+ authDomain: "dnd-party-d2291.firebaseapp.com",
+ projectId: "dnd-party-d2291",
+ storageBucket: "dnd-party-d2291.firebasestorage.app",
+ messagingSenderId: "272197003899",
+ appId: "1:272197003899:web:8a524f19176aad729b90de"
+};
+const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
+const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
+const $=s=>document.querySelector(s);
+let chars=new Map(), tokenData=new Map(), selected=null, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64}, unsubscribed=false;
+
+function isMaster(){return auth.currentUser?.uid===MASTER_UID}
+function applyRole(){
+ document.body.classList.toggle("is-master",isMaster());
+ $("#logout").style.display=isMaster()?"inline-block":"none";
+ $("#masterLogin").style.display=isMaster()?"none":"inline-block";
+ $("#status").textContent=isMaster()?"Режим мастера · синхронизация включена":"Игрок · синхронизация включена";
+}
+async function ensureAnonymous(){if(!auth.currentUser) await signInAnonymously(auth)}
+onAuthStateChanged(auth, async u=>{if(!u){await ensureAnonymous();return} applyRole(); startListeners()});
+
+function startListeners(){
+ if(unsubscribed)return; unsubscribed=true;
+ onSnapshot(collection(db,"characters"),snap=>{chars.clear();snap.forEach(d=>chars.set(d.id,{id:d.id,...d.data()}));renderCards();renderTokens()});
+ onSnapshot(collection(db,"tokens"),snap=>{tokenData.clear();snap.forEach(d=>tokenData.set(d.id,{id:d.id,...d.data()}));renderTokens()});
+ onSnapshot(doc(db,"game","main"),d=>{if(d.exists())settings={...settings,...d.data()};applyMap()});
+}
+function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function renderCards(){
+ const box=$("#cards"); if(!chars.size){box.innerHTML='<div class="empty">Персонажи пока не добавлены.</div>';return}
+ box.innerHTML=[...chars.values()].map(c=>`<article class="card">
+  <div class="cardHead"><img class="avatar" src="${esc(c.avatar||"")}" onerror="this.style.visibility='hidden'"><div><h3>${esc(c.name)}</h3><div class="role">${esc(c.role||"")}</div></div></div>
+  <div class="stats"><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span><span class="pill">Бонус ${esc(c.bonus||"—")}</span></div>
+  <div class="items"><b>С собой:</b> ${esc(c.items||"—")}</div>
+  ${isMaster()?`<button class="editChar" data-edit="${c.id}">✎</button>`:""}
+ </article>`).join("");
+ box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openChar(b.dataset.edit));
+}
+function applyMap(){
+ const s=$("#stage");s.style.width=settings.mapWidth+"px";s.style.height=settings.mapHeight+"px";s.style.setProperty("--cell",settings.cellSize+"px");
+ $("#map").src=settings.mapUrl||""; $("#map").style.display=settings.mapUrl?"block":"none";positionRanges()
+}
+function renderTokens(){
+ const box=$("#tokens");box.innerHTML="";
+ for(const c of chars.values()){
+  const t=tokenData.get(c.id); if(!t)continue;
+  const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;
+  el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px"; if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;
+  el.innerHTML=`<span>${esc(c.name)}</span>`;el.addEventListener("pointerdown",dragStart);el.onclick=()=>{selected=c.id;renderTokens();positionRanges()};box.appendChild(el);
+ } positionRanges();
+}
+let drag=null;
+function dragStart(e){
+ e.preventDefault(); selected=e.currentTarget.dataset.id; const el=e.currentTarget; el.setPointerCapture(e.pointerId);
+ drag={el,id:selected}; el.classList.add("selected");
+ const move=ev=>{const r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;let x=(ev.clientX-r.left)/z,y=(ev.clientY-r.top)/z;
+  x=Math.max(0,Math.min(settings.mapWidth,x));y=Math.max(0,Math.min(settings.mapHeight,y));el.style.left=x+"px";el.style.top=y+"px";positionRanges(x,y);
+ };
+ const up=async ev=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);const x=parseFloat(el.style.left),y=parseFloat(el.style.top);try{await updateDoc(doc(db,"tokens",selected),{x,y})}catch(err){console.error(err)}drag=null};
+ el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
+}
+function positionRanges(x,y){
+ if(!selected)return;const t=tokenData.get(selected);x=x??t?.x;y=y??t?.y;if(x==null)return;
+ for(const id of ["castRange","aoeRange"]){const e=$("#"+id);e.style.left=x+"px";e.style.top=y+"px"}
+}
+function showRange(which){
+ if(!selected){alert("Сначала выберите фишку персонажа.");return}
+ const diameter=(which==="cast"?20:6)*settings.cellSize;
+ const el=$(which==="cast"?"#castRange":"#aoeRange");el.style.width=diameter+"px";el.style.height=diameter+"px";el.style.display="block";positionRanges();
+}
+$("#castBtn").onclick=()=>showRange("cast");$("#aoeBtn").onclick=()=>showRange("aoe");$("#clearBtn").onclick=()=>{$("#castRange").style.display=$("#aoeRange").style.display="none"};
+$("#zoom").oninput=e=>{const z=e.target.value/100;$("#stage").style.transform=`scale(${z})`;$("#stage").style.marginRight=(settings.mapWidth*(z-1))+"px";$("#stage").style.marginBottom=(settings.mapHeight*(z-1))+"px";$("#zoomVal").textContent=e.target.value+"%"};
+
+$("#masterLogin").onclick=()=>$("#loginDlg").showModal();
+$("#loginForm").onsubmit=async e=>{e.preventDefault();$("#loginError").textContent="";try{await signOut(auth);await signInWithEmailAndPassword(auth,$("#email").value,$("#password").value);$("#loginDlg").close();renderCards()}catch(err){$("#loginError").textContent="Не удалось войти. Проверь email и пароль.";await ensureAnonymous()}};
+$("#logout").onclick=async()=>{await signOut(auth);await ensureAnonymous();renderCards()};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("dialog").close());
+
+$("#addChar").onclick=()=>openChar();
+function openChar(id=""){
+ const c=chars.get(id)||{};$("#charId").value=id;$("#cName").value=c.name||"";$("#cRole").value=c.role||"";$("#cAvatar").value=c.avatar||"";$("#cHp").value=c.hp??10;$("#cMaxHp").value=c.maxHp??10;$("#cBonus").value=c.bonus||"";$("#cItems").value=c.items||"";$("#deleteChar").style.display=id?"inline-block":"none";$("#charDlg").showModal()
+}
+$("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let id=$("#charId").value||crypto.randomUUID();let c={name:$("#cName").value.trim(),role:$("#cRole").value.trim(),avatar:$("#cAvatar").value.trim(),hp:+$("#cHp").value,maxHp:+$("#cMaxHp").value,bonus:$("#cBonus").value.trim(),items:$("#cItems").value.trim()};
+ await setDoc(doc(db,"characters",id),c);if(!tokenData.has(id))await setDoc(doc(db,"tokens",id),{x:100+Math.random()*200,y:100+Math.random()*150});$("#charDlg").close()
+};
+$("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("Удалить персонажа и его фишку?")){await deleteDoc(doc(db,"tokens",id));await deleteDoc(doc(db,"characters",id));$("#charDlg").close()}};
+
+$("#mapSettings").onclick=()=>{$("#mapUrl").value=settings.mapUrl||"";$("#mapWidth").value=settings.mapWidth;$("#mapHeight").value=settings.mapHeight;$("#cellSize").value=settings.cellSize;$("#mapDlg").showModal()};
+$("#mapForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;await setDoc(doc(db,"game","main"),{mapUrl:$("#mapUrl").value.trim(),mapWidth:+$("#mapWidth").value,mapHeight:+$("#mapHeight").value,cellSize:+$("#cellSize").value},{merge:true});$("#mapDlg").close()};
+
+applyMap();
+</script>
+</body>
+</html>
