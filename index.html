@@ -71,7 +71,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <h2>Вход мастера</h2>
  <label>Email<input id="email" type="email" required></label>
  <label>Пароль<input id="password" type="password" required></label>
- <div class="status" id="loginError"></div>
+ <div class="status" id="loginError" style="color:#f0a39b;line-height:1.4"></div>
  <div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit">Войти</button></div>
 </form></dialog>
 
@@ -110,7 +110,8 @@ const firebaseConfig = {
 const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
-let chars=new Map(), tokenData=new Map(), selected=null, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64}, unsubscribed=false;
+let chars=new Map(), tokenData=new Map(), selected=null, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
+let liveUnsubs=[];
 
 function isMaster(){return auth.currentUser?.uid===MASTER_UID}
 function applyRole(){
@@ -119,14 +120,50 @@ function applyRole(){
  $("#masterLogin").style.display=isMaster()?"none":"inline-block";
  $("#status").textContent=isMaster()?"Режим мастера · синхронизация включена":"Игрок · синхронизация включена";
 }
-async function ensureAnonymous(){if(!auth.currentUser) await signInAnonymously(auth)}
-onAuthStateChanged(auth, async u=>{if(!u){await ensureAnonymous();return} applyRole(); startListeners()});
+async function ensureAnonymous(){
+ if(auth.currentUser) return;
+ try{
+   await signInAnonymously(auth);
+ }catch(err){
+   console.error("Anonymous auth failed:",err);
+   $("#status").textContent="Ошибка подключения: "+(err.code||err.message);
+ }
+}
+
+function stopListeners(){
+ liveUnsubs.forEach(fn=>{try{fn()}catch(e){}});
+ liveUnsubs=[];
+}
+
+onAuthStateChanged(auth, async u=>{
+ stopListeners();
+ if(!u){
+   $("#status").textContent="Подключение…";
+   await ensureAnonymous();
+   return;
+ }
+ applyRole();
+ startListeners();
+});
+
+function listenError(err){
+ console.error("Firestore listener:",err);
+ $("#status").textContent=(isMaster()?"Мастер":"Игрок")+" · ошибка доступа к базе";
+}
 
 function startListeners(){
- if(unsubscribed)return; unsubscribed=true;
- onSnapshot(collection(db,"characters"),snap=>{chars.clear();snap.forEach(d=>chars.set(d.id,{id:d.id,...d.data()}));renderCards();renderTokens()});
- onSnapshot(collection(db,"tokens"),snap=>{tokenData.clear();snap.forEach(d=>tokenData.set(d.id,{id:d.id,...d.data()}));renderTokens()});
- onSnapshot(doc(db,"game","main"),d=>{if(d.exists())settings={...settings,...d.data()};applyMap()});
+ liveUnsubs.push(onSnapshot(collection(db,"characters"),snap=>{
+   chars.clear(); snap.forEach(d=>chars.set(d.id,{id:d.id,...d.data()}));
+   renderCards(); renderTokens();
+ },listenError));
+ liveUnsubs.push(onSnapshot(collection(db,"tokens"),snap=>{
+   tokenData.clear(); snap.forEach(d=>tokenData.set(d.id,{id:d.id,...d.data()}));
+   renderTokens();
+ },listenError));
+ liveUnsubs.push(onSnapshot(doc(db,"game","main"),d=>{
+   if(d.exists())settings={...settings,...d.data()};
+   applyMap();
+ },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function renderCards(){
@@ -174,9 +211,46 @@ function showRange(which){
 $("#castBtn").onclick=()=>showRange("cast");$("#aoeBtn").onclick=()=>showRange("aoe");$("#clearBtn").onclick=()=>{$("#castRange").style.display=$("#aoeRange").style.display="none"};
 $("#zoom").oninput=e=>{const z=e.target.value/100;$("#stage").style.transform=`scale(${z})`;$("#stage").style.marginRight=(settings.mapWidth*(z-1))+"px";$("#stage").style.marginBottom=(settings.mapHeight*(z-1))+"px";$("#zoomVal").textContent=e.target.value+"%"};
 
-$("#masterLogin").onclick=()=>$("#loginDlg").showModal();
-$("#loginForm").onsubmit=async e=>{e.preventDefault();$("#loginError").textContent="";try{await signOut(auth);await signInWithEmailAndPassword(auth,$("#email").value,$("#password").value);$("#loginDlg").close();renderCards()}catch(err){$("#loginError").textContent="Не удалось войти. Проверь email и пароль.";await ensureAnonymous()}};
-$("#logout").onclick=async()=>{await signOut(auth);await ensureAnonymous();renderCards()};
+$("#masterLogin").onclick=()=>{$("#loginError").textContent="";$("#loginDlg").showModal()};
+$("#loginForm").onsubmit=async e=>{
+ e.preventDefault();
+ $("#loginError").textContent="Входим…";
+ const email=$("#email").value.trim(), password=$("#password").value;
+ try{
+   // Firebase заменит текущего anonymous-пользователя email/password-сессией.
+   // Не вызываем signOut() заранее: так не создаются лишние anonymous users.
+   const cred=await signInWithEmailAndPassword(auth,email,password);
+   if(cred.user.uid!==MASTER_UID){
+     await signOut(auth);
+     $("#loginError").textContent="Этот аккаунт не является аккаунтом мастера.";
+     await ensureAnonymous();
+     return;
+   }
+   $("#loginError").textContent="";
+   $("#loginDlg").close();
+   renderCards();
+ }catch(err){
+   console.error("Master login failed:",err);
+   const messages={
+     "auth/invalid-credential":"Неверный email или пароль.",
+     "auth/invalid-login-credentials":"Неверный email или пароль.",
+     "auth/user-not-found":"Пользователь с таким email не найден.",
+     "auth/wrong-password":"Неверный пароль.",
+     "auth/invalid-email":"Некорректный email.",
+     "auth/too-many-requests":"Слишком много попыток. Попробуй немного позже.",
+     "auth/operation-not-allowed":"В Firebase не включён вход Email/Password.",
+     "auth/unauthorized-domain":"Этот домен не добавлен в Firebase → Authentication → Authorized domains."
+   };
+   $("#loginError").textContent=messages[err.code]||("Ошибка Firebase: "+(err.code||err.message));
+ }
+};
+$("#logout").onclick=async()=>{
+ stopListeners();
+ await signOut(auth);
+ chars.clear(); tokenData.clear(); selected=null;
+ renderCards(); renderTokens();
+ await ensureAnonymous();
+};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("dialog").close());
 
 $("#addChar").onclick=()=>openChar();
