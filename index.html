@@ -586,7 +586,7 @@ $("#deleteAllSpells").onclick=async e=>{
 };
 async function deleteAreaForToken(tokenId){
  await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"areas",`${tokenId}_${slot}`)).catch(()=>null)));
-}catch(e){}}
+}
 async function deleteSpellsForToken(tokenId){
  const jobs=[];
  for(const s of spellData.values()){
