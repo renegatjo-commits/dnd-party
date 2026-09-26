@@ -100,7 +100,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
     </div>
     <div class="spellAim" id="spellAim">
       <div class="aimRotator" id="aimRotator">
-        <img class="spellBeam" src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png" alt="">
+        <img class="spellBeam" id="spellBeam" src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png" alt="">
         <span class="aimArrow">➤</span>
       </div>
       <button class="aimHandle" id="aimHandle" title="Тянуть: направление и дальность">●</button>
@@ -165,6 +165,13 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <label>Ссылка на изображение карты<input id="mapUrl" placeholder="https://..."></label>
  <div class="row"><label>Ширина карты, px<input id="mapWidth" type="number" min="300" value="1280"></label><label>Высота карты, px<input id="mapHeight" type="number" min="300" value="800"></label></div>
  <label>Размер клетки, px<input id="cellSize" type="number" min="20" max="200" value="64"></label>
+ <div style="margin-top:8px;padding-top:10px;border-top:1px solid #4d4435">
+   <div style="font-weight:bold;margin-bottom:7px">PNG заклинаний</div>
+   <div class="status" style="margin-bottom:8px">Эти изображения используются только для эффектов заклинаний и не меняют изображения фишек.</div>
+   <label>Направленное заклинание<input id="directedSpellPng" placeholder="https://...png"></label>
+   <label>Площадное — щит<input id="shieldSpellPng" placeholder="https://...png"></label>
+   <label>Площадное — атакующее<input id="attackAreaSpellPng" placeholder="https://...png"></label>
+ </div>
  <div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
 
@@ -184,7 +191,12 @@ const firebaseConfig = {
 const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
-let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
+let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={
+ mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64,
+ directedSpellPng:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
+ shieldSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
+ attackAreaSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"
+};
 let liveUnsubs=[];
 
 function isMaster(){return auth.currentUser?.uid===MASTER_UID}
@@ -249,6 +261,10 @@ function startListeners(){
  },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function directedSpellPng(){return settings.directedSpellPng||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"}
+function shieldSpellPng(){return settings.shieldSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"}
+function attackAreaSpellPng(){return settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"}
+function areaSpellPng(kind){return kind==="attack"?attackAreaSpellPng():shieldSpellPng()}
 function renderCards(){
  const box=$("#cards"); if(!chars.size){box.innerHTML='<div class="empty">Персонажи пока не добавлены.</div>';return}
  const list=[...chars.values()].sort((a,b)=>(a.order??9999)-(b.order??9999)||String(a.name).localeCompare(String(b.name)));
@@ -286,8 +302,11 @@ async function moveCard(id,dir){
 }
 function applyMap(){
  const s=$("#stage");s.style.width=settings.mapWidth+"px";s.style.height=settings.mapHeight+"px";s.style.setProperty("--cell",settings.cellSize+"px");
- $("#map").src=settings.mapUrl||""; $("#map").style.display=settings.mapUrl?"block":"none";positionRanges()
+ $("#map").src=settings.mapUrl||""; $("#map").style.display=settings.mapUrl?"block":"none";positionRanges();
+ renderSharedSpells();
+ if(selected)refreshOpenSpellEditor();
 }
+// Фишки используют только avatar / npcPng персонажа. PNG заклинаний на них не влияют.
 function renderTokens(){
  const box=$("#tokens");box.innerHTML="";
  for(const c of chars.values()){
@@ -405,6 +424,7 @@ function applySpellPermissions(){
 function updateAim(){
  if(!selected)return;
  const s=currentAim(),radius=s.range*settings.cellSize,rot=$("#aimRotator");
+ $("#spellBeam").src=directedSpellPng();
  rot.style.width=radius+"px";
  rot.style.setProperty("--beam-length",radius+"px");
  rot.style.transform=`translateY(-50%) rotate(${s.angle}deg)`;
@@ -528,7 +548,7 @@ function syncAreaAim(){
  const el=$("#areaAim");
  el.style.left=(p.x-radius)+"px";el.style.top=(p.y-radius)+"px";
  el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
- $("#areaAimImg").src=areaKind==="attack"?"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png":"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png";
+ $("#areaAimImg").src=areaSpellPng(areaKind);
  el.style.display="block";
  const ok=canEditSelectedSpell();
  $("#publishArea").style.display=ok?"inline-block":"none";
@@ -620,7 +640,7 @@ function renderSharedSpells(){
    if(type==="directed"){
      const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
      el.className="sharedSpell";el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
-     el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png")}"><span>➤</span></div>`;
+     el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(directedSpellPng())}"><span>➤</span></div>`;
      el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="directed";loadAimForSlot();showDirectedEditor(false)};
      box.appendChild(el);
    }else{
@@ -631,14 +651,14 @@ function renderSharedSpells(){
      if(s.kind==="attack"){
        const len=(Number(s.range)||0)*settings.cellSize,beam=document.createElement("div");
        beam.className="sharedSpell";beam.style.left=(tk.x??0)+"px";beam.style.top=(tk.y??0)+"px";
-       beam.innerHTML=`<div class="sharedSpellLine" style="width:${len}px;--beam-length:${len}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"><span>➤</span></div>`;
+       beam.innerHTML=`<div class="sharedSpellLine" style="width:${len}px;--beam-length:${len}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(directedSpellPng())}"><span>➤</span></div>`;
        beam.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind="attack";loadAimForSlot();showAttackAreaEditor(false)};
        box.appendChild(beam);
      }
      const el=document.createElement("div");
      el.className="sharedArea";el.style.left=p.x+"px";el.style.top=p.y+"px";
      el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
-     el.innerHTML=`<img src="${esc(s.areaImageUrl||(s.kind==="attack"?"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png":"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"))}">`;
+     el.innerHTML=`<img src="${esc(areaSpellPng(s.kind))}">`;
      el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind=s.kind||"shield";if(areaKind==="attack")loadAimForSlot();areaKind==="attack"?showAttackAreaEditor(false):showShieldEditor()};
      box.appendChild(el);
    }
@@ -678,7 +698,7 @@ $("#publishSpell").onclick=async e=>{
  const s=currentAim();
  const data={
    type:"directed",tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
-   ownerUid:auth.currentUser?.uid||"",imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"
+   ownerUid:auth.currentUser?.uid||""
  };
  await setDoc(doc(db,"spells",spellDocId()),data);
  spellData.set(spellDocId(),{id:spellDocId(),...data});
@@ -688,7 +708,7 @@ $("#publishSpell").onclick=async e=>{
 $("#publishArea").onclick=async e=>{
  e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;
  const area=areaCells();if(!area)return alert("У персонажа не указана площадь.");
- const data={type:"area",kind:areaKind,tokenId:selected,slot:activeSpellSlot,area,visible:true,ownerUid:auth.currentUser?.uid||"",areaImageUrl:areaKind==="attack"?"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png":"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"};
+ const data={type:"area",kind:areaKind,tokenId:selected,slot:activeSpellSlot,area,visible:true,ownerUid:auth.currentUser?.uid||""};
  if(areaKind==="attack"){const s=currentAim();data.angle=s.angle;data.range=s.range;}
  await setDoc(doc(db,"spells",spellDocId()),data);
  spellData.set(spellDocId(),{id:spellDocId(),...data});
@@ -791,8 +811,29 @@ $("#deleteOverlay").onclick=async()=>{
  const id=$("#overlayId").value;if(id&&confirm("Удалить PNG с карты?")){await deleteDoc(doc(db,"overlays",id));$("#overlayDlg").close()}
 };
 
-$("#mapSettings").onclick=()=>{$("#mapUrl").value=settings.mapUrl||"";$("#mapWidth").value=settings.mapWidth;$("#mapHeight").value=settings.mapHeight;$("#cellSize").value=settings.cellSize;$("#mapDlg").showModal()};
-$("#mapForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;await setDoc(doc(db,"game","main"),{mapUrl:$("#mapUrl").value.trim(),mapWidth:+$("#mapWidth").value,mapHeight:+$("#mapHeight").value,cellSize:+$("#cellSize").value},{merge:true});$("#mapDlg").close()};
+$("#mapSettings").onclick=()=>{
+ $("#mapUrl").value=settings.mapUrl||"";
+ $("#mapWidth").value=settings.mapWidth;
+ $("#mapHeight").value=settings.mapHeight;
+ $("#cellSize").value=settings.cellSize;
+ $("#directedSpellPng").value=directedSpellPng();
+ $("#shieldSpellPng").value=shieldSpellPng();
+ $("#attackAreaSpellPng").value=attackAreaSpellPng();
+ $("#mapDlg").showModal();
+};
+$("#mapForm").onsubmit=async e=>{
+ e.preventDefault();if(!isMaster())return;
+ await setDoc(doc(db,"game","main"),{
+  mapUrl:$("#mapUrl").value.trim(),
+  mapWidth:+$("#mapWidth").value,
+  mapHeight:+$("#mapHeight").value,
+  cellSize:+$("#cellSize").value,
+  directedSpellPng:$("#directedSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
+  shieldSpellPng:$("#shieldSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
+  attackAreaSpellPng:$("#attackAreaSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"
+ },{merge:true});
+ $("#mapDlg").close()
+};
 
 // Перемещение карты: зажать пустое место/саму карту и тянуть.
 const viewport=$("#viewport");
