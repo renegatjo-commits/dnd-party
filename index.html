@@ -46,7 +46,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 .spellSlot{min-width:28px;padding:5px 7px}.spellSlot.active{border-color:#c49cff;box-shadow:0 0 0 1px #c49cff inset;background:#30213e}
 #aimDistance{font:11px Arial;color:#c8c0b5;background:#15130f;border:1px solid #443d31;border-radius:12px;padding:5px 7px}
 .publishSpell{position:static;white-space:nowrap;padding:6px 9px;background:#26331f;border-color:#79975e;pointer-events:auto}.deleteSpell{white-space:nowrap;padding:6px 9px;background:#3a2020;border-color:#8d5555;color:#f0c7c7;pointer-events:auto}
-.sharedSpell{position:absolute;z-index:7;pointer-events:none}.sharedSpellLine{position:absolute;left:0;top:0;height:34px;transform-origin:0 50%}
+.sharedSpell{position:absolute;z-index:7;pointer-events:auto;cursor:pointer}.sharedSpellLine{position:absolute;left:0;top:0;height:34px;transform-origin:0 50%;pointer-events:auto}
 .sharedSpellLine img{position:absolute;width:34px;height:var(--beam-length);left:calc(var(--beam-length)/2 - 17px);top:calc(17px - var(--beam-length)/2);transform:rotate(90deg);transform-origin:center center;object-fit:fill;filter:drop-shadow(0 0 5px #8e55ff);pointer-events:none}
 .sharedSpellLine span{position:absolute;right:-8px;top:50%;transform:translateY(-50%);font:23px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
 </style>
@@ -67,7 +67,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <section class="boardPanel">
   <div class="toolbar">
    <button id="speedBtn">Скорость</button>
-   <button id="castBtn">Дальность</button>
+   <button id="castBtn">Дальность</button><button id="clearOldSpells" title="Удалить старые стрелки, оставшиеся от прошлых версий">Очистить старые заклинания</button>
    <button id="aoeBtn">Площадь: 3 клетки</button>
    <span class="sep"></span>
    <label>Масштаб <input id="zoom" type="range" min="50" max="180" value="100"> <span id="zoomVal">100%</span></label>
@@ -277,6 +277,17 @@ function renderOverlays(){
     if(rh)rh.addEventListener("pointerdown",overlayRotateStart);
     el.ondblclick=e=>{if(!e.target.closest(".rotateHandle"))openOverlay(o.id)};
   }
+  el.onclick=e=>{
+    e.preventDefault();e.stopPropagation();
+    const ch=chars.get(s.tokenId);
+    if(!ch)return;
+    selected=s.tokenId;
+    activeSpellSlot=Number(s.slot)||1;
+    aimState[activeSpellSlot]={angle:Number(s.angle)||0,range:Number(s.range)||spellRangeCells()};
+    renderTokens();positionRanges();
+    $("#castRange").style.display="block";$("#castBtn").classList.add("active");
+    $("#spellAim").style.display="block";syncAimFromSpell();
+  };
   box.appendChild(el);
  }
 }
@@ -391,11 +402,23 @@ function renderSharedSpells(){
   const tk=tokenData.get(s.tokenId),ch=chars.get(s.tokenId);
   if(!tk||!ch)continue;
   const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
-  el.className="sharedSpell";el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
+  el.className="sharedSpell";el.dataset.spellId=s.id;el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
   el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png")}"><span>➤</span></div>`;
   box.appendChild(el);
  }
 }
+$("#clearOldSpells").onclick=async()=>{
+ const old=[];
+ for(const s of spellData.values()){
+   const validId=s.tokenId && (s.id===`${s.tokenId}_1`||s.id===`${s.tokenId}_2`);
+   const hasOwner=s.tokenId && tokenData.has(s.tokenId) && chars.has(s.tokenId);
+   if(!validId||!hasOwner)old.push(s.id);
+ }
+ if(!old.length){alert("Старых заклинаний не найдено.");return}
+ if(!confirm(`Удалить старые заклинания: ${old.length}?`))return;
+ try{await Promise.all(old.map(id=>deleteDoc(doc(db,"spells",id))))}
+ catch(err){alert("Не удалось удалить часть старых заклинаний: "+err.message)}
+};
 $("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();activeSpellSlot=1;syncAimFromSpell()};
 $("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();activeSpellSlot=2;syncAimFromSpell()};
 
