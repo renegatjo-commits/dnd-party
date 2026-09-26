@@ -16,7 +16,7 @@ button:hover{border-color:var(--gold)}button.active{background:#69562f;border-co
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px 12px;overflow:visible;padding:5px 2px 34px}
 .card{position:relative;min-width:0;background:linear-gradient(145deg,#2a261f,#1d1a15);border:1px solid #554b39;border-radius:12px;padding:10px 10px 34px;box-shadow:0 8px 24px #0005}.card.npc{background:linear-gradient(145deg,#352326,#201719);border-color:#784d53}.card.npc .avatar{border-color:#bd777f}.cardOrder{position:absolute;right:8px;top:8px;display:flex;gap:4px}.cardOrder button{padding:3px 6px;font-size:11px}
 .cardHead{display:flex;gap:11px;align-items:center}.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:#111}
-.card h3{margin:0 0 4px;font-size:17px}.role{color:#bfb39d;font-style:italic;font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%;margin:11px 0;align-items:end}.statBox{display:flex;flex-direction:column;gap:3px;min-width:0;width:100%;overflow:hidden}.statLabel{display:block;width:100%;padding:0;color:#8f8a80;font:8px Arial;text-align:center;line-height:1}.pill{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:30px;box-sizing:border-box;background:#15130f;border:1px solid #443d31;border-radius:20px;padding:5px 4px;font:clamp(9px,1.8vw,12px) Arial;text-align:center;white-space:nowrap;overflow:hidden}.hp{color:#e9a09a}
+.card h3{margin:0 0 4px;font-size:17px}.role{color:#bfb39d;font-style:italic;font-size:12px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;margin:11px 0;align-items:end}.statBox{display:flex;flex-direction:column;gap:3px;min-width:0;width:100%;overflow:hidden}.statLabel{display:block;width:100%;padding:0;color:#8f8a80;font:8px Arial;text-align:center;line-height:1}.pill{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:30px;box-sizing:border-box;background:#15130f;border:1px solid #443d31;border-radius:20px;padding:5px 4px;font:clamp(9px,1.8vw,12px) Arial;text-align:center;white-space:nowrap;overflow:hidden}.hp{color:#e9a09a}
 .items{font:12px Arial;line-height:1.45;color:#d8cfbd;min-height:34px}.charBadges{position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);display:flex;justify-content:center;align-items:center;gap:6px;z-index:6}.charBadge{width:52px;height:52px;object-fit:contain;border:0;border-radius:50%;background:transparent;padding:0;filter:drop-shadow(0 3px 4px #0008)}.editChar{position:absolute;right:8px;bottom:8px;padding:4px 7px;font-size:11px;z-index:7}
 .boardPanel{border:1px solid var(--line);background:#1c1914;border-radius:14px;overflow:hidden}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid #40392e;background:#252119}
 .toolbar .sep{width:1px;height:26px;background:#51493b}.toolbar label{font:12px Arial;color:#c7bdab}.toolbar input[type=range]{width:110px}
@@ -35,6 +35,17 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 
 @media(max-width:700px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:9px 9px 32px}.avatar{width:44px;height:44px}.card h3{font-size:15px}}
 @media(max-width:430px){.cards{grid-template-columns:1fr}}
+
+.token.npcArt{width:auto;height:auto;min-width:52px;min-height:52px;border:0;border-radius:0;background:transparent!important;box-shadow:none}
+.token.npcArt img{display:block;max-width:110px;max-height:110px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 4px 5px #0009)}
+.spellAim{position:absolute;display:none;z-index:8;pointer-events:none}.aimRotator{position:absolute;left:0;top:0;height:26px;transform-origin:0 50%;pointer-events:none}
+.spellBeam{position:absolute;left:0;top:50%;width:100%;height:22px;transform:translateY(-50%) rotate(90deg);object-fit:fill;opacity:.95;filter:drop-shadow(0 0 5px #8e55ff)}
+.aimArrow{position:absolute;right:-9px;top:50%;transform:translateY(-50%);font:25px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
+.aimHandle{position:absolute;right:-24px;top:50%;transform:translateY(-50%);width:30px;height:30px;padding:0;border-radius:50%;background:#2d203b;border:1px solid #c49cff;color:#fff;pointer-events:auto;touch-action:none;cursor:grab}
+.publishSpell{position:absolute;left:10px;top:18px;white-space:nowrap;padding:6px 9px;background:#26331f;border-color:#79975e;pointer-events:auto}
+.sharedSpell{position:absolute;z-index:7;pointer-events:none}.sharedSpellLine{position:absolute;left:0;top:0;height:24px;transform-origin:0 50%}
+.sharedSpellLine img{position:absolute;left:0;top:50%;width:100%;height:20px;transform:translateY(-50%) rotate(90deg);object-fit:fill;filter:drop-shadow(0 0 5px #8e55ff)}
+.sharedSpellLine span{position:absolute;right:-8px;top:50%;transform:translateY(-50%);font:23px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
 </style>
 </head>
 <body>
@@ -53,7 +64,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <section class="boardPanel">
   <div class="toolbar">
    <button id="speedBtn">Скорость</button>
-   <button id="castBtn">Дальность: 10 клеток</button>
+   <button id="castBtn">Дальность</button>
    <button id="aoeBtn">Площадь: 3 клетки</button>
    <span class="sep"></span>
    <label>Масштаб <input id="zoom" type="range" min="50" max="180" value="100"> <span id="zoomVal">100%</span></label>
@@ -65,6 +76,14 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
     <div class="range speed" id="speedRange"></div>
     <div class="range cast" id="castRange"></div>
     <div class="range aoe" id="aoeRange"></div>
+    <div id="sharedSpells"></div>
+    <div class="spellAim" id="spellAim">
+      <div class="aimRotator" id="aimRotator">
+        <img class="spellBeam" src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png" alt="">
+        <span class="aimArrow">➤</span><button class="aimHandle" id="aimHandle">●</button>
+      </div>
+      <button class="publishSpell" id="publishSpell">✓ Показать</button>
+    </div>
     <div id="overlays"></div>
     <div id="tokens"></div>
    </div>
@@ -88,7 +107,9 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <label>Ссылка на аватар<input id="cAvatar" placeholder="https://..."></label>
  <div class="row"><label>HP<input id="cHp" type="number" value="10"></label><label>Макс. HP<input id="cMaxHp" type="number" value="10"></label></div>
  <div class="row"><label>Бонус<input id="cBonus" placeholder="+2"></label><label>Скорость, клеток<input id="cSpeed" type="number" min="0" step="1" placeholder="6"></label></div>
+ <label>Дальность заклинания, клеток<input id="cSpellRange" type="number" min="0" step="1" placeholder="10"></label>
  <label style="display:flex;grid-template-columns:auto 1fr;align-items:center;gap:8px"><input id="cNpc" type="checkbox" style="width:auto"> NPC — фишку может двигать только мастер</label>
+ <label>PNG NPC на карте <span class="status">(необязательно; будет виден всем вместо круглой фишки)</span><input id="cNpcPng" placeholder="https://...png"></label>
  <label>Предметы<textarea id="cItems" rows="3" placeholder="Палочка, зелье, кинжал…"></textarea></label>
  <label>Значки <span class="status">(ссылки на PNG/JPG, по одной в строке)</span><textarea id="cBadges" rows="3" placeholder="https://.../badge1.png&#10;https://.../badge2.png"></textarea></label>
  <div class="dlgActions"><button type="button" class="danger" id="deleteChar">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
@@ -127,7 +148,7 @@ const firebaseConfig = {
 const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
-let chars=new Map(), tokenData=new Map(), overlayData=new Map(), selected=null, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
+let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, aimAngle=0, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
 let liveUnsubs=[];
 
 function isMaster(){return auth.currentUser?.uid===MASTER_UID}
@@ -185,6 +206,11 @@ function startListeners(){
    overlayData.clear(); snap.forEach(d=>overlayData.set(d.id,{id:d.id,...d.data()}));
    renderOverlays();
  },listenError));
+ liveUnsubs.push(onSnapshot(collection(db,"spells"),snap=>{
+   spellData.clear(); snap.forEach(d=>spellData.set(d.id,{id:d.id,...d.data()}));
+   renderSharedSpells();
+   if(selected)$("#publishSpell").textContent=spellData.get(selected)?.visible?"✕ Скрыть":"✓ Показать";
+ },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function renderCards(){
@@ -197,6 +223,7 @@ function renderCards(){
     <div class="statBox"><span class="statLabel">&nbsp;</span><span class="pill hp">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</span></div>
     <div class="statBox"><span class="statLabel">Бонус</span><span class="pill">${esc(c.bonus||"—")}</span></div>
     <div class="statBox"><span class="statLabel">Скорость</span><span class="pill">${Number(c.speed)||0}</span></div>
+    <div class="statBox"><span class="statLabel">Дальность</span><span class="pill">${Number(c.spellRange)||0}</span></div>
   </div>
   <div class="items"><b>С собой:</b> ${esc(c.items||"—")}</div>
   <div class="charBadges">${String(c.badges||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).map(url=>`<img class="charBadge" src="${esc(url)}" alt="значок">`).join("")}</div>
@@ -224,8 +251,9 @@ function renderTokens(){
  for(const c of chars.values()){
   const t=tokenData.get(c.id); if(!t)continue;
   const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;if(t.npc&&!isMaster())el.style.cursor="not-allowed";
-  el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px"; if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;
-  el.innerHTML=`<span>${esc(c.name)}</span>`;el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";for(const id of ["speedBtn","castBtn","aoeBtn"])$("#"+id).classList.remove("active")}selected=c.id;renderTokens();positionRanges()};box.appendChild(el);
+  el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px";
+  if(c.isNpc&&c.npcPng){el.classList.add("npcArt");el.innerHTML=`<img src="${esc(c.npcPng)}" alt=""><span>${esc(c.name)}</span>`}
+  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";for(const id of ["speedBtn","castBtn","aoeBtn"])$("#"+id).classList.remove("active")}selected=c.id;renderTokens();positionRanges()};box.appendChild(el);
  } positionRanges();
 }
 function renderOverlays(){
@@ -292,34 +320,67 @@ function dragStart(e){
 function positionRanges(x,y){
  if(!selected)return;const t=tokenData.get(selected);x=x??t?.x;y=y??t?.y;if(x==null)return;
  for(const id of ["speedRange","castRange","aoeRange"]){const e=$("#"+id);e.style.left=x+"px";e.style.top=y+"px"}
+ const sa=$("#spellAim");sa.style.left=x+"px";sa.style.top=y+"px";
 }
 function speedCells(){
  const c=chars.get(selected);
  if(!c)return 0;
  return Math.max(0,Number(c.speed)||0);
 }
+function spellRangeCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.spellRange)||0):0}
+function updateAim(){
+ const radius=spellRangeCells()*settings.cellSize,rot=$("#aimRotator");
+ rot.style.width=radius+"px";rot.style.transform=`translateY(-50%) rotate(${aimAngle}deg)`;
+ $("#publishSpell").style.left=Math.max(12,radius*.28)+"px";
+}
 function toggleRange(which){
  if(!selected){alert("Сначала выберите фишку персонажа.");return}
  const map={
    speed:{el:"#speedRange",btn:"#speedBtn",cells:speedCells()},
-   cast:{el:"#castRange",btn:"#castBtn",cells:10},
+   cast:{el:"#castRange",btn:"#castBtn",cells:spellRangeCells()},
    aoe:{el:"#aoeRange",btn:"#aoeBtn",cells:3}
  };
  const r=map[which],el=$(r.el),btn=$(r.btn);
  if(which==="speed"&&!r.cells){alert("У выбранного персонажа не указана скорость.");return}
+ if(which==="cast"&&!r.cells){alert("У выбранного персонажа не указана дальность заклинания.");return}
  const turningOn=el.style.display!=="block";
  if(turningOn){
    const diameter=r.cells*2*settings.cellSize;
    el.style.width=diameter+"px";el.style.height=diameter+"px";el.style.display="block";
-   btn.classList.add("active");
+   btn.classList.add("active");if(which==="cast"){$("#spellAim").style.display="block";updateAim()}
  }else{
-   el.style.display="none";btn.classList.remove("active");
+   el.style.display="none";btn.classList.remove("active");if(which==="cast")$("#spellAim").style.display="none";
  }
  positionRanges();
 }
 $("#speedBtn").onclick=()=>toggleRange("speed");
 $("#castBtn").onclick=()=>toggleRange("cast");
 $("#aoeBtn").onclick=()=>toggleRange("aoe");
+
+function renderSharedSpells(){
+ const box=$("#sharedSpells");if(!box)return;box.innerHTML="";
+ for(const s of spellData.values()){
+  if(!s.visible)continue;const tk=tokenData.get(s.tokenId);if(!tk)continue;
+  const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
+  el.className="sharedSpell";el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
+  el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl)}"><span>➤</span></div>`;
+  box.appendChild(el);
+ }
+}
+$("#aimHandle").addEventListener("pointerdown",e=>{
+ e.preventDefault();e.stopPropagation();if(!selected)return;
+ const h=e.currentTarget;h.setPointerCapture(e.pointerId);
+ const move=ev=>{const tk=tokenData.get(selected),r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;if(!tk)return;
+  aimAngle=Math.atan2(ev.clientY-(r.top+tk.y*z),ev.clientX-(r.left+tk.x*z))*180/Math.PI;updateAim()};
+ const up=()=>{h.removeEventListener("pointermove",move);h.removeEventListener("pointerup",up)};
+ h.addEventListener("pointermove",move);h.addEventListener("pointerup",up);
+});
+$("#publishSpell").onclick=async e=>{
+ e.preventDefault();e.stopPropagation();if(!selected)return;
+ if(spellData.get(selected)?.visible){await deleteDoc(doc(db,"spells",selected));}
+ else await setDoc(doc(db,"spells",selected),{tokenId:selected,angle:aimAngle,range:spellRangeCells(),visible:true,imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"});
+};
+
 $("#zoom").oninput=e=>{const z=e.target.value/100;$("#stage").style.transform=`scale(${z})`;$("#stage").style.marginRight=(settings.mapWidth*(z-1))+"px";$("#stage").style.marginBottom=(settings.mapHeight*(z-1))+"px";$("#zoomVal").textContent=e.target.value+"%"};
 
 $("#masterLogin").onclick=()=>{$("#loginError").textContent="";$("#loginDlg").showModal()};
@@ -366,9 +427,9 @@ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("di
 
 $("#addChar").onclick=()=>openChar();
 function openChar(id=""){
- const c=chars.get(id)||{};$("#charId").value=id;$("#cName").value=c.name||"";$("#cRole").value=c.role||"";$("#cAvatar").value=c.avatar||"";$("#cHp").value=c.hp??10;$("#cMaxHp").value=c.maxHp??10;$("#cBonus").value=c.bonus||"";$("#cSpeed").value=c.speed||"";$("#cNpc").checked=!!c.isNpc;$("#cItems").value=c.items||"";$("#cBadges").value=c.badges||"";$("#deleteChar").style.display=id?"inline-block":"none";$("#charDlg").showModal()
+ const c=chars.get(id)||{};$("#charId").value=id;$("#cName").value=c.name||"";$("#cRole").value=c.role||"";$("#cAvatar").value=c.avatar||"";$("#cHp").value=c.hp??10;$("#cMaxHp").value=c.maxHp??10;$("#cBonus").value=c.bonus||"";$("#cSpeed").value=c.speed||"";$("#cSpellRange").value=c.spellRange||"";$("#cNpc").checked=!!c.isNpc;$("#cNpcPng").value=c.npcPng||"";$("#cItems").value=c.items||"";$("#cBadges").value=c.badges||"";$("#deleteChar").style.display=id?"inline-block":"none";$("#charDlg").showModal()
 }
-$("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let id=$("#charId").value||crypto.randomUUID();let existing=chars.get(id)||{};let c={name:$("#cName").value.trim(),role:$("#cRole").value.trim(),avatar:$("#cAvatar").value.trim(),hp:+$("#cHp").value,maxHp:+$("#cMaxHp").value,bonus:$("#cBonus").value.trim(),speed:$("#cSpeed").value.trim(),isNpc:$("#cNpc").checked,items:$("#cItems").value.trim(),badges:$("#cBadges").value.trim(),order:existing.order??chars.size};
+$("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let id=$("#charId").value||crypto.randomUUID();let existing=chars.get(id)||{};let c={name:$("#cName").value.trim(),role:$("#cRole").value.trim(),avatar:$("#cAvatar").value.trim(),hp:+$("#cHp").value,maxHp:+$("#cMaxHp").value,bonus:$("#cBonus").value.trim(),speed:+$("#cSpeed").value||0,spellRange:+$("#cSpellRange").value||0,isNpc:$("#cNpc").checked,npcPng:$("#cNpcPng").value.trim(),items:$("#cItems").value.trim(),badges:$("#cBadges").value.trim(),order:existing.order??chars.size};
  await setDoc(doc(db,"characters",id),c);
  if(!tokenData.has(id)){
    await setDoc(doc(db,"tokens",id),{x:100+Math.random()*200,y:100+Math.random()*150,npc:c.isNpc});
