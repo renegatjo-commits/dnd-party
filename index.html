@@ -65,7 +65,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 <body>
 <div class="app" id="app">
  <div class="top">
-  <div><h1>D&D PARTY</h1><div class="status" id="status">Подключение…</div></div>
+  <div><h1>Окулус</h1><div class="status" id="status">Подключение…</div></div>
   <div class="actions">
    <button id="masterLogin">Войти как мастер</button>
    <button id="logout" style="display:none">Выйти</button>
@@ -168,9 +168,18 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <div style="margin-top:8px;padding-top:10px;border-top:1px solid #4d4435">
    <div style="font-weight:bold;margin-bottom:7px">PNG заклинаний</div>
    <div class="status" style="margin-bottom:8px">Эти изображения используются только для эффектов заклинаний и не меняют изображения фишек.</div>
-   <label>Направленное заклинание<input id="directedSpellPng" placeholder="https://...png"></label>
-   <label>Площадное — щит<input id="shieldSpellPng" placeholder="https://...png"></label>
-   <label>Площадное — атакующее<input id="attackAreaSpellPng" placeholder="https://...png"></label>
+   <div style="margin-bottom:10px;padding:8px;border:1px solid #4d4435;border-radius:10px">
+     <div style="font-weight:bold;margin-bottom:6px">Для игроков</div>
+     <label>Направленное заклинание<input id="playerDirectedSpellPng" placeholder="https://...png"></label>
+     <label>Площадное — щит<input id="playerShieldSpellPng" placeholder="https://...png"></label>
+     <label>Площадное — атакующее<input id="playerAttackAreaSpellPng" placeholder="https://...png"></label>
+   </div>
+   <div style="padding:8px;border:1px solid #4d4435;border-radius:10px">
+     <div style="font-weight:bold;margin-bottom:6px">Для НПС</div>
+     <label>Направленное заклинание<input id="npcDirectedSpellPng" placeholder="https://...png"></label>
+     <label>Площадное — щит<input id="npcShieldSpellPng" placeholder="https://...png"></label>
+     <label>Площадное — атакующее<input id="npcAttackAreaSpellPng" placeholder="https://...png"></label>
+   </div>
  </div>
  <div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
@@ -193,9 +202,12 @@ const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
 let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={
  mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64,
- directedSpellPng:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
- shieldSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
- attackAreaSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"
+ playerDirectedSpellPng:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
+ playerShieldSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
+ playerAttackAreaSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png",
+ npcDirectedSpellPng:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
+ npcShieldSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
+ npcAttackAreaSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"
 };
 let liveUnsubs=[];
 
@@ -261,10 +273,30 @@ function startListeners(){
  },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function directedSpellPng(){return settings.directedSpellPng||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"}
-function shieldSpellPng(){return settings.shieldSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"}
-function attackAreaSpellPng(){return settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"}
-function areaSpellPng(kind){return kind==="attack"?attackAreaSpellPng():shieldSpellPng()}
+function tokenIsNpc(tokenId){
+ const c=chars.get(tokenId)||{};
+ const t=tokenData.get(tokenId)||{};
+ return !!(c.isNpc||t.npc);
+}
+function directedSpellPng(tokenId){
+ const isNpc=tokenIsNpc(tokenId);
+ return isNpc
+  ? (settings.npcDirectedSpellPng||settings.directedSpellPng||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png")
+  : (settings.playerDirectedSpellPng||settings.directedSpellPng||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png");
+}
+function shieldSpellPng(tokenId){
+ const isNpc=tokenIsNpc(tokenId);
+ return isNpc
+  ? (settings.npcShieldSpellPng||settings.shieldSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png")
+  : (settings.playerShieldSpellPng||settings.shieldSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png");
+}
+function attackAreaSpellPng(tokenId){
+ const isNpc=tokenIsNpc(tokenId);
+ return isNpc
+  ? (settings.npcAttackAreaSpellPng||settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png")
+  : (settings.playerAttackAreaSpellPng||settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png");
+}
+function areaSpellPng(kind,tokenId){return kind==="attack"?attackAreaSpellPng(tokenId):shieldSpellPng(tokenId)}
 function renderCards(){
  const box=$("#cards"); if(!chars.size){box.innerHTML='<div class="empty">Персонажи пока не добавлены.</div>';return}
  const list=[...chars.values()].sort((a,b)=>(a.order??9999)-(b.order??9999)||String(a.name).localeCompare(String(b.name)));
@@ -424,7 +456,7 @@ function applySpellPermissions(){
 function updateAim(){
  if(!selected)return;
  const s=currentAim(),radius=s.range*settings.cellSize,rot=$("#aimRotator");
- $("#spellBeam").src=directedSpellPng();
+ $("#spellBeam").src=directedSpellPng(selected);
  rot.style.width=radius+"px";
  rot.style.setProperty("--beam-length",radius+"px");
  rot.style.transform=`translateY(-50%) rotate(${s.angle}deg)`;
@@ -548,7 +580,7 @@ function syncAreaAim(){
  const el=$("#areaAim");
  el.style.left=(p.x-radius)+"px";el.style.top=(p.y-radius)+"px";
  el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
- $("#areaAimImg").src=areaSpellPng(areaKind);
+ $("#areaAimImg").src=areaSpellPng(areaKind,selected);
  el.style.display="block";
  const ok=canEditSelectedSpell();
  $("#publishArea").style.display=ok?"inline-block":"none";
@@ -640,7 +672,7 @@ function renderSharedSpells(){
    if(type==="directed"){
      const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
      el.className="sharedSpell";el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
-     el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(directedSpellPng())}"><span>➤</span></div>`;
+     el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(directedSpellPng(s.tokenId))}"><span>➤</span></div>`;
      el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="directed";loadAimForSlot();showDirectedEditor(false)};
      box.appendChild(el);
    }else{
@@ -651,14 +683,14 @@ function renderSharedSpells(){
      if(s.kind==="attack"){
        const len=(Number(s.range)||0)*settings.cellSize,beam=document.createElement("div");
        beam.className="sharedSpell";beam.style.left=(tk.x??0)+"px";beam.style.top=(tk.y??0)+"px";
-       beam.innerHTML=`<div class="sharedSpellLine" style="width:${len}px;--beam-length:${len}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(directedSpellPng())}"><span>➤</span></div>`;
+       beam.innerHTML=`<div class="sharedSpellLine" style="width:${len}px;--beam-length:${len}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(directedSpellPng(s.tokenId))}"><span>➤</span></div>`;
        beam.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind="attack";loadAimForSlot();showAttackAreaEditor(false)};
        box.appendChild(beam);
      }
      const el=document.createElement("div");
      el.className="sharedArea";el.style.left=p.x+"px";el.style.top=p.y+"px";
      el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
-     el.innerHTML=`<img src="${esc(areaSpellPng(s.kind))}">`;
+     el.innerHTML=`<img src="${esc(areaSpellPng(s.kind,s.tokenId))}">`;
      el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind=s.kind||"shield";if(areaKind==="attack")loadAimForSlot();areaKind==="attack"?showAttackAreaEditor(false):showShieldEditor()};
      box.appendChild(el);
    }
@@ -816,9 +848,12 @@ $("#mapSettings").onclick=()=>{
  $("#mapWidth").value=settings.mapWidth;
  $("#mapHeight").value=settings.mapHeight;
  $("#cellSize").value=settings.cellSize;
- $("#directedSpellPng").value=directedSpellPng();
- $("#shieldSpellPng").value=shieldSpellPng();
- $("#attackAreaSpellPng").value=attackAreaSpellPng();
+ $("#playerDirectedSpellPng").value=settings.playerDirectedSpellPng||settings.directedSpellPng||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png";
+ $("#playerShieldSpellPng").value=settings.playerShieldSpellPng||settings.shieldSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png";
+ $("#playerAttackAreaSpellPng").value=settings.playerAttackAreaSpellPng||settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png";
+ $("#npcDirectedSpellPng").value=settings.npcDirectedSpellPng||settings.directedSpellPng||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png";
+ $("#npcShieldSpellPng").value=settings.npcShieldSpellPng||settings.shieldSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png";
+ $("#npcAttackAreaSpellPng").value=settings.npcAttackAreaSpellPng||settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png";
  $("#mapDlg").showModal();
 };
 $("#mapForm").onsubmit=async e=>{
@@ -828,9 +863,12 @@ $("#mapForm").onsubmit=async e=>{
   mapWidth:+$("#mapWidth").value,
   mapHeight:+$("#mapHeight").value,
   cellSize:+$("#cellSize").value,
-  directedSpellPng:$("#directedSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
-  shieldSpellPng:$("#shieldSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
-  attackAreaSpellPng:$("#attackAreaSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"
+  playerDirectedSpellPng:$("#playerDirectedSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
+  playerShieldSpellPng:$("#playerShieldSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
+  playerAttackAreaSpellPng:$("#playerAttackAreaSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png",
+  npcDirectedSpellPng:$("#npcDirectedSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
+  npcShieldSpellPng:$("#npcShieldSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
+  npcAttackAreaSpellPng:$("#npcAttackAreaSpellPng").value.trim()||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png"
  },{merge:true});
  $("#mapDlg").close()
 };
