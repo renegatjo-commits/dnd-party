@@ -67,7 +67,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <section class="boardPanel">
   <div class="toolbar">
    <button id="speedBtn">Скорость</button>
-   <button id="castBtn">Дальность</button><button id="clearOldSpells" title="Удалить старые стрелки, оставшиеся от прошлых версий">Очистить старые заклинания</button>
+   <button id="castBtn">Дальность</button>
    <button id="aoeBtn">Площадь: 3 клетки</button>
    <span class="sep"></span>
    <label>Масштаб <input id="zoom" type="range" min="50" max="180" value="100"> <span id="zoomVal">100%</span></label>
@@ -89,7 +89,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
         <button class="spellSlot active" id="spellSlot1">I</button>
         <button class="spellSlot" id="spellSlot2">II</button>
         <span id="aimDistance">0 кл.</span>
-        <button class="publishSpell" id="publishSpell">✓ Показать</button><button class="deleteSpell" id="deleteSpell" title="Удалить выбранное заклинание">✕ Удалить</button>
+        <button class="publishSpell" id="publishSpell">✓ Показать</button><button class="deleteSpell" id="deleteSpell" title="Удалить выбранное заклинание">✕ Удалить</button><button class="deleteSpell" id="deleteAllSpells" title="Удалить оба заклинания этой фишки">✕ Все</button>
       </div>
     </div>
     <div id="overlays"></div>
@@ -285,6 +285,10 @@ function renderOverlays(){
     activeSpellSlot=Number(s.slot)||1;
     aimState[activeSpellSlot]={angle:Number(s.angle)||0,range:Number(s.range)||spellRangeCells()};
     renderTokens();positionRanges();
+    if(ch.isNpc&&!isMaster()){
+      $("#spellAim").style.display="none";
+      return;
+    }
     $("#castRange").style.display="block";$("#castBtn").classList.add("active");
     $("#spellAim").style.display="block";syncAimFromSpell();
   };
@@ -346,6 +350,17 @@ function speedCells(){
  if(!c)return 0;
  return Math.max(0,Number(c.speed)||0);
 }
+function canEditSelectedSpell(){
+ const c=chars.get(selected);
+ return !!selected && (!c?.isNpc || isMaster());
+}
+function applySpellPermissions(){
+ const ok=canEditSelectedSpell();
+ $("#aimHandle").style.display=ok?"block":"none";
+ $("#publishSpell").style.display=ok?"inline-block":"none";
+ $("#deleteSpell").style.display=ok?"inline-block":"none";$("#deleteAllSpells").style.display=ok?"inline-block":"none";
+ $("#spellSlot1").disabled=!ok;$("#spellSlot2").disabled=!ok;
+}
 function spellRangeCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.spellRange)||0):0}
 function spellDocId(slot=activeSpellSlot){return selected?`${selected}_${slot}`:""}
 function currentAim(){
@@ -369,10 +384,11 @@ function syncAimFromSpell(){
  const s=spellData.get(spellDocId()),max=spellRangeCells();
  if(s?.visible)aimState[activeSpellSlot]={angle:Number(s.angle)||0,range:Math.min(max,Number(s.range)||max)};
  else if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)aimState[activeSpellSlot].range=max;
- updateAim();
+ updateAim();applySpellPermissions();
 }
 function toggleRange(which){
  if(!selected){alert("Сначала выберите фишку персонажа.");return}
+ if(which==="cast"&&chars.get(selected)?.isNpc&&!isMaster()){alert("Заклинания NPC может редактировать только мастер.");return}
  const map={
    speed:{el:"#speedRange",btn:"#speedBtn",cells:speedCells()},
    cast:{el:"#castRange",btn:"#castBtn",cells:spellRangeCells()},
@@ -407,23 +423,11 @@ function renderSharedSpells(){
   box.appendChild(el);
  }
 }
-$("#clearOldSpells").onclick=async()=>{
- const old=[];
- for(const s of spellData.values()){
-   const validId=s.tokenId && (s.id===`${s.tokenId}_1`||s.id===`${s.tokenId}_2`);
-   const hasOwner=s.tokenId && tokenData.has(s.tokenId) && chars.has(s.tokenId);
-   if(!validId||!hasOwner)old.push(s.id);
- }
- if(!old.length){alert("Старых заклинаний не найдено.");return}
- if(!confirm(`Удалить старые заклинания: ${old.length}?`))return;
- try{await Promise.all(old.map(id=>deleteDoc(doc(db,"spells",id))))}
- catch(err){alert("Не удалось удалить часть старых заклинаний: "+err.message)}
-};
-$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();activeSpellSlot=1;syncAimFromSpell()};
-$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();activeSpellSlot=2;syncAimFromSpell()};
+$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=1;syncAimFromSpell()};
+$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=2;syncAimFromSpell()};
 
 $("#aimHandle").addEventListener("pointerdown",e=>{
- e.preventDefault();e.stopPropagation();if(!selected)return;
+ e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
  const h=e.currentTarget;h.setPointerCapture(e.pointerId);
  let lastWrite=0;
  const move=async ev=>{
@@ -455,7 +459,7 @@ $("#aimHandle").addEventListener("pointerdown",e=>{
 });
 
 $("#publishSpell").onclick=async e=>{
- e.preventDefault();e.stopPropagation();if(!selected)return;
+ e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
  const s=currentAim();
  await setDoc(doc(db,"spells",spellDocId()),{
   tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
@@ -464,11 +468,23 @@ $("#publishSpell").onclick=async e=>{
  },{merge:true});
 };
 $("#deleteSpell").onclick=async e=>{
- e.preventDefault();e.stopPropagation();if(!selected)return;
+ e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
  const id=spellDocId();
  if(spellData.has(id))await deleteDoc(doc(db,"spells",id));
  aimState[activeSpellSlot]={angle:0,range:null};
  syncAimFromSpell();
+};
+$("#deleteAllSpells").onclick=async e=>{
+ e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
+ const ids=[];
+ for(const s of spellData.values())if(s.tokenId===selected)ids.push(s.id);
+ // Also target both current-format IDs even if local listener is momentarily stale.
+ for(const id of [`${selected}_1`,`${selected}_2`])if(!ids.includes(id))ids.push(id);
+ await Promise.all(ids.map(id=>deleteDoc(doc(db,"spells",id)).catch(()=>null)));
+ aimState={1:{angle:0,range:null},2:{angle:0,range:null}};
+ $("#spellAim").style.display="none";
+ $("#castRange").style.display="none";$("#castBtn").classList.remove("active");
+ renderSharedSpells();
 };
 async function deleteSpellsForToken(tokenId){
  const jobs=[];
