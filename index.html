@@ -26,7 +26,7 @@ button:hover{border-color:var(--gold)}button.active{background:#69562f;border-co
 .grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,#fff4 1px,transparent 1px),linear-gradient(to bottom,#fff4 1px,transparent 1px);background-size:var(--cell) var(--cell)}
 .token{position:absolute;width:52px;height:52px;border-radius:50%;border:3px solid #f1d28b;background:#28231b center/cover no-repeat;box-shadow:0 3px 12px #000;transform:translate(-50%,-50%);cursor:grab;z-index:5;touch-action:none}
 .token.selected{outline:3px solid #fff8;outline-offset:3px}.token span{position:absolute;left:50%;top:100%;transform:translate(-50%,5px);white-space:nowrap;background:#111d;padding:3px 6px;border-radius:5px;font:11px Arial;color:white;pointer-events:none}
-.overlay{position:absolute;transform:translate(-50%,-50%);z-index:4;user-select:none}.overlay img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}.overlay.masterMove{cursor:grab;touch-action:none}.rotateHandle{position:absolute;left:50%;top:-34px;transform:translateX(-50%);width:28px;height:28px;padding:0;border-radius:50%;background:#211e18;border:1px solid #d7b56d;color:#f4ead5;cursor:grab;z-index:8}.overlayLabel{position:absolute;left:50%;top:100%;transform:translate(-50%,4px);white-space:nowrap;background:#111d;color:#fff;padding:2px 5px;border-radius:4px;font:10px Arial;pointer-events:none}.range{position:absolute;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;display:none;z-index:2}.range.speed{background:#7fcf8a25;border:2px solid #91dc9caa}.range.cast{background:#6fa7ff26;border:2px solid #84b3ff99}.range.aoe{background:#e6a84b38;border:2px solid #ffc66a;z-index:3}
+.overlay{position:absolute;transform:translate(-50%,-50%);z-index:4;user-select:none}.overlay img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}.overlay.masterMove{cursor:grab;touch-action:none}.rotateHandle{position:absolute;left:50%;top:-34px;transform:translateX(-50%);width:28px;height:28px;padding:0;border-radius:50%;background:#211e18;border:1px solid #d7b56d;color:#f4ead5;cursor:grab;z-index:8}.overlayLabel{position:absolute;left:50%;top:100%;transform:translate(-50%,4px);white-space:nowrap;background:#111d;color:#fff;padding:2px 5px;border-radius:4px;font:10px Arial;pointer-events:none}.range{position:absolute;z-index:4;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;display:none;z-index:2}.range.speed{background:#7fcf8a25;border:2px solid #91dc9caa}.range.cast{background:#6fa7ff26;border:2px solid #84b3ff99}.range.aoe{background:#e6a84b38;border:2px solid #ffc66a;z-index:3}
 .empty{padding:20px;color:var(--muted)}
 dialog{border:1px solid #65583f;border-radius:13px;background:#211e18;color:var(--text);width:min(520px,94vw);box-shadow:0 20px 60px #000b}
 dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{display:grid;gap:4px;font:12px Arial;color:#c8beac}.form input,.form textarea{width:100%;background:#12110e;color:#eee;border:1px solid #504737;border-radius:7px;padding:9px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dlgActions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.danger{border-color:#7b423e;color:#f1aaa4}
@@ -38,11 +38,11 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 
 .token.npcArt{width:auto;height:auto;min-width:52px;min-height:52px;border:0;border-radius:0;background:transparent!important;box-shadow:none}
 .token.npcArt img{display:block;max-width:110px;max-height:110px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 4px 5px #0009)}
-.spellAim{position:absolute;display:none;z-index:8;pointer-events:none}.aimRotator{position:absolute;left:0;top:0;height:34px;transform-origin:0 50%;pointer-events:none}
+.spellAim{position:absolute;display:none;z-index:30;pointer-events:none}.aimRotator{position:absolute;left:0;top:0;height:34px;transform-origin:0 50%;pointer-events:none}
 .spellBeam{position:absolute;width:34px;height:var(--beam-length);left:calc(var(--beam-length)/2 - 17px);top:calc(17px - var(--beam-length)/2);transform:rotate(90deg);transform-origin:center center;object-fit:fill;opacity:.95;filter:drop-shadow(0 0 5px #8e55ff);pointer-events:none}
 .aimArrow{position:absolute;right:-9px;top:50%;transform:translateY(-50%);font:25px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
-.aimHandle{position:absolute;right:-24px;top:50%;transform:translateY(-50%);width:30px;height:30px;padding:0;border-radius:50%;background:#2d203b;border:1px solid #c49cff;color:#fff;pointer-events:auto;touch-action:none;cursor:grab}
-.spellControls{position:absolute;left:12px;top:22px;display:flex;align-items:center;gap:5px;white-space:nowrap;pointer-events:auto}
+.aimHandle{position:absolute;z-index:36;right:-24px;top:50%;transform:translateY(-50%);width:30px;height:30px;padding:0;border-radius:50%;background:#2d203b;border:1px solid #c49cff;color:#fff;pointer-events:auto;touch-action:none;cursor:grab}
+.spellControls{position:absolute;z-index:35;left:20px;top:34px;display:flex;align-items:center;gap:5px;white-space:nowrap;pointer-events:auto}
 .spellSlot{min-width:28px;padding:5px 7px}.spellSlot.active{border-color:#c49cff;box-shadow:0 0 0 1px #c49cff inset;background:#30213e}
 #aimDistance{font:11px Arial;color:#c8c0b5;background:#15130f;border:1px solid #443d31;border-radius:12px;padding:5px 7px}
 .publishSpell{position:static;white-space:nowrap;padding:6px 9px;background:#26331f;border-color:#79975e;pointer-events:auto}.deleteSpell{white-space:nowrap;padding:6px 9px;background:#3a2020;border-color:#8d5555;color:#f0c7c7;pointer-events:auto}
@@ -50,15 +50,15 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 .sharedSpellLine img{position:absolute;width:34px;height:var(--beam-length);left:calc(var(--beam-length)/2 - 17px);top:calc(17px - var(--beam-length)/2);transform:rotate(90deg);transform-origin:center center;object-fit:fill;filter:drop-shadow(0 0 5px #8e55ff);pointer-events:none}
 .sharedSpellLine span{position:absolute;right:-8px;top:50%;transform:translateY(-50%);font:23px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
 
-.areaAim{position:absolute;display:none;z-index:6;pointer-events:none;transform:translate(-50%,-50%)}
+.areaAim{position:absolute;display:none;z-index:28;pointer-events:none;transform:translate(-50%,-50%)}
 .areaAim img,.sharedArea img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 0 7px #9c58ff)}
-.areaControls{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);display:flex;gap:5px;white-space:nowrap;pointer-events:auto}
+.areaControls{position:absolute;z-index:35;left:50%;top:calc(100% + 8px);transform:translateX(-50%);display:flex;gap:5px;white-space:nowrap;pointer-events:auto}
 .areaControls select,.areaControls button{font-size:11px;padding:5px 7px}
 #deleteArea{background:#3a2020;border-color:#8d5555;color:#f0c7c7}
 .sharedArea{position:absolute;z-index:5;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer}
 
-.spellMenu{position:absolute;display:none;z-index:20;background:#1c1914;border:1px solid #62563f;border-radius:10px;padding:8px;box-shadow:0 8px 22px #0009}
-.spellMenuTitle{font:11px Arial;color:#a99f8e;margin:0 0 6px}.spellMenuRow,.areaKinds{display:flex;gap:5px}.areaKinds{display:none;margin-top:6px}
+.spellMenu{position:absolute;display:none;z-index:40;background:#1c1914;border:1px solid #62563f;border-radius:10px;padding:8px;box-shadow:0 8px 22px #0009}
+.spellMenuTitle{font:11px Arial;color:#a99f8e;margin:0 0 6px}.menuSlots,.spellMenuRow,.areaKinds{display:flex;gap:5px}.menuSlots{margin-bottom:6px}.menuSlots button{min-width:34px}.menuSlots button.active{border-color:#c49cff;background:#30213e}.areaKinds{display:none;margin-top:6px}
 .spellMenu button{font-size:12px;padding:6px 9px}.spellMenu button.active{border-color:#c49cff;background:#30213e}
 </style>
 </head>
@@ -93,9 +93,25 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
     <div id="sharedAreas"></div>
     <div id="sharedSpells"></div>
     <div class="spellMenu" id="spellMenu">
-      <div class="spellMenuTitle">Тип заклинания</div>
+      <div class="spellMenuTitle">Заклинание <span id="menuSlotTitle">I</span></div>
+      <div class="menuSlots"><button id="menuSlot1">I</button><button id="menuSlot2">II</button></div>
       <div class="spellMenuRow"><button id="chooseDirected">Направленное</button><button id="chooseArea">Площадное</button></div>
       <div class="areaKinds" id="areaKinds"><button id="chooseShield">Щит</button><button id="chooseAttackArea">Атакующее</button></div>
+    </div>
+    <div class="spellAim" id="spellAim">
+      <div class="aimRotator" id="aimRotator">
+        <img class="spellBeam" src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png" alt="">
+        <span class="aimArrow">➤</span>
+        <button class="aimHandle" id="aimHandle" title="Тянуть: направление и дальность">●</button>
+      </div>
+      <div class="spellControls" id="spellControls">
+        <button class="spellSlot active" id="spellSlot1">I</button>
+        <button class="spellSlot" id="spellSlot2">II</button>
+        <span id="aimDistance">0 кл.</span>
+        <button class="publishSpell" id="publishSpell">✓ Опубликовать</button>
+        <button class="deleteSpell" id="deleteSpell">✕ Удалить</button>
+        <button class="deleteSpell" id="deleteAllSpells">✕ Все</button>
+      </div>
     </div>
     <div class="areaAim" id="areaAim">
       <img id="areaAimImg" alt="">
@@ -168,7 +184,7 @@ const firebaseConfig = {
 const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
-let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), areaData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
+let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
 let liveUnsubs=[];
 
 function isMaster(){return auth.currentUser?.uid===MASTER_UID}
@@ -216,7 +232,7 @@ function startListeners(){
  },listenError));
  liveUnsubs.push(onSnapshot(collection(db,"tokens"),snap=>{
    tokenData.clear(); snap.forEach(d=>tokenData.set(d.id,{id:d.id,...d.data()}));
-   renderTokens();renderSharedSpells();renderSharedAreas();
+   renderTokens();renderSharedSpells();
  },listenError));
  liveUnsubs.push(onSnapshot(doc(db,"game","main"),d=>{
    if(d.exists())settings={...settings,...d.data()};
@@ -228,12 +244,8 @@ function startListeners(){
  },listenError));
  liveUnsubs.push(onSnapshot(collection(db,"spells"),snap=>{
    spellData.clear(); snap.forEach(d=>spellData.set(d.id,{id:d.id,...d.data()}));
-   renderSharedSpells();renderSharedAreas();
-   if(selected){syncAimFromSpell();syncAreaAim();}
- },listenError));
- liveUnsubs.push(onSnapshot(collection(db,"areas"),snap=>{
-   areaData.clear(); snap.forEach(d=>areaData.set(d.id,{id:d.id,...d.data()}));
-   renderSharedAreas();
+   renderSharedSpells();
+   if(selected)refreshOpenSpellEditor()
  },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
@@ -285,7 +297,8 @@ function renderOverlays(){
  const box=$("#overlays"); if(!box)return; box.innerHTML="";
  for(const o of overlayData.values()){
   const el=document.createElement("div"); el.className="overlay"+(isMaster()?" masterMove":"");
-  el.dataset.id=o.id; el.style.left=(o.x??150)+"px"; el.style.top=(o.y??150)+"px";el.style.transform=`translate(-50%,-50%) rotate(${Number(o.rotation)||0}deg)`;
+  el.dataset.id=o.id; el.style.left=(o.x??150)+"px"; el.style.top=(o.y??150)+"px";
+  el.style.transform=`translate(-50%,-50%) rotate(${Number(o.rotation)||0}deg)`;
   el.style.width=(o.width??120)+"px"; el.style.height="auto";
   el.innerHTML=`<img src="${esc(o.url||"")}" alt="" style="width:100%;height:auto"><span class="overlayLabel">${esc(o.name||"")}</span>${isMaster()?'<button class="rotateHandle" title="Повернуть">↻</button>':""}`;
   if(isMaster()){
@@ -294,21 +307,6 @@ function renderOverlays(){
     if(rh)rh.addEventListener("pointerdown",overlayRotateStart);
     el.ondblclick=e=>{if(!e.target.closest(".rotateHandle"))openOverlay(o.id)};
   }
-  el.onclick=e=>{
-    e.preventDefault();e.stopPropagation();
-    const ch=chars.get(s.tokenId);
-    if(!ch)return;
-    selected=s.tokenId;
-    activeSpellSlot=Number(s.slot)||1;
-    aimState[activeSpellSlot]={angle:Number(s.angle)||0,range:Number(s.range)||spellRangeCells()};
-    renderTokens();positionRanges();
-    if(ch.isNpc&&!isMaster()){
-      $("#spellAim").style.display="none";
-      return;
-    }
-    $("#castRange").style.display="block";$("#castBtn").classList.add("active");
-    $("#spellAim").style.display="block";syncAimFromSpell();
-  };
   box.appendChild(el);
  }
 }
@@ -371,268 +369,345 @@ function canEditSelectedSpell(){
  const c=chars.get(selected);
  return !!selected && (!c?.isNpc || isMaster());
 }
-function applySpellPermissions(){
- const ok=canEditSelectedSpell();
- $("#aimHandle").style.display=ok?"block":"none";
- $("#publishSpell").style.display=ok?"inline-block":"none";
- $("#deleteSpell").style.display=ok?"inline-block":"none";$("#deleteAllSpells").style.display=ok?"inline-block":"none";
- $("#spellSlot1").disabled=!ok;$("#spellSlot2").disabled=!ok;
-}
 function spellRangeCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.spellRange)||0):0}
-function spellDocId(slot=activeSpellSlot){return selected?`${selected}_${slot}`:""}
+function areaCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.area)||0):0}
+function spellDocId(slot=activeSpellSlot,id=selected){return id?`${id}_${slot}`:""}
+function slotDoc(slot=activeSpellSlot){return spellData.get(spellDocId(slot))}
+function spellType(s){return s?.type==="area"?"area":"directed"}
+
 function currentAim(){
  const max=spellRangeCells(),s=aimState[activeSpellSlot];
  if(s.range==null||s.range>max)s.range=max;
  return s;
 }
+function loadAimForSlot(){
+ const d=slotDoc(),max=spellRangeCells();
+ if(d && Number.isFinite(Number(d.angle)) && Number.isFinite(Number(d.range))){
+   aimState[activeSpellSlot]={angle:Number(d.angle)||0,range:Math.min(max,Number(d.range)||max)};
+ }else{
+   aimState[activeSpellSlot]={angle:0,range:max};
+ }
+}
+function applySpellPermissions(){
+ const ok=canEditSelectedSpell();
+ $("#aimHandle").style.display=ok?"block":"none";
+ $("#publishSpell").style.display=ok&&activeSpellMode==="directed"?"inline-block":"none";
+ $("#deleteSpell").style.display=ok&&activeSpellMode==="directed"?"inline-block":"none";
+ $("#deleteAllSpells").style.display=ok&&activeSpellMode==="directed"?"inline-block":"none";
+ $("#spellSlot1").disabled=!ok;$("#spellSlot2").disabled=!ok;
+ $("#menuSlot1").disabled=!ok;$("#menuSlot2").disabled=!ok;
+}
 function updateAim(){
  if(!selected)return;
  const s=currentAim(),radius=s.range*settings.cellSize,rot=$("#aimRotator");
- rot.style.width=radius+"px";rot.style.setProperty("--beam-length",radius+"px");
+ rot.style.width=radius+"px";
+ rot.style.setProperty("--beam-length",radius+"px");
  rot.style.transform=`translateY(-50%) rotate(${s.angle}deg)`;
  $("#aimDistance").textContent=`${Math.round(s.range*10)/10} кл.`;
  $("#spellSlot1").classList.toggle("active",activeSpellSlot===1);
  $("#spellSlot2").classList.toggle("active",activeSpellSlot===2);
- const published=spellData.get(spellDocId());
- $("#publishSpell").textContent=published?.visible?"✓ Обновить":"✓ Показать";
+ $("#menuSlot1").classList.toggle("active",activeSpellSlot===1);
+ $("#menuSlot2").classList.toggle("active",activeSpellSlot===2);
+ $("#menuSlotTitle").textContent=activeSpellSlot===1?"I":"II";
+ const d=slotDoc();
+ $("#publishSpell").textContent=d?.visible&&spellType(d)==="directed"?"✓ Обновить":"✓ Опубликовать";
+ applySpellPermissions();
 }
-function syncAimFromSpell(){
- if(!selected)return;
- const s=spellData.get(spellDocId()),max=spellRangeCells();
- if(s?.visible)aimState[activeSpellSlot]={angle:Number(s.angle)||0,range:Math.min(max,Number(s.range)||max)};
- else if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)aimState[activeSpellSlot].range=max;
- updateAim();applySpellPermissions();
+function positionSpellEditors(){
+ positionRanges();
+ if(activeSpellMode==="area")syncAreaAim();
 }
-function toggleRange(which){
- if(!selected){alert("Сначала выберите фишку персонажа.");return}
- if(which==="cast"&&chars.get(selected)?.isNpc&&!isMaster()){alert("Заклинания NPC может редактировать только мастер.");return}
- const map={
-   speed:{el:"#speedRange",btn:"#speedBtn",cells:speedCells()},
-   cast:{el:"#castRange",btn:"#castBtn",cells:spellRangeCells()},
-   aoe:{el:"#aoeRange",btn:"#aoeBtn",cells:areaCells()}
- };
- const r=map[which],el=$(r.el),btn=$(r.btn);
- if(which==="speed"&&!r.cells){alert("У выбранного персонажа не указана скорость.");return}
- if(which==="cast"&&!r.cells){alert("У выбранного персонажа не указана дальность заклинания.");return}
- const turningOn=el.style.display!=="block";
- if(turningOn){
-   const diameter=r.cells*2*settings.cellSize;
-   el.style.width=diameter+"px";el.style.height=diameter+"px";el.style.display="block";
-   btn.classList.add("active");if(which==="cast"){$("#spellAim").style.display="block";syncAimFromSpell()}
+function hideSpellEditors(){
+ $("#spellMenu").style.display="none";
+ $("#spellAim").style.display="none";
+ $("#areaAim").style.display="none";
+ $("#castRange").style.display="none";
+ $("#castBtn").classList.remove("active");
+}
+function setCastRadiusVisible(show){
+ const max=spellRangeCells(),el=$("#castRange");
+ if(show&&max){
+   const d=max*2*settings.cellSize;
+   el.style.width=d+"px";el.style.height=d+"px";el.style.display="block";
+   $("#castBtn").classList.add("active");
  }else{
-   el.style.display="none";btn.classList.remove("active");if(which==="cast")$("#spellAim").style.display="none";
+   el.style.display="none";
  }
  positionRanges();
 }
-$("#speedBtn").onclick=()=>toggleRange("speed");
-$("#castBtn").onclick=()=>{
- if(!selected)return alert("Сначала выберите фишку персонажа.");
- if(chars.get(selected)?.isNpc&&!isMaster())return alert("Заклинания NPC может менять только мастер.");
- const a=areaData.get(areaDocId()),s=spellData.get(spellDocId());
- activeSpellMode=a?.visible&&!s?.visible?"area":"directed";if(a?.kind)areaKind=a.kind;
- openSpellMenu();
-};
-
-
-
-function areaDocId(slot=activeSpellSlot){return selected?`${selected}_${slot}`:""}
-function slotHasArea(slot=activeSpellSlot){return areaData.get(selected?`${selected}_${slot}`:"")}
-function areaCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.area)||0):0}
-function canEditArea(){const c=chars.get(selected);return !!selected&&(!c?.isNpc||isMaster())}
-function areaAnchorPoint(tokenId,anchor){
- const tk=tokenData.get(tokenId);if(!tk)return null;
- if(anchor==="token")return {x:tk.x??0,y:tk.y??0};
- const slot=anchor==="spell2"?2:1,s=spellData.get(`${tokenId}_${slot}`);
- const draft=(tokenId===selected)?aimState[slot]:null;
- const range=s?.visible?Number(s.range):(draft?.range??null), angle=s?.visible?Number(s.angle):(draft?.angle??null);
- if(range==null||angle==null)return null;
- const len=range*settings.cellSize,a=angle*Math.PI/180;
- return {x:(tk.x??0)+Math.cos(a)*len,y:(tk.y??0)+Math.sin(a)*len};
+function chooseSlot(slot,openMenu=true){
+ activeSpellSlot=slot;
+ const d=slotDoc();
+ activeSpellMode=spellType(d);
+ areaKind=d?.kind||"shield";
+ loadAimForSlot();
+ $("#spellAim").style.display="none";
+ $("#areaAim").style.display="none";
+ $("#castRange").style.display="none";
+ updateAim();
+ if(openMenu)openSpellMenu();
 }
-function renderSharedAreas(){
- const box=$("#sharedAreas");if(!box)return;box.innerHTML="";
- for(const a of areaData.values()){
-  if(!a.visible||!chars.has(a.tokenId)||!tokenData.has(a.tokenId))continue;
-  const p=areaAnchorPoint(a.tokenId,a.anchor||"token");if(!p)continue;
-  const radius=(Number(a.area)||0)*settings.cellSize,el=document.createElement("div");
-  el.className="sharedArea";el.style.left=p.x+"px";el.style.top=p.y+"px";el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
-  el.innerHTML=`<img src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png">`;
-  el.onclick=e=>{e.preventDefault();e.stopPropagation();const c=chars.get(a.tokenId);if(!c)return;
-    selected=a.tokenId;activeSpellSlot=Number(a.slot)||1;activeSpellMode="area";areaKind=a.kind||"shield";
-    renderTokens();positionRanges();if(c.isNpc&&!isMaster())return;openSpellMenu();syncAreaAim();
-  };
-  box.appendChild(el);
+function openExistingSlot(slot){
+ activeSpellSlot=slot;
+ const d=slotDoc();
+ $("#spellAim").style.display="none";
+ $("#areaAim").style.display="none";
+ $("#castRange").style.display="none";
+ if(!d){
+   activeSpellMode="directed";
+   loadAimForSlot();
+   showDirectedEditor(false);
+   return;
+ }
+ if(spellType(d)==="area"){
+   activeSpellMode="area";
+   areaKind=d.kind||"shield";
+   if(areaKind==="attack"){
+     loadAimForSlot();
+     showAttackAreaEditor(false);
+   }else{
+     showShieldEditor();
+   }
+ }else{
+   activeSpellMode="directed";
+   loadAimForSlot();
+   showDirectedEditor(false);
  }
 }
-function syncAreaAim(){
- if(!selected)return;
- const a=areaData.get(areaDocId()),kind=a?.kind||areaKind;
- areaKind=kind;
- const anchor=kind==="shield"?"token":`spell${activeSpellSlot}`;
- const p=areaAnchorPoint(selected,anchor),radius=areaCells()*settings.cellSize;
- if(!p||!radius){$("#areaAim").style.display="none";return}
- const el=$("#areaAim");el.style.left=p.x+"px";el.style.top=p.y+"px";el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
- $("#areaAimImg").src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png";el.style.display="block";
- const ok=canEditArea();$("#publishArea").style.display=ok?"inline-block":"none";$("#deleteArea").style.display=ok?"inline-block":"none";
-}
-async function publishCurrentArea(){
- if(!canEditArea())return;const area=areaCells();if(!area)return alert("У персонажа не указана площадь.");
- const anchor=areaKind==="shield"?"token":`spell${activeSpellSlot}`;
- if(areaKind==="attack"&&!areaAnchorPoint(selected,anchor))return alert("Для атакующего площадного заклинания сначала задайте направление стрелки этого слота.");
- // A slot can contain only one spell type: remove its published directed spell.
- if(spellData.has(spellDocId()))await deleteDoc(doc(db,"spells",spellDocId()));
- await setDoc(doc(db,"areas",areaDocId()),{tokenId:selected,slot:activeSpellSlot,kind:areaKind,anchor,area,visible:true,imageUrl:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png"},{merge:true});
-}
-$("#publishArea").onclick=async e=>{e.preventDefault();e.stopPropagation();await publishCurrentArea()};
-$("#deleteArea").onclick=async e=>{e.preventDefault();e.stopPropagation();if(!canEditArea())return;await deleteDoc(doc(db,"areas",areaDocId()));$("#areaAim").style.display="none"};
 
 function openSpellMenu(){
  if(!selected)return;
- if(chars.get(selected)?.isNpc&&!isMaster()){alert("Заклинания NPC может менять только мастер.");return}
+ if(chars.get(selected)?.isNpc&&!isMaster())return alert("Заклинания NPC может менять только мастер.");
  const tk=tokenData.get(selected);if(!tk)return;
- const m=$("#spellMenu");m.style.left=(tk.x+35)+"px";m.style.top=(tk.y-60)+"px";m.style.display="block";
- $("#areaKinds").style.display=activeSpellMode==="area"?"flex":"none";
+ const d=slotDoc();
+ activeSpellMode=spellType(d);
+ areaKind=d?.kind||areaKind||"shield";
+ const m=$("#spellMenu");
+ m.style.left=(tk.x+42)+"px";
+ m.style.top=(tk.y-70)+"px";
+ m.style.display="block";
+ $("#menuSlot1").classList.toggle("active",activeSpellSlot===1);
+ $("#menuSlot2").classList.toggle("active",activeSpellSlot===2);
+ const d1=spellData.get(spellDocId(1)),d2=spellData.get(spellDocId(2));
+ $("#menuSlot1").textContent=d1?.visible?(spellType(d1)==="area"?"I · ◉":"I · →"):"I";
+ $("#menuSlot2").textContent=d2?.visible?(spellType(d2)==="area"?"II · ◉":"II · →"):"II";
+ $("#menuSlot1").title=d1?.visible?(spellType(d1)==="area"?"Площадное":"Направленное"):"Пустой слот";
+ $("#menuSlot2").title=d2?.visible?(spellType(d2)==="area"?"Площадное":"Направленное"):"Пустой слот";
+ $("#menuSlotTitle").textContent=activeSpellSlot===1?"I":"II";
  $("#chooseDirected").classList.toggle("active",activeSpellMode==="directed");
  $("#chooseArea").classList.toggle("active",activeSpellMode==="area");
+ $("#areaKinds").style.display=activeSpellMode==="area"?"flex":"none";
  $("#chooseShield").classList.toggle("active",areaKind==="shield");
  $("#chooseAttackArea").classList.toggle("active",areaKind==="attack");
 }
-$("#chooseDirected").onclick=e=>{
- e.preventDefault();e.stopPropagation();
+function showDirectedEditor(reload=true){
  if(!canEditSelectedSpell())return;
  activeSpellMode="directed";
- const max=spellRangeCells();
- if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)
-   aimState[activeSpellSlot].range=max;
+ if(!spellRangeCells())return alert("У персонажа не указана дальность заклинания.");
+ if(reload){
+   const d=slotDoc();
+   if(spellType(d)==="directed")loadAimForSlot();
+   else aimState[activeSpellSlot]={angle:0,range:spellRangeCells()};
+ }
  $("#spellMenu").style.display="none";
- $("#areaKinds").style.display="none";
  $("#areaAim").style.display="none";
- const diameter=max*2*settings.cellSize;
- $("#castRange").style.width=diameter+"px";$("#castRange").style.height=diameter+"px";
- $("#castRange").style.display="block";$("#castBtn").classList.add("active");
- positionRanges();
+ setCastRadiusVisible(true);
  $("#spellAim").style.display="block";
  updateAim();positionRanges();
-};
-$("#chooseArea").onclick=e=>{
- e.preventDefault();e.stopPropagation();
- if(!canEditArea())return;
- activeSpellMode="area";
- $("#spellAim").style.display="none";$("#castRange").style.display="none";
- $("#areaKinds").style.display="flex";
- openSpellMenu();
-};
-$("#chooseShield").onclick=e=>{
- e.preventDefault();e.stopPropagation();if(!canEditArea())return;
+}
+function attackPoint(id=selected,slot=activeSpellSlot,docData=null){
+ const tk=tokenData.get(id);if(!tk)return null;
+ let angle,range;
+ if(docData){
+   angle=Number(docData.angle);range=Number(docData.range);
+ }else{
+   const s=aimState[slot];angle=Number(s?.angle);range=Number(s?.range);
+ }
+ if(!Number.isFinite(angle)||!Number.isFinite(range))return null;
+ const a=angle*Math.PI/180,len=range*settings.cellSize;
+ return {x:(tk.x??0)+Math.cos(a)*len,y:(tk.y??0)+Math.sin(a)*len};
+}
+function syncAreaAim(){
+ if(!selected)return;
+ const radius=areaCells()*settings.cellSize;
+ if(!radius){$("#areaAim").style.display="none";return}
+ let p;
+ if(areaKind==="shield"){
+   const tk=tokenData.get(selected);if(!tk)return;p={x:tk.x??0,y:tk.y??0};
+ }else{
+   p=attackPoint();
+   if(!p){$("#areaAim").style.display="none";return}
+ }
+ const el=$("#areaAim");
+ el.style.left=p.x+"px";el.style.top=p.y+"px";
+ el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
+ $("#areaAimImg").src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png";
+ el.style.display="block";
+ const ok=canEditSelectedSpell();
+ $("#publishArea").style.display=ok?"inline-block":"none";
+ $("#deleteArea").style.display=ok?"inline-block":"none";
+}
+function showShieldEditor(){
+ if(!canEditSelectedSpell())return;
+ if(!areaCells())return alert("У персонажа не указана площадь.");
  activeSpellMode="area";areaKind="shield";
  $("#spellMenu").style.display="none";
+ $("#spellAim").style.display="none";
+ setCastRadiusVisible(false);
  syncAreaAim();
-};
-$("#chooseAttackArea").onclick=e=>{
- e.preventDefault();e.stopPropagation();if(!canEditArea())return;
+}
+function showAttackAreaEditor(reload=true){
+ if(!canEditSelectedSpell())return;
+ if(!areaCells())return alert("У персонажа не указана площадь.");
+ if(!spellRangeCells())return alert("У персонажа не указана дальность заклинания.");
  activeSpellMode="area";areaKind="attack";
- const max=spellRangeCells();
- if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)
-   aimState[activeSpellSlot].range=max;
+ if(reload){
+   const d=slotDoc();
+   if(spellType(d)==="area"&&d?.kind==="attack")loadAimForSlot();
+   else aimState[activeSpellSlot]={angle:0,range:spellRangeCells()};
+ }
  $("#spellMenu").style.display="none";
- const diameter=max*2*settings.cellSize;
- $("#castRange").style.width=diameter+"px";$("#castRange").style.height=diameter+"px";
- $("#castRange").style.display="block";positionRanges();
- // arrow is the editable targeting guide for attacking AoE
- $("#spellAim").style.display="block";updateAim();positionRanges();
+ setCastRadiusVisible(true);
+ $("#spellAim").style.display="block";
+ updateAim();positionRanges();
  syncAreaAim();
+}
+function refreshOpenSpellEditor(){
+ if(!selected)return;
+ const d=slotDoc();
+ if(activeSpellMode==="directed" && $("#spellAim").style.display==="block"){
+   if(spellType(d)==="directed")loadAimForSlot();
+   updateAim();positionRanges();
+ } else if(activeSpellMode==="area" && $("#areaAim").style.display==="block"){
+   if(d&&spellType(d)==="area"&&d.kind===areaKind&&areaKind==="attack")loadAimForSlot();
+   updateAim();syncAreaAim();
+ }
+}
+
+$("#speedBtn").onclick=()=>{
+ if(!selected)return alert("Сначала выберите фишку персонажа.");
+ const cells=speedCells();if(!cells)return alert("У выбранного персонажа не указана скорость.");
+ const el=$("#speedRange"),show=el.style.display!=="block";
+ if(show){const d=cells*2*settings.cellSize;el.style.width=d+"px";el.style.height=d+"px";el.style.display="block";$("#speedBtn").classList.add("active")}
+ else{el.style.display="none";$("#speedBtn").classList.remove("active")}
+ positionRanges();
 };
+$("#castBtn").onclick=()=>{
+ if(!selected)return alert("Сначала выберите фишку персонажа.");
+ if(!canEditSelectedSpell())return alert("Заклинания NPC может менять только мастер.");
+ openSpellMenu();
+};
+$("#menuSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();chooseSlot(1,true)};
+$("#menuSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();chooseSlot(2,true)};
+$("#chooseDirected").onclick=e=>{e.preventDefault();e.stopPropagation();showDirectedEditor(true)};
+$("#chooseArea").onclick=e=>{
+ e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;
+ activeSpellMode="area";
+ $("#chooseDirected").classList.remove("active");$("#chooseArea").classList.add("active");
+ $("#areaKinds").style.display="flex";
+};
+$("#chooseShield").onclick=e=>{e.preventDefault();e.stopPropagation();showShieldEditor()};
+$("#chooseAttackArea").onclick=e=>{e.preventDefault();e.stopPropagation();showAttackAreaEditor(true)};
+
+$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();openExistingSlot(1)};
+$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();openExistingSlot(2)};
+
 function renderSharedSpells(){
  const box=$("#sharedSpells");if(!box)return;box.innerHTML="";
  for(const s of spellData.values()){
-  if(!s.visible)continue;
-  const tk=tokenData.get(s.tokenId),ch=chars.get(s.tokenId);
-  if(!tk||!ch)continue;
-  const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
-  el.className="sharedSpell";el.dataset.spellId=s.id;el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
-  el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png")}"><span>➤</span></div>`;
-  box.appendChild(el);
+   if(!s.visible)continue;
+   const tk=tokenData.get(s.tokenId),ch=chars.get(s.tokenId);
+   if(!tk||!ch)continue;
+   const type=spellType(s);
+   if(type==="directed"){
+     const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
+     el.className="sharedSpell";el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
+     el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png")}"><span>➤</span></div>`;
+     el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="directed";loadAimForSlot();showDirectedEditor(false)};
+     box.appendChild(el);
+   }else{
+     const radius=(Number(s.area)||0)*settings.cellSize;
+     let p={x:tk.x??0,y:tk.y??0};
+     if(s.kind==="attack"){const q=attackPoint(s.tokenId,Number(s.slot)||1,s);if(!q)continue;p=q}
+     // Attack area shows the targeting beam too, but it is still ONE spell slot/document.
+     if(s.kind==="attack"){
+       const len=(Number(s.range)||0)*settings.cellSize,beam=document.createElement("div");
+       beam.className="sharedSpell";beam.style.left=(tk.x??0)+"px";beam.style.top=(tk.y??0)+"px";
+       beam.innerHTML=`<div class="sharedSpellLine" style="width:${len}px;--beam-length:${len}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"><span>➤</span></div>`;
+       beam.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind="attack";loadAimForSlot();showAttackAreaEditor(false)};
+       box.appendChild(beam);
+     }
+     const el=document.createElement("div");
+     el.className="sharedArea";el.style.left=p.x+"px";el.style.top=p.y+"px";
+     el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
+     el.innerHTML=`<img src="${esc(s.areaImageUrl||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png")}">`;
+     el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind=s.kind||"shield";if(areaKind==="attack")loadAimForSlot();areaKind==="attack"?showAttackAreaEditor(false):showShieldEditor()};
+     box.appendChild(el);
+   }
  }
 }
-$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=1;
- const a=areaData.get(areaDocId());activeSpellMode=a?.visible?"area":"directed";if(a?.kind)areaKind=a.kind;
- if(activeSpellMode==="area"){ $("#spellAim").style.display="none";syncAreaAim()}else{$("#areaAim").style.display="none";syncAimFromSpell()} openSpellMenu()};
-$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=2;
- const a=areaData.get(areaDocId());activeSpellMode=a?.visible?"area":"directed";if(a?.kind)areaKind=a.kind;
- if(activeSpellMode==="area"){ $("#spellAim").style.display="none";syncAreaAim()}else{$("#areaAim").style.display="none";syncAimFromSpell()} openSpellMenu()};
 
 $("#aimHandle").addEventListener("pointerdown",e=>{
  e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
  const h=e.currentTarget;h.setPointerCapture(e.pointerId);
  let lastWrite=0;
- const move=async ev=>{
-  const tk=tokenData.get(selected),r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;if(!tk)return;
-  const dx=ev.clientX-(r.left+tk.x*z),dy=ev.clientY-(r.top+tk.y*z);
-  const s=currentAim(),max=spellRangeCells();
-  s.angle=Math.atan2(dy,dx)*180/Math.PI;
-  // pointer distance -> map pixels -> cells; may shrink freely but never exceed card range
-  s.range=Math.max(.25,Math.min(max,Math.hypot(dx,dy)/z/settings.cellSize));
-  updateAim();
-  if(activeSpellMode==="area"&&areaKind==="attack")syncAreaAim();
-  // If this spell is already published, edit it live for everybody.
-  const existing=spellData.get(spellDocId());
-  const now=Date.now();
-  if(existing?.visible && now-lastWrite>90){
-   lastWrite=now;
-   setDoc(doc(db,"spells",spellDocId()),{
-    tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
-    ownerUid:auth.currentUser?.uid||"",
-    imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"
-   },{merge:true});
-  }
+ const move=ev=>{
+   const tk=tokenData.get(selected),r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;if(!tk)return;
+   const dx=ev.clientX-(r.left+tk.x*z),dy=ev.clientY-(r.top+tk.y*z);
+   const s=currentAim(),max=spellRangeCells();
+   s.angle=Math.atan2(dy,dx)*180/Math.PI;
+   s.range=Math.max(.25,Math.min(max,Math.hypot(dx,dy)/z/settings.cellSize));
+   updateAim();
+   if(activeSpellMode==="area"&&areaKind==="attack")syncAreaAim();
+   const d=slotDoc(),now=Date.now();
+   const samePublished = d?.visible && ((activeSpellMode==="directed"&&spellType(d)==="directed") || (activeSpellMode==="area"&&spellType(d)==="area"&&d.kind==="attack"));
+   if(samePublished&&now-lastWrite>100){
+     lastWrite=now;
+     setDoc(doc(db,"spells",spellDocId()),{angle:s.angle,range:s.range},{merge:true});
+   }
  };
  const up=async()=>{
-  h.removeEventListener("pointermove",move);h.removeEventListener("pointerup",up);
-  const existing=spellData.get(spellDocId()),s=currentAim();
-  if(existing?.visible)await setDoc(doc(db,"spells",spellDocId()),{angle:s.angle,range:s.range},{merge:true});
+   h.removeEventListener("pointermove",move);h.removeEventListener("pointerup",up);
+   const d=slotDoc(),s=currentAim();
+   const samePublished=d?.visible&&((activeSpellMode==="directed"&&spellType(d)==="directed")||(activeSpellMode==="area"&&spellType(d)==="area"&&d.kind==="attack"));
+   if(samePublished)await setDoc(doc(db,"spells",spellDocId()),{angle:s.angle,range:s.range},{merge:true});
  };
  h.addEventListener("pointermove",move);h.addEventListener("pointerup",up);
 });
 
 $("#publishSpell").onclick=async e=>{
- e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
- if(areaData.has(areaDocId()))await deleteDoc(doc(db,"areas",areaDocId()));
+ e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;
  const s=currentAim();
  await setDoc(doc(db,"spells",spellDocId()),{
-  tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
-  ownerUid:auth.currentUser?.uid||"",
-  imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"
- },{merge:true});
+   type:"directed",tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
+   ownerUid:auth.currentUser?.uid||"",imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"
+ });
 };
-$("#deleteSpell").onclick=async e=>{
- e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
- const id=spellDocId();
- if(spellData.has(id))await deleteDoc(doc(db,"spells",id));
+$("#publishArea").onclick=async e=>{
+ e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;
+ const area=areaCells();if(!area)return alert("У персонажа не указана площадь.");
+ const data={type:"area",kind:areaKind,tokenId:selected,slot:activeSpellSlot,area,visible:true,ownerUid:auth.currentUser?.uid||"",areaImageUrl:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png"};
+ if(areaKind==="attack"){const s=currentAim();data.angle=s.angle;data.range=s.range;}
+ await setDoc(doc(db,"spells",spellDocId()),data);
+};
+async function deleteCurrentSpell(){
+ if(!canEditSelectedSpell())return;
+ await deleteDoc(doc(db,"spells",spellDocId())).catch(()=>null);
  aimState[activeSpellSlot]={angle:0,range:null};
- syncAimFromSpell();
-};
-$("#deleteAllSpells").onclick=async e=>{
- e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
- const ids=[];
- for(const s of spellData.values())if(s.tokenId===selected)ids.push(s.id);
- // Also target both current-format IDs even if local listener is momentarily stale.
- for(const id of [`${selected}_1`,`${selected}_2`])if(!ids.includes(id))ids.push(id);
- await Promise.all(ids.map(id=>deleteDoc(doc(db,"spells",id)).catch(()=>null)));
- await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"areas",`${selected}_${slot}`)).catch(()=>null)));
- aimState={1:{angle:0,range:null},2:{angle:0,range:null}};
- $("#spellAim").style.display="none";
- $("#castRange").style.display="none";$("#castBtn").classList.remove("active");
- renderSharedSpells();
-};
-async function deleteAreaForToken(tokenId){
- await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"areas",`${tokenId}_${slot}`)).catch(()=>null)));
+ $("#areaAim").style.display="none";
+ if(activeSpellMode==="directed")showDirectedEditor(false);
+ else hideSpellEditors();
 }
+$("#deleteSpell").onclick=async e=>{e.preventDefault();e.stopPropagation();await deleteCurrentSpell()};
+$("#deleteArea").onclick=async e=>{e.preventDefault();e.stopPropagation();await deleteCurrentSpell()};
+$("#deleteAllSpells").onclick=async e=>{
+ e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;
+ await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"spells",spellDocId(slot))).catch(()=>null)));
+ aimState={1:{angle:0,range:null},2:{angle:0,range:null}};
+ hideSpellEditors();renderSharedSpells();
+};
 async function deleteSpellsForToken(tokenId){
- const jobs=[];
- for(const s of spellData.values()){
-  if(s.tokenId===tokenId)jobs.push(deleteDoc(doc(db,"spells",s.id)));
- }
- if(jobs.length)await Promise.all(jobs);
+ await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"spells",`${tokenId}_${slot}`)).catch(()=>null)));
 }
 
 $("#zoom").oninput=e=>{const z=e.target.value/100;$("#stage").style.transform=`scale(${z})`;$("#stage").style.marginRight=(settings.mapWidth*(z-1))+"px";$("#stage").style.marginBottom=(settings.mapHeight*(z-1))+"px";$("#zoomVal").textContent=e.target.value+"%"};
@@ -692,7 +767,7 @@ $("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let i
  }
  $("#charDlg").close()
 };
-$("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("Удалить персонажа и его фишку?")){await deleteDoc(doc(db,"tokens",id));await deleteDoc(doc(db,"characters",id));$("#charDlg").close()}};
+$("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("Удалить персонажа и его фишку?")){await deleteSpellsForToken(id);await deleteDoc(doc(db,"tokens",id));await deleteDoc(doc(db,"characters",id));$("#charDlg").close()}};
 
 $("#addOverlay").onclick=()=>openOverlay();
 function openOverlay(id=""){
