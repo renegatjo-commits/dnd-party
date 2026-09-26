@@ -38,13 +38,16 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 
 .token.npcArt{width:auto;height:auto;min-width:52px;min-height:52px;border:0;border-radius:0;background:transparent!important;box-shadow:none}
 .token.npcArt img{display:block;max-width:110px;max-height:110px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 4px 5px #0009)}
-.spellAim{position:absolute;display:none;z-index:8;pointer-events:none}.aimRotator{position:absolute;left:0;top:0;height:26px;transform-origin:0 50%;pointer-events:none}
-.spellBeam{position:absolute;left:0;top:50%;width:100%;height:22px;transform:translateY(-50%) rotate(90deg);object-fit:fill;opacity:.95;filter:drop-shadow(0 0 5px #8e55ff)}
+.spellAim{position:absolute;display:none;z-index:8;pointer-events:none}.aimRotator{position:absolute;left:0;top:0;height:34px;transform-origin:0 50%;pointer-events:none}
+.spellBeam{position:absolute;width:34px;height:var(--beam-length);left:calc(var(--beam-length)/2 - 17px);top:calc(17px - var(--beam-length)/2);transform:rotate(90deg);transform-origin:center center;object-fit:fill;opacity:.95;filter:drop-shadow(0 0 5px #8e55ff);pointer-events:none}
 .aimArrow{position:absolute;right:-9px;top:50%;transform:translateY(-50%);font:25px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
 .aimHandle{position:absolute;right:-24px;top:50%;transform:translateY(-50%);width:30px;height:30px;padding:0;border-radius:50%;background:#2d203b;border:1px solid #c49cff;color:#fff;pointer-events:auto;touch-action:none;cursor:grab}
-.publishSpell{position:absolute;left:10px;top:18px;white-space:nowrap;padding:6px 9px;background:#26331f;border-color:#79975e;pointer-events:auto}
-.sharedSpell{position:absolute;z-index:7;pointer-events:none}.sharedSpellLine{position:absolute;left:0;top:0;height:24px;transform-origin:0 50%}
-.sharedSpellLine img{position:absolute;left:0;top:50%;width:100%;height:20px;transform:translateY(-50%) rotate(90deg);object-fit:fill;filter:drop-shadow(0 0 5px #8e55ff)}
+.spellControls{position:absolute;left:12px;top:22px;display:flex;align-items:center;gap:5px;white-space:nowrap;pointer-events:auto}
+.spellSlot{min-width:28px;padding:5px 7px}.spellSlot.active{border-color:#c49cff;box-shadow:0 0 0 1px #c49cff inset;background:#30213e}
+#aimDistance{font:11px Arial;color:#c8c0b5;background:#15130f;border:1px solid #443d31;border-radius:12px;padding:5px 7px}
+.publishSpell{position:static;white-space:nowrap;padding:6px 9px;background:#26331f;border-color:#79975e;pointer-events:auto}.deleteSpell{white-space:nowrap;padding:6px 9px;background:#3a2020;border-color:#8d5555;color:#f0c7c7;pointer-events:auto}
+.sharedSpell{position:absolute;z-index:7;pointer-events:none}.sharedSpellLine{position:absolute;left:0;top:0;height:34px;transform-origin:0 50%}
+.sharedSpellLine img{position:absolute;width:34px;height:var(--beam-length);left:calc(var(--beam-length)/2 - 17px);top:calc(17px - var(--beam-length)/2);transform:rotate(90deg);transform-origin:center center;object-fit:fill;filter:drop-shadow(0 0 5px #8e55ff);pointer-events:none}
 .sharedSpellLine span{position:absolute;right:-8px;top:50%;transform:translateY(-50%);font:23px Arial;color:#cda9ff;text-shadow:0 0 7px #6e32d9}
 </style>
 </head>
@@ -80,9 +83,14 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
     <div class="spellAim" id="spellAim">
       <div class="aimRotator" id="aimRotator">
         <img class="spellBeam" src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png" alt="">
-        <span class="aimArrow">➤</span><button class="aimHandle" id="aimHandle">●</button>
+        <span class="aimArrow">➤</span><button class="aimHandle" id="aimHandle" title="Тянуть: направление и дальность">●</button>
       </div>
-      <button class="publishSpell" id="publishSpell">✓ Показать</button>
+      <div class="spellControls">
+        <button class="spellSlot active" id="spellSlot1">I</button>
+        <button class="spellSlot" id="spellSlot2">II</button>
+        <span id="aimDistance">0 кл.</span>
+        <button class="publishSpell" id="publishSpell">✓ Показать</button><button class="deleteSpell" id="deleteSpell" title="Удалить выбранное заклинание">✕ Удалить</button>
+      </div>
     </div>
     <div id="overlays"></div>
     <div id="tokens"></div>
@@ -148,7 +156,7 @@ const firebaseConfig = {
 const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
-let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, aimAngle=0, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
+let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, activeSpellSlot=1, aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
 let liveUnsubs=[];
 
 function isMaster(){return auth.currentUser?.uid===MASTER_UID}
@@ -196,7 +204,7 @@ function startListeners(){
  },listenError));
  liveUnsubs.push(onSnapshot(collection(db,"tokens"),snap=>{
    tokenData.clear(); snap.forEach(d=>tokenData.set(d.id,{id:d.id,...d.data()}));
-   renderTokens();
+   renderTokens();renderSharedSpells();
  },listenError));
  liveUnsubs.push(onSnapshot(doc(db,"game","main"),d=>{
    if(d.exists())settings={...settings,...d.data()};
@@ -209,7 +217,7 @@ function startListeners(){
  liveUnsubs.push(onSnapshot(collection(db,"spells"),snap=>{
    spellData.clear(); snap.forEach(d=>spellData.set(d.id,{id:d.id,...d.data()}));
    renderSharedSpells();
-   if(selected)$("#publishSpell").textContent=spellData.get(selected)?.visible?"✕ Скрыть":"✓ Показать";
+   if(selected)syncAimFromSpell();
  },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
@@ -253,7 +261,7 @@ function renderTokens(){
   const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;if(t.npc&&!isMaster())el.style.cursor="not-allowed";
   el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px";
   if(c.isNpc&&c.npcPng){el.classList.add("npcArt");el.innerHTML=`<img src="${esc(c.npcPng)}" alt=""><span>${esc(c.name)}</span>`}
-  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";for(const id of ["speedBtn","castBtn","aoeBtn"])$("#"+id).classList.remove("active")}selected=c.id;renderTokens();positionRanges()};box.appendChild(el);
+  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";for(const id of ["speedBtn","castBtn","aoeBtn"])$("#"+id).classList.remove("active")}selected=c.id;aimState={1:{angle:0,range:null},2:{angle:0,range:null}};activeSpellSlot=1;renderTokens();positionRanges()};box.appendChild(el);
  } positionRanges();
 }
 function renderOverlays(){
@@ -328,10 +336,29 @@ function speedCells(){
  return Math.max(0,Number(c.speed)||0);
 }
 function spellRangeCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.spellRange)||0):0}
+function spellDocId(slot=activeSpellSlot){return selected?`${selected}_${slot}`:""}
+function currentAim(){
+ const max=spellRangeCells(),s=aimState[activeSpellSlot];
+ if(s.range==null||s.range>max)s.range=max;
+ return s;
+}
 function updateAim(){
- const radius=spellRangeCells()*settings.cellSize,rot=$("#aimRotator");
- rot.style.width=radius+"px";rot.style.transform=`translateY(-50%) rotate(${aimAngle}deg)`;
- $("#publishSpell").style.left=Math.max(12,radius*.28)+"px";
+ if(!selected)return;
+ const s=currentAim(),radius=s.range*settings.cellSize,rot=$("#aimRotator");
+ rot.style.width=radius+"px";rot.style.setProperty("--beam-length",radius+"px");
+ rot.style.transform=`translateY(-50%) rotate(${s.angle}deg)`;
+ $("#aimDistance").textContent=`${Math.round(s.range*10)/10} кл.`;
+ $("#spellSlot1").classList.toggle("active",activeSpellSlot===1);
+ $("#spellSlot2").classList.toggle("active",activeSpellSlot===2);
+ const published=spellData.get(spellDocId());
+ $("#publishSpell").textContent=published?.visible?"✓ Обновить":"✓ Показать";
+}
+function syncAimFromSpell(){
+ if(!selected)return;
+ const s=spellData.get(spellDocId()),max=spellRangeCells();
+ if(s?.visible)aimState[activeSpellSlot]={angle:Number(s.angle)||0,range:Math.min(max,Number(s.range)||max)};
+ else if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)aimState[activeSpellSlot].range=max;
+ updateAim();
 }
 function toggleRange(which){
  if(!selected){alert("Сначала выберите фишку персонажа.");return}
@@ -347,7 +374,7 @@ function toggleRange(which){
  if(turningOn){
    const diameter=r.cells*2*settings.cellSize;
    el.style.width=diameter+"px";el.style.height=diameter+"px";el.style.display="block";
-   btn.classList.add("active");if(which==="cast"){$("#spellAim").style.display="block";updateAim()}
+   btn.classList.add("active");if(which==="cast"){$("#spellAim").style.display="block";syncAimFromSpell()}
  }else{
    el.style.display="none";btn.classList.remove("active");if(which==="cast")$("#spellAim").style.display="none";
  }
@@ -360,26 +387,73 @@ $("#aoeBtn").onclick=()=>toggleRange("aoe");
 function renderSharedSpells(){
  const box=$("#sharedSpells");if(!box)return;box.innerHTML="";
  for(const s of spellData.values()){
-  if(!s.visible)continue;const tk=tokenData.get(s.tokenId);if(!tk)continue;
+  if(!s.visible)continue;
+  const tk=tokenData.get(s.tokenId),ch=chars.get(s.tokenId);
+  if(!tk||!ch)continue;
   const radius=(Number(s.range)||0)*settings.cellSize,el=document.createElement("div");
   el.className="sharedSpell";el.style.left=(tk.x??0)+"px";el.style.top=(tk.y??0)+"px";
-  el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl)}"><span>➤</span></div>`;
+  el.innerHTML=`<div class="sharedSpellLine" style="width:${radius}px;--beam-length:${radius}px;transform:translateY(-50%) rotate(${Number(s.angle)||0}deg)"><img src="${esc(s.imageUrl||"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png")}"><span>➤</span></div>`;
   box.appendChild(el);
  }
 }
+$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();activeSpellSlot=1;syncAimFromSpell()};
+$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();activeSpellSlot=2;syncAimFromSpell()};
+
 $("#aimHandle").addEventListener("pointerdown",e=>{
  e.preventDefault();e.stopPropagation();if(!selected)return;
  const h=e.currentTarget;h.setPointerCapture(e.pointerId);
- const move=ev=>{const tk=tokenData.get(selected),r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;if(!tk)return;
-  aimAngle=Math.atan2(ev.clientY-(r.top+tk.y*z),ev.clientX-(r.left+tk.x*z))*180/Math.PI;updateAim()};
- const up=()=>{h.removeEventListener("pointermove",move);h.removeEventListener("pointerup",up)};
+ let lastWrite=0;
+ const move=async ev=>{
+  const tk=tokenData.get(selected),r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;if(!tk)return;
+  const dx=ev.clientX-(r.left+tk.x*z),dy=ev.clientY-(r.top+tk.y*z);
+  const s=currentAim(),max=spellRangeCells();
+  s.angle=Math.atan2(dy,dx)*180/Math.PI;
+  // pointer distance -> map pixels -> cells; may shrink freely but never exceed card range
+  s.range=Math.max(.25,Math.min(max,Math.hypot(dx,dy)/z/settings.cellSize));
+  updateAim();
+  // If this spell is already published, edit it live for everybody.
+  const existing=spellData.get(spellDocId());
+  const now=Date.now();
+  if(existing?.visible && now-lastWrite>90){
+   lastWrite=now;
+   setDoc(doc(db,"spells",spellDocId()),{
+    tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
+    ownerUid:auth.currentUser?.uid||"",
+    imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"
+   },{merge:true});
+  }
+ };
+ const up=async()=>{
+  h.removeEventListener("pointermove",move);h.removeEventListener("pointerup",up);
+  const existing=spellData.get(spellDocId()),s=currentAim();
+  if(existing?.visible)await setDoc(doc(db,"spells",spellDocId()),{angle:s.angle,range:s.range},{merge:true});
+ };
  h.addEventListener("pointermove",move);h.addEventListener("pointerup",up);
 });
+
 $("#publishSpell").onclick=async e=>{
  e.preventDefault();e.stopPropagation();if(!selected)return;
- if(spellData.get(selected)?.visible){await deleteDoc(doc(db,"spells",selected));}
- else await setDoc(doc(db,"spells",selected),{tokenId:selected,angle:aimAngle,range:spellRangeCells(),visible:true,imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"});
+ const s=currentAim();
+ await setDoc(doc(db,"spells",spellDocId()),{
+  tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
+  ownerUid:auth.currentUser?.uid||"",
+  imageUrl:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png"
+ },{merge:true});
 };
+$("#deleteSpell").onclick=async e=>{
+ e.preventDefault();e.stopPropagation();if(!selected)return;
+ const id=spellDocId();
+ if(spellData.has(id))await deleteDoc(doc(db,"spells",id));
+ aimState[activeSpellSlot]={angle:0,range:null};
+ syncAimFromSpell();
+};
+async function deleteSpellsForToken(tokenId){
+ const jobs=[];
+ for(const s of spellData.values()){
+  if(s.tokenId===tokenId)jobs.push(deleteDoc(doc(db,"spells",s.id)));
+ }
+ if(jobs.length)await Promise.all(jobs);
+}
 
 $("#zoom").oninput=e=>{const z=e.target.value/100;$("#stage").style.transform=`scale(${z})`;$("#stage").style.marginRight=(settings.mapWidth*(z-1))+"px";$("#stage").style.marginBottom=(settings.mapHeight*(z-1))+"px";$("#zoomVal").textContent=e.target.value+"%"};
 
