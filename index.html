@@ -56,6 +56,10 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 .areaControls select,.areaControls button{font-size:11px;padding:5px 7px}
 #deleteArea{background:#3a2020;border-color:#8d5555;color:#f0c7c7}
 .sharedArea{position:absolute;z-index:5;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer}
+
+.spellMenu{position:absolute;display:none;z-index:20;background:#1c1914;border:1px solid #62563f;border-radius:10px;padding:8px;box-shadow:0 8px 22px #0009}
+.spellMenuTitle{font:11px Arial;color:#a99f8e;margin:0 0 6px}.spellMenuRow,.areaKinds{display:flex;gap:5px}.areaKinds{display:none;margin-top:6px}
+.spellMenu button{font-size:12px;padding:6px 9px}.spellMenu button.active{border-color:#c49cff;background:#30213e}
 </style>
 </head>
 <body>
@@ -74,8 +78,8 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <section class="boardPanel">
   <div class="toolbar">
    <button id="speedBtn">Скорость</button>
-   <button id="castBtn">Дальность</button>
-   <button id="aoeBtn">Площадь</button>
+   <button id="castBtn">Заклинания</button>
+   
    <span class="sep"></span>
    <label>Масштаб <input id="zoom" type="range" min="50" max="180" value="100"> <span id="zoomVal">100%</span></label>
   </div>
@@ -88,24 +92,16 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
     <div class="range aoe" id="aoeRange"></div>
     <div id="sharedAreas"></div>
     <div id="sharedSpells"></div>
+    <div class="spellMenu" id="spellMenu">
+      <div class="spellMenuTitle">Тип заклинания</div>
+      <div class="spellMenuRow"><button id="chooseDirected">Направленное</button><button id="chooseArea">Площадное</button></div>
+      <div class="areaKinds" id="areaKinds"><button id="chooseShield">Щит</button><button id="chooseAttackArea">Атакующее</button></div>
+    </div>
     <div class="areaAim" id="areaAim">
       <img id="areaAimImg" alt="">
       <div class="areaControls">
-        <select id="areaAnchor"><option value="token">Центр: фишка</option><option value="spell1">Конец: заклинание I</option><option value="spell2">Конец: заклинание II</option></select>
-        <button id="publishArea">✓ Показать площадь</button>
-        <button id="deleteArea">✕ Удалить площадь</button>
-      </div>
-    </div>
-    <div class="spellAim" id="spellAim">
-      <div class="aimRotator" id="aimRotator">
-        <img class="spellBeam" src="https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png" alt="">
-        <span class="aimArrow">➤</span><button class="aimHandle" id="aimHandle" title="Тянуть: направление и дальность">●</button>
-      </div>
-      <div class="spellControls">
-        <button class="spellSlot active" id="spellSlot1">I</button>
-        <button class="spellSlot" id="spellSlot2">II</button>
-        <span id="aimDistance">0 кл.</span>
-        <button class="publishSpell" id="publishSpell">✓ Показать</button><button class="deleteSpell" id="deleteSpell" title="Удалить выбранное заклинание">✕ Удалить</button><button class="deleteSpell" id="deleteAllSpells" title="Удалить оба заклинания этой фишки">✕ Все</button>
+        <button id="publishArea">✓ Опубликовать</button>
+        <button id="deleteArea">✕ Удалить</button>
       </div>
     </div>
     <div id="overlays"></div>
@@ -172,7 +168,7 @@ const firebaseConfig = {
 const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
-let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), areaData=new Map(), selected=null, activeSpellSlot=1, aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
+let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), areaData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64};
 let liveUnsubs=[];
 
 function isMaster(){return auth.currentUser?.uid===MASTER_UID}
@@ -237,7 +233,7 @@ function startListeners(){
  },listenError));
  liveUnsubs.push(onSnapshot(collection(db,"areas"),snap=>{
    areaData.clear(); snap.forEach(d=>areaData.set(d.id,{id:d.id,...d.data()}));
-   renderSharedAreas();if(selected)syncAreaAim();
+   renderSharedAreas();
  },listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
@@ -282,7 +278,7 @@ function renderTokens(){
   const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;if(t.npc&&!isMaster())el.style.cursor="not-allowed";
   el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px";
   if(c.isNpc&&c.npcPng){el.classList.add("npcArt");el.innerHTML=`<img src="${esc(c.npcPng)}" alt=""><span>${esc(c.name)}</span>`}
-  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";for(const id of ["speedBtn","castBtn","aoeBtn"])$("#"+id).classList.remove("active")}selected=c.id;aimState={1:{angle:0,range:null},2:{angle:0,range:null}};activeSpellSlot=1;renderTokens();positionRanges()};box.appendChild(el);
+  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";$("#areaAim").style.display="none";$("#spellMenu").style.display="none";for(const id of ["speedBtn","castBtn"])$("#"+id).classList.remove("active")}selected=c.id;aimState={1:{angle:0,range:null},2:{angle:0,range:null}};activeSpellSlot=1;renderTokens();positionRanges()};box.appendChild(el);
  } positionRanges();
 }
 function renderOverlays(){
@@ -409,14 +405,7 @@ function syncAimFromSpell(){
 }
 function toggleRange(which){
  if(!selected){alert("Сначала выберите фишку персонажа.");return}
- if((which==="cast"||which==="aoe")&&chars.get(selected)?.isNpc&&!isMaster()){alert("Заклинания NPC может редактировать только мастер.");return}
- if(which==="aoe"){
-   if(!areaCells()){alert("У выбранного персонажа не указана площадь.");return}
-   const showing=$("#areaAim").style.display==="block";
-   $("#areaAim").style.display=showing?"none":"block";$("#aoeBtn").classList.toggle("active",!showing);
-   if(!showing)syncAreaAim();
-   return;
- }
+ if(which==="cast"&&chars.get(selected)?.isNpc&&!isMaster()){alert("Заклинания NPC может редактировать только мастер.");return}
  const map={
    speed:{el:"#speedRange",btn:"#speedBtn",cells:speedCells()},
    cast:{el:"#castRange",btn:"#castBtn",cells:spellRangeCells()},
@@ -436,18 +425,28 @@ function toggleRange(which){
  positionRanges();
 }
 $("#speedBtn").onclick=()=>toggleRange("speed");
-$("#castBtn").onclick=()=>toggleRange("cast");
-$("#aoeBtn").onclick=()=>toggleRange("aoe");
+$("#castBtn").onclick=()=>{
+ if(!selected)return alert("Сначала выберите фишку персонажа.");
+ if(chars.get(selected)?.isNpc&&!isMaster())return alert("Заклинания NPC может менять только мастер.");
+ const a=areaData.get(areaDocId()),s=spellData.get(spellDocId());
+ activeSpellMode=a?.visible&&!s?.visible?"area":"directed";if(a?.kind)areaKind=a.kind;
+ openSpellMenu();
+};
 
 
+
+function areaDocId(slot=activeSpellSlot){return selected?`${selected}_${slot}`:""}
+function slotHasArea(slot=activeSpellSlot){return areaData.get(selected?`${selected}_${slot}`:"")}
 function areaCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.area)||0):0}
 function canEditArea(){const c=chars.get(selected);return !!selected&&(!c?.isNpc||isMaster())}
 function areaAnchorPoint(tokenId,anchor){
  const tk=tokenData.get(tokenId);if(!tk)return null;
  if(anchor==="token")return {x:tk.x??0,y:tk.y??0};
  const slot=anchor==="spell2"?2:1,s=spellData.get(`${tokenId}_${slot}`);
- if(!s?.visible)return null;
- const len=(Number(s.range)||0)*settings.cellSize,a=(Number(s.angle)||0)*Math.PI/180;
+ const draft=(tokenId===selected)?aimState[slot]:null;
+ const range=s?.visible?Number(s.range):(draft?.range??null), angle=s?.visible?Number(s.angle):(draft?.angle??null);
+ if(range==null||angle==null)return null;
+ const len=range*settings.cellSize,a=angle*Math.PI/180;
  return {x:(tk.x??0)+Math.cos(a)*len,y:(tk.y??0)+Math.sin(a)*len};
 }
 function renderSharedAreas(){
@@ -458,24 +457,52 @@ function renderSharedAreas(){
   const radius=(Number(a.area)||0)*settings.cellSize,el=document.createElement("div");
   el.className="sharedArea";el.style.left=p.x+"px";el.style.top=p.y+"px";el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
   el.innerHTML=`<img src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png">`;
-  el.onclick=e=>{e.preventDefault();e.stopPropagation();const c=chars.get(a.tokenId);if(!c)return;selected=a.tokenId;renderTokens();positionRanges();if(c.isNpc&&!isMaster())return;$("#areaAnchor").value=a.anchor||"token";$("#areaAim").style.display="block";syncAreaAim()};
+  el.onclick=e=>{e.preventDefault();e.stopPropagation();const c=chars.get(a.tokenId);if(!c)return;
+    selected=a.tokenId;activeSpellSlot=Number(a.slot)||1;activeSpellMode="area";areaKind=a.kind||"shield";
+    renderTokens();positionRanges();if(c.isNpc&&!isMaster())return;openSpellMenu();syncAreaAim();
+  };
   box.appendChild(el);
  }
 }
 function syncAreaAim(){
  if(!selected)return;
- const c=chars.get(selected),a=areaData.get(selected),anchor=a?.anchor||$("#areaAnchor").value||"token";
- $("#areaAnchor").value=anchor;
+ const a=areaData.get(areaDocId()),kind=a?.kind||areaKind;
+ areaKind=kind;
+ const anchor=kind==="shield"?"token":`spell${activeSpellSlot}`;
  const p=areaAnchorPoint(selected,anchor),radius=areaCells()*settings.cellSize;
  if(!p||!radius){$("#areaAim").style.display="none";return}
  const el=$("#areaAim");el.style.left=p.x+"px";el.style.top=p.y+"px";el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
- $("#areaAimImg").src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png";
- $("#publishArea").style.display=canEditArea()?"inline-block":"none";$("#deleteArea").style.display=canEditArea()?"inline-block":"none";$("#areaAnchor").disabled=!canEditArea();
+ $("#areaAimImg").src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png";el.style.display="block";
+ const ok=canEditArea();$("#publishArea").style.display=ok?"inline-block":"none";$("#deleteArea").style.display=ok?"inline-block":"none";
 }
-$("#areaAnchor").onchange=()=>{if(!canEditArea())return;syncAreaAim();const a=areaData.get(selected);if(a?.visible)setDoc(doc(db,"areas",selected),{anchor:$("#areaAnchor").value},{merge:true})};
-$("#publishArea").onclick=async e=>{e.preventDefault();e.stopPropagation();if(!canEditArea())return;const area=areaCells();if(!area)return alert("У персонажа не указана площадь.");const anchor=$("#areaAnchor").value;if(!areaAnchorPoint(selected,anchor))return alert("Сначала выпустите выбранное заклинание I или II.");await setDoc(doc(db,"areas",selected),{tokenId:selected,anchor,area,visible:true,imageUrl:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png"},{merge:true})};
-$("#deleteArea").onclick=async e=>{e.preventDefault();e.stopPropagation();if(!canEditArea())return;await deleteDoc(doc(db,"areas",selected));$("#areaAim").style.display="none"};
+async function publishCurrentArea(){
+ if(!canEditArea())return;const area=areaCells();if(!area)return alert("У персонажа не указана площадь.");
+ const anchor=areaKind==="shield"?"token":`spell${activeSpellSlot}`;
+ if(areaKind==="attack"&&!areaAnchorPoint(selected,anchor))return alert("Для атакующего площадного заклинания сначала задайте направление стрелки этого слота.");
+ // A slot can contain only one spell type: remove its published directed spell.
+ if(spellData.has(spellDocId()))await deleteDoc(doc(db,"spells",spellDocId()));
+ await setDoc(doc(db,"areas",areaDocId()),{tokenId:selected,slot:activeSpellSlot,kind:areaKind,anchor,area,visible:true,imageUrl:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143918-0f62bc7b.png"},{merge:true});
+}
+$("#publishArea").onclick=async e=>{e.preventDefault();e.stopPropagation();await publishCurrentArea()};
+$("#deleteArea").onclick=async e=>{e.preventDefault();e.stopPropagation();if(!canEditArea())return;await deleteDoc(doc(db,"areas",areaDocId()));$("#areaAim").style.display="none"};
 
+function openSpellMenu(){
+ if(!selected)return;
+ if(chars.get(selected)?.isNpc&&!isMaster()){alert("Заклинания NPC может менять только мастер.");return}
+ const tk=tokenData.get(selected);if(!tk)return;
+ const m=$("#spellMenu");m.style.left=(tk.x+35)+"px";m.style.top=(tk.y-60)+"px";m.style.display="block";
+ $("#areaKinds").style.display=activeSpellMode==="area"?"flex":"none";
+ $("#chooseDirected").classList.toggle("active",activeSpellMode==="directed");
+ $("#chooseArea").classList.toggle("active",activeSpellMode==="area");
+ $("#chooseShield").classList.toggle("active",areaKind==="shield");
+ $("#chooseAttackArea").classList.toggle("active",areaKind==="attack");
+}
+$("#chooseDirected").onclick=e=>{e.stopPropagation();activeSpellMode="directed";$("#areaKinds").style.display="none";$("#areaAim").style.display="none";
+ // A slot can contain only one type. Draft the directed spell; published area remains until user publishes directed.
+ $("#spellAim").style.display="block";syncAimFromSpell();openSpellMenu()};
+$("#chooseArea").onclick=e=>{e.stopPropagation();activeSpellMode="area";$("#spellAim").style.display="none";$("#areaKinds").style.display="flex";openSpellMenu()};
+$("#chooseShield").onclick=e=>{e.stopPropagation();activeSpellMode="area";areaKind="shield";syncAreaAim();openSpellMenu()};
+$("#chooseAttackArea").onclick=e=>{e.stopPropagation();activeSpellMode="area";areaKind="attack";syncAreaAim();openSpellMenu()};
 function renderSharedSpells(){
  const box=$("#sharedSpells");if(!box)return;box.innerHTML="";
  for(const s of spellData.values()){
@@ -488,8 +515,12 @@ function renderSharedSpells(){
   box.appendChild(el);
  }
 }
-$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=1;syncAimFromSpell()};
-$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=2;syncAimFromSpell()};
+$("#spellSlot1").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=1;
+ const a=areaData.get(areaDocId());activeSpellMode=a?.visible?"area":"directed";if(a?.kind)areaKind=a.kind;
+ if(activeSpellMode==="area"){ $("#spellAim").style.display="none";syncAreaAim()}else{$("#areaAim").style.display="none";syncAimFromSpell()} openSpellMenu()};
+$("#spellSlot2").onclick=e=>{e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;activeSpellSlot=2;
+ const a=areaData.get(areaDocId());activeSpellMode=a?.visible?"area":"directed";if(a?.kind)areaKind=a.kind;
+ if(activeSpellMode==="area"){ $("#spellAim").style.display="none";syncAreaAim()}else{$("#areaAim").style.display="none";syncAimFromSpell()} openSpellMenu()};
 
 $("#aimHandle").addEventListener("pointerdown",e=>{
  e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
@@ -525,6 +556,7 @@ $("#aimHandle").addEventListener("pointerdown",e=>{
 
 $("#publishSpell").onclick=async e=>{
  e.preventDefault();e.stopPropagation();if(!selected||!canEditSelectedSpell())return;
+ if(areaData.has(areaDocId()))await deleteDoc(doc(db,"areas",areaDocId()));
  const s=currentAim();
  await setDoc(doc(db,"spells",spellDocId()),{
   tokenId:selected,slot:activeSpellSlot,angle:s.angle,range:s.range,visible:true,
@@ -546,12 +578,15 @@ $("#deleteAllSpells").onclick=async e=>{
  // Also target both current-format IDs even if local listener is momentarily stale.
  for(const id of [`${selected}_1`,`${selected}_2`])if(!ids.includes(id))ids.push(id);
  await Promise.all(ids.map(id=>deleteDoc(doc(db,"spells",id)).catch(()=>null)));
+ await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"areas",`${selected}_${slot}`)).catch(()=>null)));
  aimState={1:{angle:0,range:null},2:{angle:0,range:null}};
  $("#spellAim").style.display="none";
  $("#castRange").style.display="none";$("#castBtn").classList.remove("active");
  renderSharedSpells();
 };
-async function deleteAreaForToken(tokenId){try{await deleteDoc(doc(db,"areas",tokenId))}catch(e){}}
+async function deleteAreaForToken(tokenId){
+ await Promise.all([1,2].map(slot=>deleteDoc(doc(db,"areas",`${tokenId}_${slot}`)).catch(()=>null)));
+}catch(e){}}
 async function deleteSpellsForToken(tokenId){
  const jobs=[];
  for(const s of spellData.values()){
