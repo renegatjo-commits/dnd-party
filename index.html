@@ -497,12 +497,51 @@ function openSpellMenu(){
  $("#chooseShield").classList.toggle("active",areaKind==="shield");
  $("#chooseAttackArea").classList.toggle("active",areaKind==="attack");
 }
-$("#chooseDirected").onclick=e=>{e.stopPropagation();activeSpellMode="directed";$("#areaKinds").style.display="none";$("#areaAim").style.display="none";
- // A slot can contain only one type. Draft the directed spell; published area remains until user publishes directed.
- $("#spellAim").style.display="block";syncAimFromSpell();openSpellMenu()};
-$("#chooseArea").onclick=e=>{e.stopPropagation();activeSpellMode="area";$("#spellAim").style.display="none";$("#areaKinds").style.display="flex";openSpellMenu()};
-$("#chooseShield").onclick=e=>{e.stopPropagation();activeSpellMode="area";areaKind="shield";syncAreaAim();openSpellMenu()};
-$("#chooseAttackArea").onclick=e=>{e.stopPropagation();activeSpellMode="area";areaKind="attack";syncAreaAim();openSpellMenu()};
+$("#chooseDirected").onclick=e=>{
+ e.preventDefault();e.stopPropagation();
+ if(!canEditSelectedSpell())return;
+ activeSpellMode="directed";
+ const max=spellRangeCells();
+ if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)
+   aimState[activeSpellSlot].range=max;
+ $("#spellMenu").style.display="none";
+ $("#areaKinds").style.display="none";
+ $("#areaAim").style.display="none";
+ const diameter=max*2*settings.cellSize;
+ $("#castRange").style.width=diameter+"px";$("#castRange").style.height=diameter+"px";
+ $("#castRange").style.display="block";$("#castBtn").classList.add("active");
+ positionRanges();
+ $("#spellAim").style.display="block";
+ updateAim();positionRanges();
+};
+$("#chooseArea").onclick=e=>{
+ e.preventDefault();e.stopPropagation();
+ if(!canEditArea())return;
+ activeSpellMode="area";
+ $("#spellAim").style.display="none";$("#castRange").style.display="none";
+ $("#areaKinds").style.display="flex";
+ openSpellMenu();
+};
+$("#chooseShield").onclick=e=>{
+ e.preventDefault();e.stopPropagation();if(!canEditArea())return;
+ activeSpellMode="area";areaKind="shield";
+ $("#spellMenu").style.display="none";
+ syncAreaAim();
+};
+$("#chooseAttackArea").onclick=e=>{
+ e.preventDefault();e.stopPropagation();if(!canEditArea())return;
+ activeSpellMode="area";areaKind="attack";
+ const max=spellRangeCells();
+ if(aimState[activeSpellSlot].range==null||aimState[activeSpellSlot].range>max)
+   aimState[activeSpellSlot].range=max;
+ $("#spellMenu").style.display="none";
+ const diameter=max*2*settings.cellSize;
+ $("#castRange").style.width=diameter+"px";$("#castRange").style.height=diameter+"px";
+ $("#castRange").style.display="block";positionRanges();
+ // arrow is the editable targeting guide for attacking AoE
+ $("#spellAim").style.display="block";updateAim();positionRanges();
+ syncAreaAim();
+};
 function renderSharedSpells(){
  const box=$("#sharedSpells");if(!box)return;box.innerHTML="";
  for(const s of spellData.values()){
@@ -534,6 +573,7 @@ $("#aimHandle").addEventListener("pointerdown",e=>{
   // pointer distance -> map pixels -> cells; may shrink freely but never exceed card range
   s.range=Math.max(.25,Math.min(max,Math.hypot(dx,dy)/z/settings.cellSize));
   updateAim();
+  if(activeSpellMode==="area"&&areaKind==="attack")syncAreaAim();
   // If this spell is already published, edit it live for everybody.
   const existing=spellData.get(spellDocId());
   const now=Date.now();
