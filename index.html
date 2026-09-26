@@ -528,7 +528,7 @@ function syncAreaAim(){
  const el=$("#areaAim");
  el.style.left=(p.x-radius)+"px";el.style.top=(p.y-radius)+"px";
  el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
- $("#areaAimImg").src="https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png";
+ $("#areaAimImg").src=areaKind==="attack"?"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png":"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png";
  el.style.display="block";
  const ok=canEditSelectedSpell();
  $("#publishArea").style.display=ok?"inline-block":"none";
@@ -638,7 +638,7 @@ function renderSharedSpells(){
      const el=document.createElement("div");
      el.className="sharedArea";el.style.left=p.x+"px";el.style.top=p.y+"px";
      el.style.width=(radius*2)+"px";el.style.height=(radius*2)+"px";
-     el.innerHTML=`<img src="${esc(s.areaImageUrl||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png")}">`;
+     el.innerHTML=`<img src="${esc(s.areaImageUrl||(s.kind==="attack"?"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png":"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"))}">`;
      el.onclick=e=>{e.preventDefault();e.stopPropagation();selected=s.tokenId;activeSpellSlot=Number(s.slot)||1;renderTokens();positionRanges();if(ch.isNpc&&!isMaster())return;activeSpellMode="area";areaKind=s.kind||"shield";if(areaKind==="attack")loadAimForSlot();areaKind==="attack"?showAttackAreaEditor(false):showShieldEditor()};
      box.appendChild(el);
    }
@@ -688,7 +688,7 @@ $("#publishSpell").onclick=async e=>{
 $("#publishArea").onclick=async e=>{
  e.preventDefault();e.stopPropagation();if(!canEditSelectedSpell())return;
  const area=areaCells();if(!area)return alert("У персонажа не указана площадь.");
- const data={type:"area",kind:areaKind,tokenId:selected,slot:activeSpellSlot,area,visible:true,ownerUid:auth.currentUser?.uid||"",areaImageUrl:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"};
+ const data={type:"area",kind:areaKind,tokenId:selected,slot:activeSpellSlot,area,visible:true,ownerUid:auth.currentUser?.uid||"",areaImageUrl:areaKind==="attack"?"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png":"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png"};
  if(areaKind==="attack"){const s=currentAim();data.angle=s.angle;data.range=s.range;}
  await setDoc(doc(db,"spells",spellDocId()),data);
  spellData.set(spellDocId(),{id:spellDocId(),...data});
