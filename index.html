@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Окулус — квестовый стол | Safe Space</title>
+<title>Fight — квестовый стол | Safe Space</title>
 <style>
 :root{--bg:#15130f;--panel:#211e18;--panel2:#2b271f;--line:#554b39;--gold:#d7b56d;--text:#f4ead5;--muted:#aaa08e;--danger:#bd5d57;--cell:64px}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#30291d,#12110e 55%);color:var(--text);font:14px Georgia,serif;min-height:100vh}
@@ -82,7 +82,7 @@ dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:
 <body>
 <div class="app" id="app">
 <header class="quest-header">
-  <div><div class="eyebrow">Marauders · Safe Space</div><h1>Окулус</h1><p>Персонажи, тактика и история вашего квеста</p></div>
+  <div><div class="eyebrow">Marauders · Safe Space</div><h1>Fight</h1><p>Персонажи, тактика и история вашего квеста</p></div>
   <div class="header-right"><div class="status" id="status">Подключение…</div><div class="header-actions"><button id="masterLogin">Войти как мастер</button><button id="logout" style="display:none">Выйти</button></div></div>
  </header>
  <div class="summary-bar"><div class="summary-numbers"><div><strong id="currentTurn">—</strong><span>текущий ход</span></div><div><strong id="characterCount">0</strong><span>персонажей</span></div><div><strong id="npcCount">0</strong><span>НПС</span></div></div><div class="summary-note"><i class="npc-dot"></i> НПС выделены розовым</div></div>
@@ -165,7 +165,7 @@ dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:
   <div class="section-toolbar"><div class="section-title"><h2>История ходов</h2><p>Скриншоты карты и сохранённая расстановка участников</p></div><button class="master" id="addHistoryTurn">+ Добавить ход</button></div>
   <div class="history-tabs" id="historyTabs" role="tablist" aria-label="Ходы"></div><div class="history-heading"><h3 id="historyTitle">1 ход</h3><button class="master primary" id="uploadTurnBtn">Загрузить скриншот</button></div><div id="historyContent"></div>
  </section>
- <footer class="app-footer"><span>MARAUDERS: SAFE SPACE</span><span>Окулус · квестовый стол</span></footer>
+ <footer class="app-footer"><span>MARAUDERS: SAFE SPACE</span><span>Fight · квестовый стол</span></footer>
 </div>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 
@@ -1503,7 +1503,7 @@ const bonusCatalog=new Map(BONUSES.map(b=>[b.id,b]));
 const knownBonusIds=new Set(bonusCatalog.keys());
 const PHASES={before:'До игры',combat:'В бою / при проверке',quest:'По ходу квеста'};
 const TARGETS={self:'Только на себя',other:'Только на другого',both:'На себя или другого'};
-const DEFAULT_RULES=`КВЕСТ «ОКУЛУС»
+const DEFAULT_RULES=`КВЕСТ «Fight»
 
 Персонажи и подготовка
 Мастер задаёт здоровье, длину заклинания, радиус площадного заклинания и скорость в клетках. НПС отмечены отдельным цветом; их фишки и заклинания доступны для изменения только мастеру.
@@ -1750,4 +1750,5 @@ setupQuestUI();
 </script>
 </body>
 </html>
+
 
