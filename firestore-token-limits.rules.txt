@@ -1,3 +1,4 @@
+// Скорость считается по клеткам; диагональная клетка равна одной клетке скорости.
 // В действующих правилах Firebase Firestore замените только блок
 // match /tokens/{tokenId} { ... } на блок ниже.
 // Остальные разделы (game, characters, spells, overlays, Phasmo, ярмарка)
@@ -10,7 +11,7 @@ match /tokens/{tokenId} {
   function game() {
     return get(/databases/$(database)/documents/game/main).data;
   }
-  function insideTurnRadius() {
+  function insideTurnMovement() {
     let g = game();
     let c = character();
     let origins = g.get('turnOrigins', {});
@@ -20,7 +21,7 @@ match /tokens/{tokenId} {
     let cell = g.get('cellSize', 64);
     let dx = d.x - p.get('x', -999999);
     let dy = d.y - p.get('y', -999999);
-    let radius = speed * cell;
+    let limit = speed * cell;
     return g.get('currentTurn', 0) is int
       && g.get('currentTurn', 0) >= 1
       && origins is map && p is map
@@ -31,7 +32,8 @@ match /tokens/{tokenId} {
       && d.x is number && d.y is number
       && d.x >= 0 && d.x <= g.get('mapWidth', 1280)
       && d.y >= 0 && d.y <= g.get('mapHeight', 800)
-      && dx * dx + dy * dy <= radius * radius + 0.0001;
+      && dx >= -limit - 0.0001 && dx <= limit + 0.0001
+      && dy >= -limit - 0.0001 && dy <= limit + 0.0001;
   }
   allow read: if isPlayer();
   allow create, delete: if isMaster();
@@ -40,5 +42,6 @@ match /tokens/{tokenId} {
     && resource.data.get('npc', false) == false
     && character().get('isNpc', false) == false
     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['x', 'y'])
-    && insideTurnRadius();
+    && insideTurnMovement();
 }
+

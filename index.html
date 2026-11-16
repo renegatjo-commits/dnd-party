@@ -141,6 +141,12 @@ dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:
 @media(max-width:450px){.quest-card.compact-card{padding:7px;row-gap:3px}.compact-heading{gap:5px;padding-right:15px}.compact-portrait{width:29px;height:36px;flex-basis:29px}.compact-card h3{font-size:12px}.compact-role{font-size:8px}.compact-statline>div{padding:3px;gap:2px}.compact-statline span{font-size:8px}.compact-statline strong{font-size:14px}.compact-bonus-icon{width:18px;height:20px;flex-basis:18px}.compact-bonus-icon img{width:16px;height:16px}.compact-label{font-size:8px}.compact-bonuses{gap:3px}.compact-family{font-size:8px;gap:4px}.compact-charges{gap:3px}.compact-details>summary{font-size:8px;padding-right:96px}.compact-card-actions>button{font-size:8px;padding:0 2px}.compact-card-actions>.compact-order{width:16px}.faction-heading h2{font-size:16px}}
 @media(max-width:350px){.faction-cards{grid-template-columns:1fr}.compact-card h3{font-size:14px}.compact-portrait{width:34px;height:40px;flex-basis:34px}.compact-statline span{font-size:9px}.compact-family{font-size:9px}}
 
+/* Movement counts cells: a diagonal cell costs one movement cell. */
+.range.speed{border-radius:3px}
+.movement-line{position:absolute;height:0;border-top:2px solid #b4dbaa;transform-origin:0 0;pointer-events:none;z-index:3;filter:drop-shadow(0 0 2px #142315)}
+.movement-line:after{content:'';position:absolute;right:-1px;top:-5px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:7px solid #b4dbaa}
+.movement-label{position:absolute;transform:translate(-50%,-100%);pointer-events:none;z-index:7;background:#182719ed;border:1px solid #7ea877;color:#d4eacb;border-radius:5px;padding:3px 6px;font:10px/1.3 Arial,sans-serif;white-space:nowrap}
+
 </style>
 </head>
 <body>
@@ -176,7 +182,7 @@ dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:
    <div class="stage" id="stage">
     <img class="map" id="map" alt="">
     <div class="grid"></div>
-    <div class="range speed" id="speedRange"></div><div class="turn-origin" id="turnOriginMarker" hidden></div>
+    <div class="range speed" id="speedRange"></div><div class="turn-origin" id="turnOriginMarker" hidden></div><div class="movement-line" id="movementLine" hidden></div><div class="movement-label" id="movementLabel" hidden></div>
     <div class="range cast" id="castRange"></div>
     <div class="range aoe" id="aoeRange"></div>
     <div id="sharedAreas"></div>
@@ -213,7 +219,7 @@ dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:
     <div id="tokens"></div>
    </div>
   </div>
-  <div class="hint">Игроки двигают обычные фишки внутри радиуса скорости от начала хода. Центр круга не смещается при повторном перемещении. Мастер может двигать любые фишки без ограничения. НПС меняет только мастер.</div>
+  <div class="hint">Скорость — количество клеток от начала хода. Одна диагональная клетка считается за одну: скорость 7 позволяет пройти 7 клеток по диагонали. Повторные перетаскивания не расширяют доступную зону. Мастер двигает любые фишки без ограничения; НПС меняет только мастер.</div>
  </section>
  </section>
  <section data-panel="bonuses" id="panel-bonuses" role="tabpanel" aria-labelledby="tab-bonuses" hidden>
@@ -833,15 +839,19 @@ function turnOrigin(settings,id){
   if(!Number.isInteger(settings?.currentTurn)||settings.currentTurn<1||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))return null;
   return {x:p.x,y:p.y};
 }
+function movementCells(point,origin,cellSize=64){
+  if(!point||!origin||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!Number.isFinite(origin.x)||!Number.isFinite(origin.y))return Infinity;
+  return Math.max(Math.abs(point.x-origin.x),Math.abs(point.y-origin.y))/Math.max(1,finiteNumber(cellSize,64));
+}
 function clampMovement(point,{origin,speed,cellSize,width,height,master=false}){
   const w=Math.max(1,finiteNumber(width,1280)),h=Math.max(1,finiteNumber(height,800));
   let x=Math.max(0,Math.min(w,finiteNumber(point.x))),y=Math.max(0,Math.min(h,finiteNumber(point.y)));
   if(master)return {x,y,limited:false};
   if(!origin||!Number.isFinite(origin.x)||!Number.isFinite(origin.y))throw new Error('TURN_NOT_STARTED');
-  const radius=Math.max(0,finiteNumber(speed))*Math.max(1,finiteNumber(cellSize,64));
-  const dx=x-origin.x,dy=y-origin.y,d=Math.hypot(dx,dy);
-  if(d>radius){
-    const k=d?radius/d:0;x=origin.x+dx*k;y=origin.y+dy*k;
+  const limit=Math.max(0,finiteNumber(speed))*Math.max(1,finiteNumber(cellSize,64));
+  const dx=x-origin.x,dy=y-origin.y,length=Math.max(Math.abs(dx),Math.abs(dy));
+  if(length>limit){
+    const k=length?limit/length:0;x=origin.x+dx*k;y=origin.y+dy*k;
     return {x,y,limited:true};
   }
   return {x,y,limited:false};
@@ -850,10 +860,10 @@ function withinMovement(point,options){
   if(!Number.isFinite(point.x)||!Number.isFinite(point.y))return false;
   if(point.x<0||point.y<0||point.x>options.width||point.y>options.height)return false;
   if(options.master)return true;
-  if(!options.origin)return false;
-  const r=Math.max(0,finiteNumber(options.speed))*Math.max(1,finiteNumber(options.cellSize,64));
-  const dx=point.x-options.origin.x,dy=point.y-options.origin.y;
-  return dx*dx+dy*dy<=r*r+0.0001;
+  if(!options.origin||!Number.isFinite(options.origin.x)||!Number.isFinite(options.origin.y))return false;
+  const limit=Math.max(0,finiteNumber(options.speed))*Math.max(1,finiteNumber(options.cellSize,64));
+  const dx=Math.abs(point.x-options.origin.x),dy=Math.abs(point.y-options.origin.y);
+  return dx<=limit+0.0001&&dy<=limit+0.0001;
 }
 function plainRules(value){return typeof value==='string'?value.slice(0,20000):''}
 
@@ -1056,7 +1066,7 @@ function dragStart(e){
  const origin=turnOrigin(settings,id),master=isMaster();
  if(!master&&!origin){notify('Мастер должен начать ход и зафиксировать исходные позиции.');renderTokens();positionRanges();renderQuestMeta();return}
  const options={origin,speed:finiteNumber(c.speed),cellSize:settings.cellSize,width:settings.mapWidth,height:settings.mapHeight,master};
- if(!master&&!withinMovement(t,options)){notify('Позиция вне доступного круга. Мастеру нужно обновить начало хода для этой фишки.');renderTokens();positionRanges();return}
+ if(!master&&!withinMovement(t,options)){notify('Позиция вне доступной зоны. Мастеру нужно обновить начало хода для этой фишки.');renderTokens();positionRanges();return}
  const startRect=$('#stage').getBoundingClientRect(),z=+$('#zoom').value/100;
  const offset={x:(e.clientX-startRect.left)/z-t.x,y:(e.clientY-startRect.top)/z-t.y};
  drag={el,id};el.classList.add('selected');el.setPointerCapture(e.pointerId);let point={x:t.x,y:t.y},finished=false;
@@ -1081,13 +1091,24 @@ function dragStart(e){
  el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',cancel);el.addEventListener('lostpointercapture',cancel);
 }
 function positionRanges(x,y){
- const marker=$('#turnOriginMarker');
- if(!selected){if(marker)marker.hidden=true;return}
+ const marker=$('#turnOriginMarker'),line=$('#movementLine'),label=$('#movementLabel');
+ if(!selected){if(marker)marker.hidden=true;if(line)line.hidden=true;if(label)label.hidden=true;return}
  const t=tokenData.get(selected),origin=turnOrigin(settings,selected);x=x??t?.x;y=y??t?.y;if(x==null)return;
  for(const id of ['castRange','aoeRange']){const el=$('#'+id);el.style.left=x+'px';el.style.top=y+'px'}
  const speed=$('#speedRange'),center=origin||{x,y};speed.style.left=center.x+'px';speed.style.top=center.y+'px';
- const diameter=speedCells()*2*settings.cellSize;speed.style.width=diameter+'px';speed.style.height=diameter+'px';
- if(marker){marker.hidden=!origin||speed.style.display!=='block';marker.style.left=center.x+'px';marker.style.top=center.y+'px'}
+ const side=speedCells()*2*settings.cellSize;speed.style.width=side+'px';speed.style.height=side+'px';
+ const moving=!!origin&&drag?.id===selected;
+ if(marker){marker.hidden=!origin||(!moving&&speed.style.display!=='block');marker.style.left=center.x+'px';marker.style.top=center.y+'px'}
+ const guideVisible=!!origin&&(moving||speed.style.display==='block')&&movementCells({x,y},origin,settings.cellSize)>.001;
+ if(line&&label){
+   line.hidden=!guideVisible;label.hidden=!guideVisible;
+   if(guideVisible){
+     const dx=x-origin.x,dy=y-origin.y;
+     // Euclidean length draws the line; the displayed cost counts grid cells.
+     line.style.left=origin.x+'px';line.style.top=origin.y+'px';line.style.width=Math.hypot(dx,dy)+'px';line.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI}deg)`;
+     label.style.left=x+'px';label.style.top=(y-33)+'px';label.textContent=movementCells({x,y},origin,settings.cellSize).toFixed(1)+' / '+speedCells()+' кл.';
+   }
+ }
  const aim=$('#spellAim');aim.style.left=x+'px';aim.style.top=y+'px';
 }
 function speedCells(){
@@ -1575,8 +1596,8 @@ const DEFAULT_RULES=`КВЕСТ «Fight»
 Родовая магия имеет два использования. Оставшееся количество отмечается в карточке.
 
 Передвижение
-В начале каждого хода мастер фиксирует исходные позиции. Игрок может двигать обычную фишку внутри круга её скорости от позиции в начале хода. Повторное перетаскивание не переносит центр этого круга.
-Расстояние считается по прямой: скорость в клетках × размер клетки карты. Мастер может передвигать любые фишки без ограничения скорости. Если мастер переносит персонажа за его круг, новая позиция становится началом его перемещения до следующего хода.
+В начале каждого хода мастер фиксирует исходные позиции. Скорость считается количеством клеток: одна клетка по горизонтали, вертикали или диагонали расходует одну клетку скорости. При скорости 7 можно пройти 7 клеток по диагонали. Все перемещения ограничены позицией в начале хода; повторные перетаскивания не смещают начало отсчёта.
+Пройденная длина в клетках равна большему из смещений по горизонтали и вертикали. Доступные позиции образуют квадрат. Мастер может передвигать любые фишки без ограничения скорости. Если мастер переносит персонажа за пределы доступной зоны, новая позиция становится началом его перемещения до следующего хода.
 
 Заклинания
 Длина направленного заклинания ограничена значением из карточки. Для площадного заклинания используется указанный радиус. У каждого персонажа есть два слота заклинаний: I и II. Опубликованное заклинание видно всем участникам.
@@ -1620,7 +1641,7 @@ function renderQuestMeta(){
  $('#startTurnBtn').disabled=turnBusy||!chars.size||!tokenData.size;
  if(selected){
    const c=chars.get(selected);const t=tokenData.get(selected);const origin=turnOrigin(settings,selected);
-   const distance=origin&&t?Math.hypot(t.x-origin.x,t.y-origin.y)/settings.cellSize:0;
+   const distance=origin&&t?movementCells(t,origin,settings.cellSize):0;
    $('#selectedInfo').textContent=c?c.name+' · скорость '+finiteNumber(c.speed)+' кл.'+(origin?' · от старта '+distance.toFixed(1)+' кл.':''):'';
  }else $('#selectedInfo').textContent='Выберите фишку персонажа';
 }
@@ -1735,8 +1756,14 @@ async function startNextTurn(){
    currentHistoryTurn=next;notify('Начат ход '+next+'. Исходные позиции зафиксированы.');
  }catch(err){handleError(err)}finally{turnBusy=false;renderQuestMeta()}
 }
+function currentQuestRules(){
+ let text=savedQuestRules||DEFAULT_RULES;
+ text=text.replace("В начале каждого хода мастер фиксирует исходные позиции. Игрок может двигать обычную фишку внутри круга её скорости от позиции в начале хода. Повторное перетаскивание не переносит центр этого круга.","В начале каждого хода мастер фиксирует исходные позиции. Скорость считается количеством клеток: одна клетка по горизонтали, вертикали или диагонали расходует одну клетку скорости. При скорости 7 можно пройти 7 клеток по диагонали. Все перемещения ограничены позицией в начале хода; повторные перетаскивания не смещают начало отсчёта.");
+ text=text.replace("Расстояние считается по прямой: скорость в клетках × размер клетки карты. Мастер может передвигать любые фишки без ограничения скорости. Если мастер переносит персонажа за его круг, новая позиция становится началом его перемещения до следующего хода.","Пройденная длина в клетках равна большему из смещений по горизонтали и вертикали. Доступные позиции образуют квадрат. Мастер может передвигать любые фишки без ограничения скорости. Если мастер переносит персонажа за пределы доступной зоны, новая позиция становится началом его перемещения до следующего хода.");
+ return text;
+}
 function renderRules(){
- $('#rulesText').textContent=savedQuestRules||DEFAULT_RULES;
+ $('#rulesText').textContent=currentQuestRules();
  $('#editRulesBtn').hidden=!isMaster();
 }
 function renderHistory(){
@@ -1807,7 +1834,7 @@ function setupQuestUI(){
  $('#uploadTurnBtn').onclick=openTurnUpload;$('#turnForm').onsubmit=saveTurnScreenshot;
  $('#historyFile').onchange=()=>{$('#historyFileStatus').textContent=$('#historyFile').files[0]?.name||'Выберите изображение'};
  $('#addHistoryTurn').onclick=()=>{if(!isMaster())return;currentHistoryTurn=Math.max(3,finiteNumber(settings.currentTurn),...turnRecords.keys())+1;openTurnUpload()};
- $('#editRulesBtn').onclick=()=>{if(!isMaster())return;$('#rulesEditor').value=savedQuestRules||DEFAULT_RULES;$('#rulesDlg').showModal()};
+ $('#editRulesBtn').onclick=()=>{if(!isMaster())return;$('#rulesEditor').value=currentQuestRules();$('#rulesDlg').showModal()};
  $('#rulesForm').onsubmit=async e=>{e.preventDefault();if(!isMaster())return;try{await setDoc(doc(db,'game','quest_rules'),{text:plainRules($('#rulesEditor').value),updatedAt:Date.now()});$('#rulesDlg').close();notify('Правила сохранены.')}catch(err){handleError(err)}};
  $('#charForm').onsubmit=saveQuestCharacter;
  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
@@ -1820,6 +1847,7 @@ setupQuestUI();
 </script>
 </body>
 </html>
+
 
 
 
