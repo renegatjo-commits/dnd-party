@@ -3,8 +3,8 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>D&D Party Map</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Окулус — квестовый стол | Safe Space</title>
 <style>
 :root{--bg:#15130f;--panel:#211e18;--panel2:#2b271f;--line:#554b39;--gold:#d7b56d;--text:#f4ead5;--muted:#aaa08e;--danger:#bd5d57;--cell:64px}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#30291d,#12110e 55%);color:var(--text);font:14px Georgia,serif;min-height:100vh}
@@ -60,21 +60,46 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 .spellMenu{position:absolute;display:none;z-index:40;background:#1c1914;border:1px solid #62563f;border-radius:10px;padding:8px;box-shadow:0 8px 22px #0009}
 .spellMenuTitle{font:11px Arial;color:#a99f8e;margin:0 0 6px}.menuSlots,.spellMenuRow,.areaKinds{display:flex;gap:5px}.menuSlots{margin-bottom:6px}.menuSlots button{min-width:34px}.menuSlots button.active{border-color:#c49cff;background:#30213e}.areaKinds{display:none;margin-top:6px}
 .spellMenu button{font-size:12px;padding:6px 9px}.spellMenu button.active{border-color:#c49cff;background:#30213e}
+
+[hidden]{display:none!important}.turn-image-button{padding:0;border:0;border-radius:0;display:block;width:100%;background:none}.turn-image-button:hover{background:none}
+:root{--bg:#15141a;--panel:#201e26;--panel2:#292631;--line:#403a49;--gold:#dbc591;--text:#ece8df;--muted:#a7a0ae}
+body{background:radial-gradient(ellipse at 70% -5%,#3a3045 0,transparent 47%),#15141a;font-family:Arial,sans-serif;line-height:1.45}
+button,input,select,textarea{font:inherit}button{transition:background .15s,border-color .15s}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #c5aff2;outline-offset:3px}
+input,select,textarea{border:1px solid var(--line);background:#17151d;color:var(--text);border-radius:8px;padding:10px 12px;min-width:0}select{max-width:100%}button{background:#2c2833;border-color:#48404e;font-size:12px;border-radius:8px}button:hover:not(:disabled){background:#39323f;border-color:#c7ac80}a{color:inherit}.muted{color:var(--muted);font-size:12px}.small-note{font-size:12px;color:var(--muted);margin:0 0 15px}.app{max-width:1480px;padding:32px 28px 48px}
+.quest-header{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:28px}.eyebrow{text-transform:uppercase;letter-spacing:.24em;font-size:10px;color:#c3b49b;display:flex;align-items:center;gap:10px}.eyebrow:before{content:'';width:25px;height:1px;background:#bba778}.quest-header h1{font:48px Georgia,serif;letter-spacing:.03em;color:#eee8d9;margin:5px 0 6px}.quest-header p{font-size:12px;color:var(--muted);margin:0}.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}.status{font:11px Arial;color:#c1b9c8;display:flex;align-items:center;gap:7px}.status:before{content:'';width:6px;height:6px;border-radius:50%;background:#ae95d3}.header-actions{display:flex;gap:8px}.summary-bar{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #47404d;border-bottom:1px solid #47404d;padding:14px 0;margin-bottom:24px;gap:20px}.summary-numbers{display:flex;gap:36px}.summary-numbers>div{display:flex;gap:9px;align-items:baseline}.summary-numbers strong{font:23px Georgia,serif;color:#e5d3ab}.summary-numbers span,.summary-note{font-size:11px;color:var(--muted)}.summary-note{display:flex;align-items:center;gap:8px}.npc-dot{height:7px;width:7px;border-radius:50%;background:#d58e9d}.quest-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:26px;overflow-x:auto;scrollbar-width:thin}.quest-tabs button{background:none;border:0;border-radius:0;padding:14px 20px 15px;color:#aba3b2;white-space:nowrap;border-bottom:2px solid transparent;font-size:13px;display:flex;gap:9px;align-items:center}.quest-tabs button span{font-size:10px;opacity:.6}.quest-tabs button.active{border-bottom-color:#e0c58e;color:#f1dfbb;background:linear-gradient(0deg,#d3b6790c,transparent)}
+.section-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}.section-title h2{font:24px Georgia,serif;margin:0 0 5px}.section-title p{color:var(--muted);font-size:12px;margin:0}.section-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.section-controls input{width:190px;font-size:12px}.section-controls select{font-size:12px}.primary{background:#d4bf92;color:#211d20;border-color:#d4bf92;font-weight:bold}.primary:hover:not(:disabled){background:#e9d7b0;color:#211d20;border-color:#e9d7b0}.master{display:none}.is-master .master{display:inline-flex;align-items:center}
+.cards{display:block;padding:0}.faction-section{margin-bottom:30px}.faction-heading{display:flex;align-items:center;gap:11px;margin-bottom:15px}.faction-sigil{width:32px;height:32px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--faction) 45%,transparent);border-radius:50%;font-size:9px;letter-spacing:.04em;color:var(--faction)}.faction-heading h2{font:21px Georgia,serif;margin:0}.faction-heading:after{content:'';height:1px;background:linear-gradient(90deg,#49414e,transparent);flex:1;margin-left:6px}.faction-count{color:var(--muted);font-size:11px}.faction-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.quest-card{border:1px solid #45404a;border-radius:12px;padding:19px 18px 12px;background:linear-gradient(145deg,#29252e,#211f27);box-shadow:0 8px 28px #0002;border-top:2px solid var(--faction);display:flex;flex-direction:column}.quest-card.npc{background:linear-gradient(140deg,#38262e,#251e28);border-color:#84535f;border-top-color:#d294a1}.character-heading{display:flex;align-items:center;gap:13px;position:relative;padding-right:20px;margin-bottom:19px}.portrait{width:64px;height:72px;border-radius:8px;flex:0 0 64px;overflow:hidden;background:#37303e;border:1px solid #5b5065;display:grid;place-items:center}.portrait img{width:100%;height:100%;object-fit:cover}.portrait>span{font:32px Georgia;color:#d6c4ae}.character-name{min-width:0}.type-label{text-transform:uppercase;letter-spacing:.12em;font-size:8px;color:#a79aad;margin-bottom:4px}.npc-label{color:#e4aaba}.quest-card h3{font:19px/1.2 Georgia,serif;margin:0 0 4px;overflow-wrap:anywhere}.character-name p{font-size:11px;color:#aaa0b0;margin:0}.edit-card{position:absolute;right:-8px;top:-9px;border:0;background:none;color:#b6a9c0;padding:7px;font-size:16px}.health-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#b5a9ba;margin-bottom:6px}.health-row strong{font-size:13px;font-weight:normal;color:#e2c6ca}.health-row small{font-size:10px;color:#9c909f}.health-track{height:4px;background:#17141c;border-radius:5px;overflow:hidden;margin-bottom:17px}.health-track span{display:block;height:100%;background:linear-gradient(90deg,#885866,#cb9399);border-radius:5px}.quest-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding-bottom:17px;border-bottom:1px solid #443c4b;margin-bottom:14px}.quest-stats>div{display:flex;align-items:flex-start;gap:6px}.quest-stats strong{font:22px/1 Georgia,serif;color:#e3d4b7}.quest-stats span{font-size:9px;line-height:1.4;color:#b9afc2}.quest-stats small{display:block;color:#847a8d;font-size:9px}.bonus-heading{display:flex;justify-content:space-between;color:#bcafc5;font-size:10px;margin-bottom:8px}.bonus-heading small{font-size:10px;color:#7f758a}.character-bonuses{display:flex;gap:5px;flex-wrap:wrap;min-height:31px;margin-bottom:13px}.bonus-chip{display:flex;align-items:center;gap:5px;font-size:9px;max-width:100%;background:#1b1821;padding:4px 7px 4px 3px;border-color:#463b50;text-align:left}.bonus-chip img{height:24px;width:24px;object-fit:contain;flex-shrink:0}.bonus-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}.bonus-chip em{font-size:8px;font-style:normal;color:#dbc58f;white-space:nowrap}.legacy-bonus,.family-description{font-size:11px;color:#bcb1c7;margin:0 0 10px}.family-row{display:flex;justify-content:space-between;align-items:center;padding-top:13px;border-top:1px solid #443c4b;margin-top:auto;margin-bottom:12px}.family-row>div>span{font-size:10px;color:#b9aac4}.family-charges{display:flex;align-items:center;gap:6px;margin-top:5px}.family-charges i{width:10px;height:10px;transform:rotate(45deg);background:#17141d;border:1px solid #665476;border-radius:2px}.family-charges i.filled{background:#aa8cc3;border-color:#c4aad9}.family-charges small{font-size:9px;color:#94849f;margin-left:5px}.family-row button{font-size:10px;padding:6px 9px}.inventory{font-size:10px;color:#b4a7bd;margin-bottom:10px}.inventory p{white-space:pre-wrap;font-size:11px}.badge-row{display:flex;gap:4px;flex-wrap:wrap}.badge-row img{width:30px;height:30px;object-fit:contain}.card-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #443c4b;padding-top:9px}.locate-card{display:flex;gap:10px;align-items:center;background:none;border:0;color:#c6b593;padding:4px 0;font-size:10px}.order-card{display:flex;gap:3px}.order-card button{padding:2px 7px;font-size:11px;background:none;border-color:transparent}.empty-state{text-align:center;padding:65px 20px;border:1px dashed #453d4e;border-radius:12px;grid-column:1/-1;color:#b4a8bd}.empty-state h3{font:22px Georgia;color:#e5daca;margin:8px 0}.empty-state p{font-size:12px;max-width:440px;margin:8px auto}.empty-symbol{font-size:32px;color:#aa90bd}
+.boardPanel{background:#1d1a23;border-color:#4a4153}.toolbar{background:#27222e;border-color:#443b4b;gap:8px}.toolbar label{color:#c7bdcd}.toolbar .sep{background:#504455}.hint{background:#221d29;color:#ada0b8;border-color:#44394d;padding:11px 14px;line-height:1.6}.map-state{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#b4a7c1;margin-bottom:12px}.selected-info{color:#dbc8a4}.token{border-color:var(--token-faction,#d7b56d)}.token.npc-token{border-color:#df9cad;box-shadow:0 0 0 2px #4a2532,0 3px 12px #000}.stage{min-width:0;min-height:0}.range.speed{background:#97cf9c18;border:2px dashed #a9d2a9a0}.turn-origin{position:absolute;width:10px;height:10px;border:2px solid #b2d8b3;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:3;box-shadow:0 0 0 3px #0005}.toolbar .master{margin-left:0}.viewport{height:70vh;max-height:850px}
+.catalog-explainer{font-size:12px;line-height:1.75;color:#b7a9c3;padding:15px 18px;border:1px solid #49404e;border-radius:10px;background:#24202b;margin:0 0 22px}.catalog-explainer strong{color:#dbc494}.catalog-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.catalog-filters input{flex:1;min-width:180px}.catalog-filters select{font-size:12px}.result-count{margin-left:auto;font-size:11px;color:#aa99b8}.catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.catalog-card{display:flex;gap:14px;padding:17px 14px;border:1px solid #453b4e;border-radius:10px;background:#231f29}.catalog-art{width:62px;flex:0 0 62px;padding-top:4px}.catalog-art img{width:62px;height:72px;object-fit:contain;filter:drop-shadow(0 5px 8px #0007)}.catalog-text{min-width:0}.catalog-text h3{font:16px/1.3 Georgia;margin:5px 0 8px}.catalog-text h3 a{text-decoration:none}.catalog-text h3 a:hover{color:#dfc28a}.catalog-text p{font-size:11px;color:#bfb1c9;line-height:1.7;margin:0 0 10px}.phase-tag{font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:#b9a2d0}.phase-tag.before{color:#e4c28c}.phase-tag.quest{color:#9ac3ca}.target-tag{font-size:9px;display:inline-block;background:#352d3e;color:#c9b8d8;border-radius:4px;padding:3px 6px}.target-tag.other{background:#3b2a32;color:#e2b1bb}.target-tag.both{background:#293a35;color:#bdd4c3}.target-note{display:block;font-size:9px;color:#9788a5;margin-top:4px}.rules-reader{white-space:pre-wrap;background:#24202a;border:1px solid #453c4e;border-radius:12px;padding:28px 32px;max-width:1000px;font-size:13px;color:#cec1d6;line-height:1.95}
+.history-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:22px;padding-bottom:4px}.history-tabs button{display:flex;gap:8px;align-items:center;padding:9px 16px;background:#24202b;color:#a698b4;white-space:nowrap}.history-tabs button.active{background:#3b3045;border-color:#9b7cba;color:#eadcf2}.history-tabs i{width:5px;height:5px;background:#a9c2a3;border-radius:50%}.history-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.history-heading h3{font:23px Georgia;margin:0}.turn-figure{margin:0;border:1px solid #4b4055;border-radius:12px;overflow:hidden;background:#131019}.turn-figure img{max-width:100%;display:block;height:auto;margin:auto}.turn-figure figcaption{font-size:12px;color:#c2afcd;padding:16px 20px;white-space:pre-wrap;border-top:1px solid #4b4055}.turn-meta{font-size:10px;color:#8c7b9d;margin:12px 0 18px}.position-details{font-size:12px;color:#b6a5c6}.position-list{max-width:550px;margin-top:12px}.position-list>div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #3d3345}.position-list small{color:#8c7f99}.history-add{margin-top:20px}.app-footer{border-top:1px solid #3c3345;margin-top:45px;padding-top:18px;display:flex;justify-content:space-between;color:#807288;font-size:10px;letter-spacing:.03em}
+dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:92vh;padding:22px}dialog h2{font:25px Georgia;margin:0 0 10px;color:#e6d8c0}dialog .form label{color:#bcb0c9;font-size:11px;gap:6px}dialog input,dialog select,dialog textarea{background:#17131e;border-color:#4b3e58;font-size:12px;padding:10px;color:#f0e4f8}dialog .form{gap:13px}.form fieldset{border:1px solid #504159;border-radius:9px;padding:14px;margin:0;min-width:0}.form legend{font-size:12px;color:#d9c69f;padding:0 5px}.bonus-slots{display:grid;gap:8px}.bonus-slots select{font-size:11px;width:100%}.bonus-selection-preview{display:grid;gap:7px;margin-top:13px}.bonus-selection-preview>div{display:flex;gap:10px;align-items:center;background:#1b1622;padding:7px;border-radius:6px}.bonus-selection-preview img{width:38px;height:38px;object-fit:contain}.bonus-selection-preview b{display:block;font-size:11px;font-weight:normal}.bonus-selection-preview small{display:block;font-size:10px;color:#a99aba;margin-top:3px}.fieldset-note{font-size:10px;color:#95849f;line-height:1.7;margin:10px 0 0}.family-inputs{display:grid;grid-template-columns:1fr 100px;gap:10px}#rulesEditor{width:100%;min-height:55vh;line-height:1.7}#bonusInfoImage{width:110px;height:110px;object-fit:contain;display:block;margin:8px auto 16px}#bonusInfoEffect{line-height:1.8;font-size:14px;color:#d7c6e3}#bonusInfoTarget,#bonusInfoPhase{font-size:12px;color:#bbaa80}#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);max-width:min(620px,90vw);padding:14px 20px;border:1px solid #a284b8;border-radius:10px;background:#31283a;color:#eee2f6;box-shadow:0 12px 35px #0007;font-size:12px;z-index:1000}#imagePreviewDlg{width:min(1400px,96vw);padding:12px}#imagePreviewDlg img{width:100%;height:auto}#imagePreviewDlg .dlgActions{margin-bottom:10px}
+@media(min-width:1300px){.quest-stats>div{gap:10px}.quest-stats span{font-size:10px}}
+@media(max-width:1100px){.faction-cards,.catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-toolbar{align-items:flex-start;flex-direction:column}.section-controls{width:100%}.section-controls input{flex:1}.quest-tabs button{padding:13px 16px}}
+@media(max-width:700px){.app{padding:20px 14px 36px}.quest-header{align-items:flex-start;gap:12px;margin-bottom:20px}.quest-header h1{font-size:36px}.quest-header p{max-width:220px;font-size:11px}.eyebrow{font-size:8px;letter-spacing:.12em}.header-right{gap:9px}.status{font-size:9px;max-width:140px;text-align:right}.header-actions button{font-size:10px;padding:7px 9px}.summary-numbers{gap:20px}.summary-numbers strong{font-size:20px}.summary-numbers span{font-size:9px}.summary-note{font-size:9px}.quest-tabs{margin-bottom:20px;gap:0}.quest-tabs button{font-size:11px;padding:12px 15px}.quest-tabs button span{font-size:9px}.section-controls input{width:150px}.section-controls select{flex:1;min-width:150px}.catalog-filters select{flex:1;min-width:150px}.catalog-grid{grid-template-columns:1fr}.faction-cards{gap:11px}.quest-card{padding:15px 12px 10px}.portrait{width:50px;height:62px;flex-basis:50px}.character-heading{gap:9px}.quest-card h3{font-size:17px}.quest-stats{gap:4px}.quest-stats>div{gap:4px}.quest-stats strong{font-size:19px}.quest-stats span{font-size:8px}.bonus-chip span{max-width:115px}.family-row button{font-size:9px;padding:5px 6px}.map-state{font-size:10px}.rules-reader{padding:20px;font-size:12px}.app-footer{font-size:8px}.toolbar label{font-size:10px}.toolbar input[type=range]{width:80px}.summary-bar{gap:10px}.history-heading{align-items:center}.section-title h2{font-size:23px}}
+@media(max-width:510px){.faction-cards{grid-template-columns:1fr}.quest-card h3{font-size:21px}.portrait{width:62px;height:72px;flex-basis:62px}.quest-stats>div{gap:9px}.quest-stats span{font-size:10px}.quest-stats strong{font-size:24px}.summary-note{display:none}.summary-numbers{justify-content:space-between;width:100%;gap:16px}.header-right{min-width:98px}.quest-header p{max-width:200px}.quest-header{gap:6px}.eyebrow:before{width:16px}.bonus-chip span{max-width:165px}.catalog-card{padding:15px}.family-row button{font-size:10px;padding:6px 10px}.row{grid-template-columns:1fr 1fr}.family-inputs{grid-template-columns:1fr 85px}.section-controls select{min-width:120px}.history-heading button{font-size:10px}.quest-header .status:before{display:none}.history-tabs button{padding:8px 12px}}
 </style>
 </head>
 <body>
 <div class="app" id="app">
- <div class="top">
-  <div><h1>Окулус</h1><div class="status" id="status">Подключение…</div></div>
-  <div class="actions">
-   <button id="masterLogin">Войти как мастер</button>
-   <button id="logout" style="display:none">Выйти</button>
-   <button class="master" id="addChar">+ Персонаж</button>
-   <button class="master" id="addOverlay">+ PNG на карту</button>
-   <button class="master" id="mapSettings">Настройки карты</button>
-  </div>
- </div>
- <section class="cards" id="cards"><div class="empty">Персонажи пока не добавлены.</div></section>
+<header class="quest-header">
+  <div><div class="eyebrow">Marauders · Safe Space</div><h1>Окулус</h1><p>Персонажи, тактика и история вашего квеста</p></div>
+  <div class="header-right"><div class="status" id="status">Подключение…</div><div class="header-actions"><button id="masterLogin">Войти как мастер</button><button id="logout" style="display:none">Выйти</button></div></div>
+ </header>
+ <div class="summary-bar"><div class="summary-numbers"><div><strong id="currentTurn">—</strong><span>текущий ход</span></div><div><strong id="characterCount">0</strong><span>персонажей</span></div><div><strong id="npcCount">0</strong><span>НПС</span></div></div><div class="summary-note"><i class="npc-dot"></i> НПС выделены розовым</div></div>
+ <nav class="quest-tabs" id="mainTabs" role="tablist" aria-label="Разделы квеста">
+  <button role="tab" id="tab-characters" aria-controls="panel-characters" aria-selected="true" data-tab="characters"><span>01</span> Карточки персонажей</button>
+  <button role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false" data-tab="map"><span>02</span> Карта</button>
+  <button role="tab" id="tab-bonuses" aria-controls="panel-bonuses" aria-selected="false" data-tab="bonuses"><span>03</span> Бонусы</button>
+  <button role="tab" id="tab-rules" aria-controls="panel-rules" aria-selected="false" data-tab="rules"><span>04</span> Правила</button>
+  <button role="tab" id="tab-history" aria-controls="panel-history" aria-selected="false" data-tab="history"><span>05</span> История ходов</button>
+ </nav>
+ <section data-panel="characters" id="panel-characters" role="tabpanel" aria-labelledby="tab-characters">
+  <div class="section-toolbar"><div class="section-title"><h2>Участники квеста</h2><p>Четыре фракции. Одна карта событий.</p></div><div class="section-controls"><input id="characterSearch" type="search" aria-label="Поиск персонажа" placeholder="Найти персонажа…"><select id="factionFilter" aria-label="Фракция"><option value="">Все фракции</option></select><button class="master primary" id="addChar">+ Персонаж</button></div></div>
+  <div class="cards" id="cards"><div class="empty-state"><h3>Подключаемся к квесту…</h3><p>Здесь появятся карточки персонажей.</p></div></div>
+ </section>
+ <section data-panel="map" id="panel-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+  <div class="section-toolbar"><div class="section-title"><h2>Карта квеста</h2><p>Выберите фишку, чтобы увидеть движение и заклинания.</p></div><div class="section-controls"><button class="master" id="addOverlay">+ PNG на карту</button><button class="master" id="mapSettings">Настройки карты</button><button class="master primary" id="startTurnBtn">Начать 1 ход</button></div></div>
+  <div class="map-state"><span id="turnState">Ход не начат</span><span class="selected-info" id="selectedInfo">Выберите фишку персонажа</span></div>
  <section class="boardPanel">
   <div class="toolbar">
    <button id="speedBtn">Скорость</button>
@@ -87,7 +112,7 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
    <div class="stage" id="stage">
     <img class="map" id="map" alt="">
     <div class="grid"></div>
-    <div class="range speed" id="speedRange"></div>
+    <div class="range speed" id="speedRange"></div><div class="turn-origin" id="turnOriginMarker" hidden></div>
     <div class="range cast" id="castRange"></div>
     <div class="range aoe" id="aoeRange"></div>
     <div id="sharedAreas"></div>
@@ -124,9 +149,25 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
     <div id="tokens"></div>
    </div>
   </div>
-  <div class="hint">Выберите фишку кликом. Любой игрок может передвигать фишки. Карточки, персонажей и карту меняет только мастер.</div>
+  <div class="hint">Игроки двигают обычные фишки внутри радиуса скорости от начала хода. Центр круга не смещается при повторном перемещении. Мастер может двигать любые фишки без ограничения. НПС меняет только мастер.</div>
  </section>
+ </section>
+ <section data-panel="bonuses" id="panel-bonuses" role="tabpanel" aria-labelledby="tab-bonuses" hidden>
+  <div class="section-toolbar"><div class="section-title"><h2>Квестовые бонусы</h2><p>46 предметов · эффекты, цели и время применения</p></div></div>
+  <div class="catalog-explainer"><strong>До игры</strong> — заявите мастеру заранее. В бою допускается <strong>1 бонус за круг</strong>: под hide, вместе с d20 для разрешения спорной ситуации.<br><strong>* Цель со звёздочкой</strong> — предлагаемый регламент: в исходном объявлении она не уточнена. Обычные прибавки и перебросы отнесены к своему броску; «Слёзы феникса» предложено разрешить применять к себе или другому персонажу. Получение предмета или заклинания относится к владельцу бонуса.</div>
+  <div class="catalog-filters"><input id="bonusSearch" type="search" placeholder="Название или эффект…" aria-label="Поиск бонуса"><select id="bonusPhase" aria-label="Время применения"><option value="">Любое время применения</option><option value="before">Выбрать до игры</option><option value="combat">В бою / при проверке</option><option value="quest">По ходу квеста</option></select><select id="bonusTarget" aria-label="Цель бонуса"><option value="">Любая цель</option><option value="self">Только на себя</option><option value="other">Только на другого</option><option value="both">На себя или другого</option></select><span class="result-count" id="bonusResultCount"></span></div>
+  <div class="catalog-grid" id="bonusCatalog"></div>
+ </section>
+ <section data-panel="rules" id="panel-rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+  <div class="section-toolbar"><div class="section-title"><h2>Правила квеста</h2><p>Общие договорённости и порядок действий</p></div><button id="editRulesBtn" class="master">Изменить правила</button></div><div class="rules-reader" id="rulesText"></div>
+ </section>
+ <section data-panel="history" id="panel-history" role="tabpanel" aria-labelledby="tab-history" hidden>
+  <div class="section-toolbar"><div class="section-title"><h2>История ходов</h2><p>Скриншоты карты и сохранённая расстановка участников</p></div><button class="master" id="addHistoryTurn">+ Добавить ход</button></div>
+  <div class="history-tabs" id="historyTabs" role="tablist" aria-label="Ходы"></div><div class="history-heading"><h3 id="historyTitle">1 ход</h3><button class="master primary" id="uploadTurnBtn">Загрузить скриншот</button></div><div id="historyContent"></div>
+ </section>
+ <footer class="app-footer"><span>MARAUDERS: SAFE SPACE</span><span>Окулус · квестовый стол</span></footer>
 </div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
 
 <dialog id="loginDlg"><form class="form" id="loginForm">
  <h2>Вход мастера</h2>
@@ -138,15 +179,17 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
 
 <dialog id="charDlg"><form class="form" id="charForm">
  <h2 id="charTitle">Персонаж</h2><input id="charId" type="hidden">
- <label>Имя<input id="cName" required></label>
- <label>Должность / роль<input id="cRole"></label>
+ <label>Имя<input id="cName" required maxlength="80"></label>
+ <label>Должность / роль<input id="cRole" maxlength="120"></label><label>Фракция<select id="cFaction" required><option value="">Выберите фракцию</option></select></label>
  <label>Ссылка на аватар<input id="cAvatar" placeholder="https://..."></label>
- <div class="row"><label>HP<input id="cHp" type="number" value="10"></label><label>Макс. HP<input id="cMaxHp" type="number" value="10"></label></div>
- <div class="row"><label>Бонус<input id="cBonus" placeholder="+2"></label><label>Скорость, клеток<input id="cSpeed" type="number" min="0" step="1" placeholder="6"></label></div>
- <div class="row"><label>Дальность заклинания, клеток<input id="cSpellRange" type="number" min="0" step="1" placeholder="10"></label><label>Площадь, клеток<input id="cArea" type="number" min="0" step="1" placeholder="3"></label></div>
+ <div class="row"><label>HP<input id="cHp" type="number" min="0" step="1" value="10"></label><label>Макс. HP<input id="cMaxHp" type="number" min="0" step="1" value="10"></label></div>
+ <div class="row"><label>Доп. прибавка / примечание<input id="cBonus" placeholder="Необязательно"></label><label>Скорость, клеток<input id="cSpeed" type="number" min="0" step="1" placeholder="6"></label></div>
+ <div class="row"><label>Длина заклинания, клеток<input id="cSpellRange" type="number" min="0" step="1" placeholder="10"></label><label>Радиус площадного, клеток<input id="cArea" type="number" min="0" step="1" placeholder="3"></label></div>
  <label style="display:flex;grid-template-columns:auto 1fr;align-items:center;gap:8px"><input id="cNpc" type="checkbox" style="width:auto"> NPC — фишку может двигать только мастер</label>
  <label>PNG NPC на карте <span class="status">(необязательно; будет виден всем вместо круглой фишки)</span><input id="cNpcPng" placeholder="https://...png"></label>
  <label>Предметы<textarea id="cItems" rows="3" placeholder="Палочка, зелье, кинжал…"></textarea></label>
+ <fieldset><legend>Бонусы <span id="bonusSelectedCount">0 / 5</span></legend><div id="bonusSlots" class="bonus-slots"></div><div id="bonusSelectionPreview" class="bonus-selection-preview"></div><p class="fieldset-note">Можно выбрать до пяти экземпляров. Если есть несколько одинаковых предметов, выберите каждый отдельно. Перед стартом мастер учитывает выбранные бонусы в показателях карточки.</p></fieldset>
+ <div class="family-inputs"><label>Родовая магия<input id="cFamilyMagic" placeholder="Название или краткое описание" maxlength="300"></label><label>Осталось, из 2<input id="cFamilyUses" type="number" min="0" max="2" step="1" value="2"></label></div>
  <label>Значки <span class="status">(ссылки на PNG/JPG, по одной в строке)</span><textarea id="cBadges" rows="3" placeholder="https://.../badge1.png&#10;https://.../badge2.png"></textarea></label>
  <div class="dlgActions"><button type="button" class="danger" id="deleteChar">Удалить</button><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
@@ -184,10 +227,576 @@ dialog::backdrop{background:#000a}.form{display:grid;gap:10px}.form label{displa
  <div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit">Сохранить</button></div>
 </form></dialog>
 
+<dialog id="bonusInfoDlg"><h2 id="bonusInfoTitle"></h2><img id="bonusInfoImage" alt="Бонус"><p id="bonusInfoEffect"></p><p id="bonusInfoTarget"></p><p id="bonusInfoPhase"></p><div class="dlgActions"><a id="bonusInfoSource" class="btn" target="_blank" rel="noopener noreferrer">Исходное объявление</a><button data-close type="button">Закрыть</button></div></dialog>
+<dialog id="turnDlg"><form class="form" id="turnForm"><h2>Скриншот хода</h2><label>Номер хода<input id="historyTurnInput" type="number" min="1" max="999" step="1" required></label><label>Карта<input id="historyFile" type="file" accept="image/png,image/jpeg,image/webp"></label><div class="small-note" id="historyFileStatus"></div><label>Подпись<textarea id="historyCaption" rows="3" maxlength="2000" placeholder="Что происходило в этом ходу"></textarea></label><div class="dlgActions"><button type="button" data-close>Отмена</button><button id="saveTurnBtn" class="primary" type="submit">Сохранить скриншот</button></div></form></dialog>
+<dialog id="rulesDlg"><form class="form" id="rulesForm"><h2>Правила квеста</h2><label>Текст правил<textarea id="rulesEditor" maxlength="20000" required></textarea></label><div class="dlgActions"><button type="button" data-close>Отмена</button><button type="submit" class="primary">Сохранить правила</button></div></form></dialog>
+<dialog id="imagePreviewDlg"><div class="dlgActions"><button data-close type="button">Закрыть</button></div><img id="imagePreview" alt="Скриншот карты"></dialog>
 <script type="module">
+const BONUSES = [
+  {
+    "id": "6",
+    "name": "Подарок «+5 к кубику»",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/t908451.png",
+    "effect": "Единоразово даёт +5 к любому кубику в квесте.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=4#p45413",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "8",
+    "name": "Золотые кости",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/t375257.png",
+    "effect": "Один раз в квесте можно бросить два кубика и выбрать лучшее значение.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=5#p46940",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "9",
+    "name": "Зелье здоровья",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t920678.png",
+    "effect": "+5 HP в квесте.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=6#p48420",
+    "phase": "before",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "12",
+    "name": "Драгоценная лягушка",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t645640.png",
+    "effect": "+3 к кубику на защиту.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=8#p52051",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "13",
+    "name": "Кольцо «Сердце Хогвартса»",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t602786.png",
+    "effect": "+3 к кубику на атаку.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=9#p53830",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "14",
+    "name": "Легальная удача",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t711630.png",
+    "effect": "Бесплатный переброс кубика.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=9#p55533",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "15",
+    "name": "Реликвия Ровены",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t162588.png",
+    "effect": "Успех при броске на расследование / внимательность.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=10#p57191",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "16",
+    "name": "Реликвия Розье",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t119979.png",
+    "effect": "+5 к убеждению / очарованию.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=10#p58504",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "18",
+    "name": "Удача Поттера",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t495606.png",
+    "effect": "Позволяет поменять значение одного кубика на максимальное.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=12#p61447",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "19",
+    "name": "Кольцо Эйвери",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t985436.png",
+    "effect": "Если здоровье падает до 0, восстанавливает 5 HP.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=13#p62303",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "20",
+    "name": "Зелье ментальной защиты",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t170157.png",
+    "effect": "+3 к ментальной защите.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=14#p63246",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "21",
+    "name": "Зелье физического щита",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t16694.png",
+    "effect": "+3 к физическому щиту.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=14#p63246",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "22",
+    "name": "Зелье здоровья «+3 HP»",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t38518.png",
+    "effect": "+3 к здоровью.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=14#p63246",
+    "phase": "before",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "23",
+    "name": "Зелье боевого заклинания",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t984777.png",
+    "effect": "+3 к боевому заклинанию.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=14#p63246",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "24",
+    "name": "Зелье убеждения",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t103909.png",
+    "effect": "+3 к убеждению.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=14#p63246",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "25",
+    "name": "Золотой Джокер",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t74507.png",
+    "effect": "Можно заменить один кубик другого игрока / НПС на любое значение.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=15#p64504",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Другой игрок / НПС"
+  },
+  {
+    "id": "26",
+    "name": "Рубиновое яйцо",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t253793.png",
+    "effect": "Позволяет защититься от любой атаки существа.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=15#p65888",
+    "phase": "combat",
+    "target": "self",
+    "proposed": false,
+    "targetNote": ""
+  },
+  {
+    "id": "27",
+    "name": "Белый дракон",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t261281.png",
+    "effect": "+3 к боевому заклинанию.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=16#p67211",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "28",
+    "name": "Маска шута",
+    "image": "https://upforme.ru/uploads/001c/7d/92/4/183837.png",
+    "effect": "+3 к хулиганскому заклинанию.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=17#p68418",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "29",
+    "name": "Шар предсказаний",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t638849.png",
+    "effect": "Позволяет вернуть другому игроку 3 потраченных HP.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=18#p69863",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": ""
+  },
+  {
+    "id": "30",
+    "name": "Сокровище дома Крауч",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/t362828.png",
+    "effect": "+4 к ментальной защите.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=19#p71564",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "31",
+    "name": "Драгоценный фолиант",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t653258.png",
+    "effect": "+3 к броску на знание.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=19#p72542",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "32",
+    "name": "Браслет дружбы",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t345322.png",
+    "effect": "+3 к кубику на защиту другого персонажа.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=20#p73674",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": ""
+  },
+  {
+    "id": "33",
+    "name": "Чаша ярости",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t187409.png",
+    "effect": "+3 к броску атаки для другого персонажа.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=21#p74639",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": ""
+  },
+  {
+    "id": "34",
+    "name": "Быстрый снитч",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t998005.png",
+    "effect": "+2 к скорости персонажа.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=21#p75460",
+    "phase": "before",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "35",
+    "name": "Слёзы феникса",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t301747.png",
+    "effect": "Мгновенно снимает одно состояние.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=22#p76698",
+    "phase": "combat",
+    "target": "both",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "36",
+    "name": "Время любви",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t585031.png",
+    "effect": "+2 к любому кубику.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=23#p77583",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "37",
+    "name": "Лепреконская удача",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t701976.png",
+    "effect": "Превращает выпавшую на кубике 1 в максимальное значение.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=23#p78306",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "38",
+    "name": "Золотая бита",
+    "image": "https://upforme.ru/uploads/001c/7d/92/6/t483854.png",
+    "effect": "Снимает 5 HP у противника, если вы атакуете.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=24#p79187",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Противник"
+  },
+  {
+    "id": "39",
+    "name": "Щит Паладина",
+    "image": "https://upforme.ru/uploads/001c/7d/92/6/905111.png",
+    "effect": "Блокирует любую атаку, направленную на чужого персонажа.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=25#p80386",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": ""
+  },
+  {
+    "id": "40",
+    "name": "Слизеринский подарок",
+    "image": "https://forumstatic.ru/files/001c/7d/92/32854.png",
+    "effect": "Создаёт помеху для любого броска противника: игрок бросает два кубика и выбирает наименьшее значение.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=26#p81365",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Противник"
+  },
+  {
+    "id": "41",
+    "name": "Хрустальная бабочка",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t449586.png",
+    "effect": "+3 к защите.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=26#p82028",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "42",
+    "name": "Горный хрусталь",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t132694.png",
+    "effect": "Защищает 3 HP на один ход.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=27#p82891",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "44",
+    "name": "Зелье «Простоблеск»",
+    "image": "https://forumstatic.ru/files/001c/7d/92/57384.png",
+    "effect": "Заставляет противника сменить цель атаки.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=28#p84648",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Противник"
+  },
+  {
+    "id": "45",
+    "name": "Золотое сердце",
+    "image": "https://upforme.ru/uploads/001c/7d/92/6/843828.png",
+    "effect": "Позволяет передать свой бонус любому участнику любой сюжетки.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=29#p85630",
+    "phase": "quest",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Другой участник сюжетки"
+  },
+  {
+    "id": "46",
+    "name": "Обсидиановый фестрал",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t433940.png",
+    "effect": "Одна подсказка мастера.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=30#p88028",
+    "phase": "quest",
+    "target": "self",
+    "proposed": true,
+    "targetNote": "Запрос подсказки"
+  },
+  {
+    "id": "47",
+    "name": "Осенний дуэт",
+    "image": "https://forumstatic.ru/files/001c/7d/92/55370.png",
+    "effect": "Снижает сложность броска на 2.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=31#p91579",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "48",
+    "name": "Подарок от карги",
+    "image": "https://upforme.ru/uploads/001c/7d/92/5/t596865.png",
+    "effect": "Меняет значение броска на максимальное, но нелепое обоснование успеха придумывает гейм-мастер.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=32#p94293",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "49",
+    "name": "Подарок от миссис Уизли",
+    "image": "https://upforme.ru/uploads/001c/7d/92/5/t990560.png",
+    "effect": "+3 к защите: в сюжете вам поможет предмет.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=32#p96617",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "50",
+    "name": "Колода карт великой пророчицы",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/t86128.png",
+    "effect": "Один бесплатный переброс кубика.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=655&p=33#p98731",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "51",
+    "name": "Кровь королевской саламандры",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/885114.png",
+    "effect": "ГМ в сюжетном квесте выдаёт полезный предмет на своё усмотрение.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=1329&p=2#p100979",
+    "phase": "before",
+    "target": "self",
+    "proposed": true,
+    "targetNote": "Получатель предмета"
+  },
+  {
+    "id": "52",
+    "name": "Крысиный король",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t302401.png",
+    "effect": "Вместо одного кубика бросаются два и выбирается лучший результат.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=1329&p=4#p102393",
+    "phase": "combat",
+    "target": "self",
+    "proposed": true,
+    "targetNote": ""
+  },
+  {
+    "id": "53",
+    "name": "Хромой паук",
+    "image": "https://upforme.ru/uploads/001c/7d/92/4/t996770.png",
+    "effect": "Лишает другого игрока способности передвигаться на один круг.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=1329&p=5#p104169",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Противник"
+  },
+  {
+    "id": "54",
+    "name": "Страшное пугало",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/t594630.png",
+    "effect": "Даёт дополнительное заклинание Melofors, превращающее голову в тыкву. Сила заклинания — 6.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=1329&p=5#p106243",
+    "phase": "before",
+    "target": "self",
+    "proposed": true,
+    "targetNote": "Получатель заклинания"
+  },
+  {
+    "id": "56",
+    "name": "Омут памяти",
+    "image": "https://upforme.ru/uploads/001c/7d/92/7/t692070.png",
+    "effect": "Одна подсказка от мастера.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=1329&p=7#p109702",
+    "phase": "quest",
+    "target": "self",
+    "proposed": true,
+    "targetNote": "Запрос подсказки"
+  },
+  {
+    "id": "57",
+    "name": "Тайны наитемнейшего искусства",
+    "image": "https://upforme.ru/uploads/001c/7d/92/2/t59142.png",
+    "effect": "Поднимает сопартийца с 0 HP; после подъёма у него 3 HP.",
+    "source": "https://safespace.rusff.me/viewtopic.php?id=1329&p=8#p111801",
+    "phase": "combat",
+    "target": "other",
+    "proposed": false,
+    "targetNote": "Сопартиец с 0 HP"
+  }
+];
+
+const FACTIONS = [
+  {id:'ministry',name:'Министерство магии',short:'ММ',color:'#73b9d4'},
+  {id:'death_eaters',name:'Пожиратели смерти',short:'ПС',color:'#9ac592'},
+  {id:'order',name:'Орден Феникса',short:'ОФ',color:'#e5b071'},
+  {id:'oculus',name:'Окулус',short:'ОК',color:'#b6a0ee'},
+];
+function normalizeFaction(value){
+  const aliases={mm:'ministry',de:'death_eaters',op:'order',oc:'oculus',
+    'Министерство магии':'ministry','Пожиратели смерти':'death_eaters','Орден Феникса':'order','Окулус':'oculus'};
+  const id=aliases[value]||value;
+  return FACTIONS.some(f=>f.id===id)?id:'unassigned';
+}
+function finiteNumber(value,fallback=0){
+  const n=Number(value);return Number.isFinite(n)?n:fallback;
+}
+function familyUses(value){return Math.min(2,Math.max(0,Math.floor(finiteNumber(value,2))))}
+function selectedBonuses(values,knownIds){
+  if(!Array.isArray(values))return [];
+  return values.filter(v=>knownIds.has(String(v))).map(String).slice(0,5);
+}
+function validBonusSelection(values,knownIds){
+  return Array.isArray(values)&&values.length<=5&&values.every(v=>knownIds.has(String(v)));
+}
+function turnOrigin(settings,id){
+  const p=settings?.turnOrigins?.[id];
+  if(!Number.isInteger(settings?.currentTurn)||settings.currentTurn<1||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))return null;
+  return {x:p.x,y:p.y};
+}
+function clampMovement(point,{origin,speed,cellSize,width,height,master=false}){
+  const w=Math.max(1,finiteNumber(width,1280)),h=Math.max(1,finiteNumber(height,800));
+  let x=Math.max(0,Math.min(w,finiteNumber(point.x))),y=Math.max(0,Math.min(h,finiteNumber(point.y)));
+  if(master)return {x,y,limited:false};
+  if(!origin||!Number.isFinite(origin.x)||!Number.isFinite(origin.y))throw new Error('TURN_NOT_STARTED');
+  const radius=Math.max(0,finiteNumber(speed))*Math.max(1,finiteNumber(cellSize,64));
+  const dx=x-origin.x,dy=y-origin.y,d=Math.hypot(dx,dy);
+  if(d>radius){
+    const k=d?radius/d:0;x=origin.x+dx*k;y=origin.y+dy*k;
+    return {x,y,limited:true};
+  }
+  return {x,y,limited:false};
+}
+function withinMovement(point,options){
+  if(!Number.isFinite(point.x)||!Number.isFinite(point.y))return false;
+  if(point.x<0||point.y<0||point.x>options.width||point.y>options.height)return false;
+  if(options.master)return true;
+  if(!options.origin)return false;
+  const r=Math.max(0,finiteNumber(options.speed))*Math.max(1,finiteNumber(options.cellSize,64));
+  const dx=point.x-options.origin.x,dy=point.y-options.origin.y;
+  return dx*dx+dy*dy<=r*r+0.0001;
+}
+function plainRules(value){return typeof value==='string'?value.slice(0,20000):''}
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, writeBatch, runTransaction } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
  apiKey: "AIzaSyDbMYr99XAJWtpVBzU2WBgham-o_RykEK8",
@@ -201,7 +810,7 @@ const MASTER_UID="j38gO3G1YlRgnG7Jg3gycK8QeoE3";
 const fb=initializeApp(firebaseConfig), auth=getAuth(fb), db=getFirestore(fb);
 const $=s=>document.querySelector(s);
 let chars=new Map(), tokenData=new Map(), overlayData=new Map(), spellData=new Map(), selected=null, activeSpellSlot=1, activeSpellMode="directed", areaKind="shield", aimState={1:{angle:0,range:null},2:{angle:0,range:null}}, settings={
- mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64,
+ mapUrl:"",mapWidth:1280,mapHeight:800,cellSize:64,currentTurn:0,turnOrigins:{},
  playerDirectedSpellPng:"https://forgottenadventures.piwigo.com/_datas/w/s/l/wslrhsw6z4/i/uploads/w/s/l/wslrhsw6z4//2022/06/12/20220612092337-f8d252df-me.png",
  playerShieldSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2021/06/23/20210623122729-ffa98e90.png",
  playerAttackAreaSpellPng:"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png",
@@ -242,6 +851,7 @@ onAuthStateChanged(auth, async u=>{
  }
  applyRole();
  startListeners();
+ questRoleChanged();
 });
 
 function listenError(err){
@@ -271,6 +881,7 @@ function startListeners(){
    renderSharedSpells();
    if(selected)refreshOpenSpellEditor()
  },listenError));
+ liveUnsubs.push(onSnapshot(collection(db,"game"),questGameDocuments,listenError));
 }
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function tokenIsNpc(tokenId){
@@ -297,32 +908,7 @@ function attackAreaSpellPng(tokenId){
   : (settings.playerAttackAreaSpellPng||settings.attackAreaSpellPng||"https://forgottenadventures.piwigo.com/uploads/w/s/l/wslrhsw6z4//2022/05/13/20220513143959-c33cdc5e.png");
 }
 function areaSpellPng(kind,tokenId){return kind==="attack"?attackAreaSpellPng(tokenId):shieldSpellPng(tokenId)}
-function renderCards(){
- const box=$("#cards"); if(!chars.size){box.innerHTML='<div class="empty">Персонажи пока не добавлены.</div>';return}
- const list=[...chars.values()].sort((a,b)=>(a.order??9999)-(b.order??9999)||String(a.name).localeCompare(String(b.name)));
- box.innerHTML=list.map((c,i)=>`<article class="card ${c.isNpc?"npc":""}">
-  ${isMaster()?`<div class="cardOrder"><button title="Сдвинуть влево" data-left="${c.id}" ${i===0?"disabled":""}>←</button><button title="Сдвинуть вправо" data-right="${c.id}" ${i===list.length-1?"disabled":""}>→</button></div>`:""}
-  <div class="cardHead">
-    <div class="avatarWrap">
-      <img class="avatar" src="${esc(c.avatar||"")}" onerror="this.style.visibility='hidden'">
-      <div class="hpBadge">♥ ${Number(c.hp)||0}/${Number(c.maxHp)||0}</div>
-    </div>
-    <div><h3>${esc(c.name)}</h3><div class="role">${esc(c.role||"")}</div></div>
-  </div>
-  <div class="stats">
-    <div class="statBox"><span class="statLabel">Бонус</span><span class="pill">${esc(c.bonus||"—")}</span></div>
-    <div class="statBox"><span class="statLabel">Скорость</span><span class="pill">${Number(c.speed)||0}</span></div>
-    <div class="statBox"><span class="statLabel">Дальность</span><span class="pill">${Number(c.spellRange)||0}</span></div>
-    <div class="statBox"><span class="statLabel">Площадь</span><span class="pill">${Number(c.area)||0}</span></div>
-  </div>
-  <div class="items"><b>С собой:</b> ${esc(c.items||"—")}</div>
-  <div class="charBadges">${String(c.badges||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).map(url=>`<img class="charBadge" src="${esc(url)}" alt="значок">`).join("")}</div>
-  ${isMaster()?`<button class="editChar" data-edit="${c.id}">✎</button>`:""}
- </article>`).join("");
- box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openChar(b.dataset.edit));
- box.querySelectorAll("[data-left]").forEach(b=>b.onclick=()=>moveCard(b.dataset.left,-1));
- box.querySelectorAll("[data-right]").forEach(b=>b.onclick=()=>moveCard(b.dataset.right,1));
-}
+function renderCards(){renderQuestCards()}
 async function moveCard(id,dir){
  if(!isMaster())return;
  const list=[...chars.values()].sort((a,b)=>(a.order??9999)-(b.order??9999)||String(a.name).localeCompare(String(b.name)));
@@ -337,16 +923,18 @@ function applyMap(){
  $("#map").src=settings.mapUrl||""; $("#map").style.display=settings.mapUrl?"block":"none";positionRanges();
  renderSharedSpells();
  if(selected)refreshOpenSpellEditor();
+ renderQuestMeta();
 }
 // Фишки используют только avatar / npcPng персонажа. PNG заклинаний на них не влияют.
 function renderTokens(){
+ if(drag)return;
  const box=$("#tokens");box.innerHTML="";
  for(const c of chars.values()){
   const t=tokenData.get(c.id); if(!t)continue;
-  const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;if(t.npc&&!isMaster())el.style.cursor="not-allowed";
+  const el=document.createElement("div");el.className="token"+(selected===c.id?" selected":"");el.dataset.id=c.id;el.style.setProperty("--token-faction",FACTIONS.find(f=>f.id===normalizeFaction(c.faction))?.color||"#b8a68c");if(c.isNpc||t.npc)el.classList.add("npc-token");if((t.npc||c.isNpc)&&!isMaster())el.style.cursor="not-allowed";
   el.style.left=(t.x??100)+"px";el.style.top=(t.y??100)+"px";
   if(c.isNpc&&c.npcPng){el.classList.add("npcArt");el.innerHTML=`<img src="${esc(c.npcPng)}" alt=""><span>${esc(c.name)}</span>`}
-  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";$("#areaAim").style.display="none";$("#spellMenu").style.display="none";for(const id of ["speedBtn","castBtn"])$("#"+id).classList.remove("active")}selected=c.id;aimState={1:{angle:0,range:null},2:{angle:0,range:null}};activeSpellSlot=1;renderTokens();positionRanges()};box.appendChild(el);
+  else{if(c.avatar)el.style.backgroundImage=`url("${c.avatar.replace(/"/g,"%22")}")`;el.innerHTML=`<span>${esc(c.name)}</span>`}el.addEventListener("pointerdown",dragStart);el.onclick=()=>{if(selected!==c.id){for(const id of ["speedRange","castRange","aoeRange"])$("#"+id).style.display="none";$("#spellAim").style.display="none";$("#areaAim").style.display="none";$("#spellMenu").style.display="none";for(const id of ["speedBtn","castBtn"])$("#"+id).classList.remove("active")}selected=c.id;aimState={1:{angle:0,range:null},2:{angle:0,range:null}};activeSpellSlot=1;renderTokens();positionRanges();renderQuestMeta()};box.appendChild(el);
  } positionRanges();
 }
 function renderOverlays(){
@@ -396,25 +984,47 @@ function overlayDragStart(e){
 }
 let drag=null;
 function dragStart(e){
- e.preventDefault();
- const id=e.currentTarget.dataset.id;
- const td=tokenData.get(id);
- if(td?.npc && !isMaster()){
-   selected=id; renderTokens(); positionRanges();
-   return;
- }
- selected=id; const el=e.currentTarget; el.setPointerCapture(e.pointerId);
- drag={el,id:selected}; el.classList.add("selected");
- const move=ev=>{const r=$("#stage").getBoundingClientRect(),z=+$("#zoom").value/100;let x=(ev.clientX-r.left)/z,y=(ev.clientY-r.top)/z;
-  x=Math.max(0,Math.min(settings.mapWidth,x));y=Math.max(0,Math.min(settings.mapHeight,y));el.style.left=x+"px";el.style.top=y+"px";positionRanges(x,y);
+ if(e.button!==0&&e.pointerType==='mouse')return;
+ e.preventDefault();e.stopPropagation();
+ const el=e.currentTarget,id=el.dataset.id,t=tokenData.get(id),c=chars.get(id);
+ if(!t||!c)return;selected=id;
+ if((c.isNpc||t.npc)&&!isMaster()){renderTokens();positionRanges();renderQuestMeta();return}
+ const origin=turnOrigin(settings,id),master=isMaster();
+ if(!master&&!origin){notify('Мастер должен начать ход и зафиксировать исходные позиции.');renderTokens();positionRanges();renderQuestMeta();return}
+ const options={origin,speed:finiteNumber(c.speed),cellSize:settings.cellSize,width:settings.mapWidth,height:settings.mapHeight,master};
+ if(!master&&!withinMovement(t,options)){notify('Позиция вне доступного круга. Мастеру нужно обновить начало хода для этой фишки.');renderTokens();positionRanges();return}
+ const startRect=$('#stage').getBoundingClientRect(),z=+$('#zoom').value/100;
+ const offset={x:(e.clientX-startRect.left)/z-t.x,y:(e.clientY-startRect.top)/z-t.y};
+ drag={el,id};el.classList.add('selected');el.setPointerCapture(e.pointerId);let point={x:t.x,y:t.y},finished=false;
+ positionRanges(t.x,t.y);renderQuestMeta();
+ const move=ev=>{
+   const rect=$('#stage').getBoundingClientRect(),zoom=+$('#zoom').value/100;
+   point=clampMovement({x:(ev.clientX-rect.left)/zoom-offset.x,y:(ev.clientY-rect.top)/zoom-offset.y},options);
+   el.style.left=point.x+'px';el.style.top=point.y+'px';positionRanges(point.x,point.y);
  };
- const up=async ev=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);const x=parseFloat(el.style.left),y=parseFloat(el.style.top);try{await updateDoc(doc(db,"tokens",selected),{x,y})}catch(err){console.error(err)}drag=null};
- el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);
+ const finish=async(commit)=>{
+   if(finished)return;finished=true;
+   el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',cancel);el.removeEventListener('lostpointercapture',cancel);
+   try{
+     if(commit&&(Math.abs(point.x-t.x)>.01||Math.abs(point.y-t.y)>.01)){
+       const batch=writeBatch(db);batch.update(doc(db,'tokens',id),{x:point.x,y:point.y});
+       if(master&&settings.currentTurn&&(!origin||!withinMovement(point,{...options,master:false}))){batch.set(doc(db,'game','main'),{turnOrigins:{[id]:{x:point.x,y:point.y}}},{merge:true})}
+       await batch.commit();tokenData.set(id,{...t,x:point.x,y:point.y});
+     }
+   }catch(err){handleError(err)}finally{drag=null;renderTokens();renderSharedSpells();positionRanges();renderQuestMeta()}
+ };
+ const up=()=>finish(true),cancel=()=>finish(false);
+ el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',cancel);el.addEventListener('lostpointercapture',cancel);
 }
 function positionRanges(x,y){
- if(!selected)return;const t=tokenData.get(selected);x=x??t?.x;y=y??t?.y;if(x==null)return;
- for(const id of ["speedRange","castRange","aoeRange"]){const e=$("#"+id);e.style.left=x+"px";e.style.top=y+"px"}
- const sa=$("#spellAim");sa.style.left=x+"px";sa.style.top=y+"px";
+ const marker=$('#turnOriginMarker');
+ if(!selected){if(marker)marker.hidden=true;return}
+ const t=tokenData.get(selected),origin=turnOrigin(settings,selected);x=x??t?.x;y=y??t?.y;if(x==null)return;
+ for(const id of ['castRange','aoeRange']){const el=$('#'+id);el.style.left=x+'px';el.style.top=y+'px'}
+ const speed=$('#speedRange'),center=origin||{x,y};speed.style.left=center.x+'px';speed.style.top=center.y+'px';
+ const diameter=speedCells()*2*settings.cellSize;speed.style.width=diameter+'px';speed.style.height=diameter+'px';
+ if(marker){marker.hidden=!origin||speed.style.display!=='block';marker.style.left=center.x+'px';marker.style.top=center.y+'px'}
+ const aim=$('#spellAim');aim.style.left=x+'px';aim.style.top=y+'px';
 }
 function speedCells(){
  const c=chars.get(selected);
@@ -423,7 +1033,7 @@ function speedCells(){
 }
 function canEditSelectedSpell(){
  const c=chars.get(selected);
- return !!selected && (!c?.isNpc || isMaster());
+ return !!selected && ((!c?.isNpc&&!tokenData.get(selected)?.npc) || isMaster());
 }
 function spellRangeCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.spellRange)||0):0}
 function areaCells(){const c=chars.get(selected);return c?Math.max(0,Number(c.area)||0):0}
@@ -812,19 +1422,9 @@ $("#logout").onclick=async()=>{
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("dialog").close());
 
 $("#addChar").onclick=()=>openChar();
-function openChar(id=""){
- const c=chars.get(id)||{};$("#charId").value=id;$("#cName").value=c.name||"";$("#cRole").value=c.role||"";$("#cAvatar").value=c.avatar||"";$("#cHp").value=c.hp??10;$("#cMaxHp").value=c.maxHp??10;$("#cBonus").value=c.bonus||"";$("#cSpeed").value=c.speed||"";$("#cSpellRange").value=c.spellRange||"";$("#cArea").value=c.area||"";$("#cNpc").checked=!!c.isNpc;$("#cNpcPng").value=c.npcPng||"";$("#cItems").value=c.items||"";$("#cBadges").value=c.badges||"";$("#deleteChar").style.display=id?"inline-block":"none";$("#charDlg").showModal()
-}
-$("#charForm").onsubmit=async e=>{e.preventDefault();if(!isMaster())return;let id=$("#charId").value||crypto.randomUUID();let existing=chars.get(id)||{};let c={name:$("#cName").value.trim(),role:$("#cRole").value.trim(),avatar:$("#cAvatar").value.trim(),hp:+$("#cHp").value,maxHp:+$("#cMaxHp").value,bonus:$("#cBonus").value.trim(),speed:+$("#cSpeed").value||0,spellRange:+$("#cSpellRange").value||0,area:+$("#cArea").value||0,isNpc:$("#cNpc").checked,npcPng:$("#cNpcPng").value.trim(),items:$("#cItems").value.trim(),badges:$("#cBadges").value.trim(),order:existing.order??chars.size};
- await setDoc(doc(db,"characters",id),c);
- if(!tokenData.has(id)){
-   await setDoc(doc(db,"tokens",id),{x:100+Math.random()*200,y:100+Math.random()*150,npc:c.isNpc});
- }else{
-   await setDoc(doc(db,"tokens",id),{npc:c.isNpc},{merge:true});
- }
- $("#charDlg").close()
-};
-$("#deleteChar").onclick=async()=>{const id=$("#charId").value;if(id&&confirm("Удалить персонажа и его фишку?")){await deleteSpellsForToken(id);await deleteDoc(doc(db,"tokens",id));await deleteDoc(doc(db,"characters",id));$("#charDlg").close()}};
+function openChar(id=""){openQuestCharacter(id)}
+$("#charForm").onsubmit=saveQuestCharacter;
+$("#deleteChar").onclick=async()=>{if(!isMaster())return;const id=$("#charId").value;if(id&&confirm("Удалить персонажа и его фишку?")){await deleteSpellsForToken(id);await deleteDoc(doc(db,"tokens",id));await deleteDoc(doc(db,"characters",id));$("#charDlg").close()}};
 
 $("#addOverlay").onclick=()=>openOverlay();
 function openOverlay(id=""){
@@ -897,7 +1497,257 @@ function endPan(e){
 viewport.addEventListener("pointerup",endPan);
 viewport.addEventListener("pointercancel",endPan);
 
-applyMap();
+
+
+const bonusCatalog=new Map(BONUSES.map(b=>[b.id,b]));
+const knownBonusIds=new Set(bonusCatalog.keys());
+const PHASES={before:'До игры',combat:'В бою / при проверке',quest:'По ходу квеста'};
+const TARGETS={self:'Только на себя',other:'Только на другого',both:'На себя или другого'};
+const DEFAULT_RULES=`КВЕСТ «ОКУЛУС»
+
+Персонажи и подготовка
+Мастер задаёт здоровье, длину заклинания, радиус площадного заклинания и скорость в клетках. НПС отмечены отдельным цветом; их фишки и заклинания доступны для изменения только мастеру.
+У персонажа можно выбрать до пяти бонусов. Бонусы с пометкой «До игры» необходимо заявить до начала квеста. Их влияние на показатели карточки учитывает мастер.
+Родовая магия имеет два использования. Оставшееся количество отмечается в карточке.
+
+Передвижение
+В начале каждого хода мастер фиксирует исходные позиции. Игрок может двигать обычную фишку внутри круга её скорости от позиции в начале хода. Повторное перетаскивание не переносит центр этого круга.
+Расстояние считается по прямой: скорость в клетках × размер клетки карты. Мастер может передвигать любые фишки без ограничения скорости. Если мастер переносит персонажа за его круг, новая позиция становится началом его перемещения до следующего хода.
+
+Заклинания
+Длина направленного заклинания ограничена значением из карточки. Для площадного заклинания используется указанный радиус. У каждого персонажа есть два слота заклинаний: I и II. Опубликованное заклинание видно всем участникам.
+
+Бонусы в бою
+Каждый персонаж использует не более одного бонуса за круг. Бонус добавляется под hide. Вместе с бонусом бросается d20; трактовка спорной ситуации будет в пользу того, у кого выпало большее значение.
+При использовании укажите бонус, эффект, имя персонажа и, при необходимости, конкретный бросок.
+Цель бонуса указана в справочнике. Звёздочка означает предлагаемый регламент для эффектов, где цель не была уточнена в объявлении. Эти варианты согласуются с мастером.
+
+История ходов
+Мастер загружает скриншот карты в соответствующий ход. Все игроки могут просматривать сохранённые изображения и позиции.
+
+Остальные правила квеста мастер может добавить здесь.`;
+let turnRecords=new Map(),savedQuestRules='',currentHistoryTurn=1,activeTab='characters',turnBusy=false;
+let toastTimer;
+
+function notify(message){
+ const el=$('#toast');el.textContent=message;el.hidden=false;clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>{el.hidden=true},5500);
+}
+function handleError(err){
+ console.error(err);
+ notify(err?.code==='permission-denied'?'Нет доступа к изменению. Проверьте вход мастера и правила базы.':'Не удалось сохранить: '+(err?.message||'проверьте подключение'));
+}
+function switchTab(name){
+ activeTab=name;
+ document.querySelectorAll('[data-tab]').forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1});
+ document.querySelectorAll('[data-panel]').forEach(p=>{p.hidden=p.dataset.panel!==name});
+ if(name==='map')requestAnimationFrame(()=>{applyMap();renderTokens();renderOverlays()});
+ if(name==='history')renderHistory();
+ try{localStorage.setItem('oculus-tab',name)}catch{}
+}
+function questRoleChanged(){renderCards();renderQuestMeta();renderHistory();renderRules()}
+function renderQuestMeta(){
+ $('#characterCount').textContent=String([...chars.values()].filter(c=>!c.isNpc).length);
+ $('#npcCount').textContent=String([...chars.values()].filter(c=>c.isNpc).length);
+ const round=Number(settings.currentTurn)||0;
+ $('#currentTurn').textContent=round?String(round):'—';
+ $('#turnState').textContent=round?'Ход '+round+' · движение от начальных позиций':'Ход не начат · мастер фиксирует позиции';
+ $('#startTurnBtn').textContent=round?'Начать следующий ход':'Начать 1 ход';
+ $('#startTurnBtn').disabled=turnBusy||!chars.size||!tokenData.size;
+ if(selected){
+   const c=chars.get(selected);const t=tokenData.get(selected);const origin=turnOrigin(settings,selected);
+   const distance=origin&&t?Math.hypot(t.x-origin.x,t.y-origin.y)/settings.cellSize:0;
+   $('#selectedInfo').textContent=c?c.name+' · скорость '+finiteNumber(c.speed)+' кл.'+(origin?' · от старта '+distance.toFixed(1)+' кл.':''):'';
+ }else $('#selectedInfo').textContent='Выберите фишку персонажа';
+}
+function renderQuestCards(){
+ const root=$('#cards');const query=$('#characterSearch').value.trim().toLocaleLowerCase('ru');
+ const faction=$('#factionFilter').value;
+ const list=[...chars.values()].sort((a,b)=>(a.order??9999)-(b.order??9999)||String(a.name).localeCompare(String(b.name)));
+ if(!list.length){root.innerHTML='<div class="empty-state"><span class="empty-symbol">◇</span><h3>Персонажи ещё не добавлены</h3><p>Мастер может добавить участников и распределить их по фракциям.</p></div>';renderQuestMeta();return}
+ const groups=[...FACTIONS,{id:'unassigned',name:'Не распределены',short:'—',color:'#a99c8b'}];
+ root.innerHTML=groups.map(f=>{
+   if(faction&&faction!==f.id)return '';
+   const group=list.filter(c=>normalizeFaction(c.faction)===f.id&&(!query||(c.name+' '+(c.role||'')).toLocaleLowerCase('ru').includes(query)));
+   if(!group.length)return '';
+   return `<section class="faction-section" style="--faction:${f.color}"><div class="faction-heading"><span class="faction-sigil">${f.short}</span><h2>${f.name}</h2><span class="faction-count">${group.length}</span></div>${f.id==='unassigned'?'<p class="small-note">Для этих персонажей фракция ещё не выбрана. Мастер может указать её в карточке.</p>':''}<div class="faction-cards">${group.map(c=>characterCard(c,list)).join('')}</div></section>`;
+ }).join('')||'<div class="empty-state"><h3>Никого не найдено</h3><p>Попробуйте изменить поиск или фракцию.</p></div>';
+ root.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openChar(b.dataset.edit));
+ root.querySelectorAll('[data-left]').forEach(b=>b.onclick=()=>moveCard(b.dataset.left,-1).catch(handleError));
+ root.querySelectorAll('[data-right]').forEach(b=>b.onclick=()=>moveCard(b.dataset.right,1).catch(handleError));
+ root.querySelectorAll('[data-locate]').forEach(b=>b.onclick=()=>locateCharacter(b.dataset.locate));
+ root.querySelectorAll('[data-family-use]').forEach(b=>b.onclick=()=>useFamilyMagic(b.dataset.familyUse));
+ renderQuestMeta();
+}
+function characterCard(c,list){
+ const hp=Math.max(0,finiteNumber(c.hp)),maxHp=Math.max(0,finiteNumber(c.maxHp));
+ const fraction=maxHp?Math.max(0,Math.min(100,hp/maxHp*100)):0;
+ const uses=familyUses(c.familyUsesRemaining),bonuses=selectedBonuses(c.bonusIds,knownBonusIds),i=list.findIndex(x=>x.id===c.id);
+ return `<article class="card quest-card ${c.isNpc?'npc':''}">
+   <div class="character-heading"><div class="portrait">${c.avatar?`<img src="${esc(c.avatar)}" alt="Фото ${esc(c.name)}" loading="lazy">`:`<span>${esc(String(c.name).slice(0,1))}</span>`}</div><div class="character-name"><div class="type-label">${c.isNpc?'<span class="npc-label">НПС</span>':'Персонаж'}</div><h3>${esc(c.name)}</h3><p>${esc(c.role||'')}</p></div>${isMaster()?`<button class="edit-card" data-edit="${esc(c.id)}" aria-label="Изменить ${esc(c.name)}">✎</button>`:''}</div>
+   <div class="health-row"><span>Здоровье</span><strong>${hp}<small> / ${maxHp} HP</small></strong></div><div class="health-track"><span style="width:${fraction}%"></span></div>
+   <div class="quest-stats"><div><strong>${finiteNumber(c.spellRange)}</strong><span>Длина заклинания<small>клеток</small></span></div><div><strong>${finiteNumber(c.area)}</strong><span>Радиус площадного<small>клеток</small></span></div><div><strong>${finiteNumber(c.speed)}</strong><span>Скорость<small>клеток</small></span></div></div>
+   <div class="bonus-heading"><span>Бонусы</span><small>${bonuses.length} / 5</small></div><div class="character-bonuses">${bonuses.length?bonuses.map(id=>{const b=bonusCatalog.get(id);return `<button class="bonus-chip" data-bonus-info="${id}" title="${esc(b.name+' — '+b.effect)}"><img src="${esc(b.image)}" alt=""><span>${esc(b.name)}</span>${b.phase==='before'?'<em>до игры</em>':''}</button>`}).join(''):'<span class="muted">Бонусы не выбраны</span>'}</div>
+   ${c.bonus?`<p class="legacy-bonus"><b>Дополнительно:</b> ${esc(c.bonus)}</p>`:''}
+   <div class="family-row"><div><span>Родовая магия</span><div class="family-charges" aria-label="Осталось ${uses} из 2 использований"><i class="${uses>=1?'filled':''}"></i><i class="${uses>=2?'filled':''}"></i><small>${uses} / 2</small></div></div>${isMaster()?`<button data-family-use="${esc(c.id)}" ${uses===0?'disabled':''}>Использовать</button>`:''}</div>
+   ${c.familyMagic?`<p class="family-description">${esc(c.familyMagic)}</p>`:''}
+   ${c.items?`<details class="inventory"><summary>С собой</summary><p>${esc(c.items)}</p></details>`:''}
+   ${c.badges?`<div class="badge-row">${String(c.badges).split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>`<img src="${esc(u)}" alt="Значок" loading="lazy">`).join('')}</div>`:''}
+   <div class="card-footer"><button class="locate-card" data-locate="${esc(c.id)}">На карту <span>↗</span></button>${isMaster()?`<div class="order-card"><button data-left="${esc(c.id)}" ${i===0?'disabled':''} aria-label="Переместить раньше">←</button><button data-right="${esc(c.id)}" ${i===list.length-1?'disabled':''} aria-label="Переместить позже">→</button></div>`:''}</div>
+ </article>`;
+}
+async function useFamilyMagic(id){
+ if(!isMaster())return;
+ try{await runTransaction(db,async tx=>{const ref=doc(db,'characters',id),s=await tx.get(ref);if(!s.exists())return;const value=familyUses(s.data().familyUsesRemaining);if(value<1)throw new Error('Использования родовой магии закончились.');tx.update(ref,{familyUsesRemaining:value-1})})}catch(err){handleError(err)}
+}
+function locateCharacter(id){
+ selected=id;switchTab('map');renderTokens();positionRanges();renderQuestMeta();
+ requestAnimationFrame(()=>{const p=tokenData.get(id),v=$('#viewport'),z=+$('#zoom').value/100;if(p){v.scrollLeft=p.x*z-v.clientWidth/2;v.scrollTop=p.y*z-v.clientHeight/2}});
+}
+function openQuestCharacter(id=''){
+ if(!isMaster())return;
+ const c=chars.get(id)||{};
+ $('#charId').value=id;$('#charTitle').textContent=id?'Карточка персонажа':'Новый персонаж';
+ for(const [selector,key]of [['cName','name'],['cRole','role'],['cAvatar','avatar'],['cBonus','bonus'],['cNpcPng','npcPng'],['cItems','items'],['cBadges','badges'],['cFamilyMagic','familyMagic']])$('#'+selector).value=c[key]||'';
+ $('#cHp').value=c.hp??10;$('#cMaxHp').value=c.maxHp??10;$('#cSpeed').value=c.speed??0;$('#cSpellRange').value=c.spellRange??10;$('#cArea').value=c.area??3;
+ $('#cNpc').checked=!!c.isNpc;$('#cFaction').value=normalizeFaction(c.faction)==='unassigned'?'':normalizeFaction(c.faction);$('#cFamilyUses').value=familyUses(c.familyUsesRemaining);
+ const ids=selectedBonuses(c.bonusIds,knownBonusIds);for(let i=0;i<5;i++)$('#cBonusSlot'+i).value=ids[i]||'';
+ renderBonusSelection();$('#deleteChar').style.display=id?'inline-block':'none';$('#charDlg').showModal();
+}
+async function saveQuestCharacter(e){
+ e.preventDefault();if(!isMaster())return;
+ const id=$('#charId').value||crypto.randomUUID(),old=chars.get(id)||{},bonusIds=[];
+ for(let i=0;i<5;i++){const value=$('#cBonusSlot'+i).value;if(value)bonusIds.push(value)}
+ if(!validBonusSelection(bonusIds,knownBonusIds))return notify('Можно выбрать до пяти бонусов из списка.');
+ const data={...old};delete data.id;
+ Object.assign(data,{name:$('#cName').value.trim(),role:$('#cRole').value.trim(),avatar:$('#cAvatar').value.trim(),faction:$('#cFaction').value,hp:finiteNumber($('#cHp').value),maxHp:finiteNumber($('#cMaxHp').value),bonus:$('#cBonus').value.trim(),speed:finiteNumber($('#cSpeed').value),spellRange:finiteNumber($('#cSpellRange').value),area:finiteNumber($('#cArea').value),isNpc:$('#cNpc').checked,npcPng:$('#cNpcPng').value.trim(),items:$('#cItems').value.trim(),badges:$('#cBadges').value.trim(),bonusIds,familyMagic:$('#cFamilyMagic').value.trim(),familyUsesRemaining:familyUses($('#cFamilyUses').value),order:old.order??chars.size});
+ if(!data.name||!FACTIONS.some(f=>f.id===data.faction))return notify('Укажите имя и фракцию персонажа.');
+ if(data.hp<0||data.maxHp<0||data.hp>data.maxHp)return notify('Здоровье должно быть от 0 до максимального HP.');
+ try{
+   const batch=writeBatch(db);batch.set(doc(db,'characters',id),data);
+   if(!tokenData.has(id)){
+     const point={x:Math.min(settings.mapWidth,100+Math.random()*200),y:Math.min(settings.mapHeight,100+Math.random()*150)};
+     batch.set(doc(db,'tokens',id),{...point,npc:data.isNpc});
+     if(settings.currentTurn)batch.set(doc(db,'game','main'),{turnOrigins:{[id]:point}},{merge:true});
+   }else batch.update(doc(db,'tokens',id),{npc:data.isNpc});
+   await batch.commit();$('#charDlg').close();notify('Карточка сохранена.');
+ }catch(err){handleError(err)}
+}
+function renderBonusSelection(){
+ const picked=[];for(let i=0;i<5;i++){const b=bonusCatalog.get($('#cBonusSlot'+i).value);if(b)picked.push(b)}
+ $('#bonusSelectionPreview').innerHTML=picked.map(b=>`<div><img src="${esc(b.image)}" alt=""><span><b>${esc(b.name)}</b><small>${esc(b.effect)}</small></span></div>`).join('')||'<span class="muted">Можно оставить все пять мест пустыми.</span>';
+ $('#bonusSelectedCount').textContent=picked.length+' / 5';
+}
+function renderBonusCatalog(){
+ const q=$('#bonusSearch').value.trim().toLocaleLowerCase('ru'),phase=$('#bonusPhase').value,target=$('#bonusTarget').value;
+ const filtered=BONUSES.filter(b=>(!q||(b.name+' '+b.effect).toLocaleLowerCase('ru').includes(q))&&(!phase||b.phase===phase)&&(!target||b.target===target));
+ $('#bonusResultCount').textContent=filtered.length+' из '+BONUSES.length;
+ $('#bonusCatalog').innerHTML=filtered.map(b=>`<article class="catalog-card" id="bonus-${b.id}"><div class="catalog-art"><img src="${esc(b.image)}" alt="${esc(b.name)}" loading="lazy"></div><div class="catalog-text"><span class="phase-tag ${b.phase}">${PHASES[b.phase]}</span><h3><a href="${esc(b.source)}" target="_blank" rel="noopener noreferrer">${esc(b.name)}</a></h3><p>${esc(b.effect)}</p><div class="target-tag ${b.target}">${TARGETS[b.target]}${b.proposed?' *':''}</div>${b.targetNote?`<small class="target-note">${esc(b.targetNote)}</small>`:''}</div></article>`).join('')||'<div class="empty-state"><h3>Бонусов не найдено</h3><p>Измените поиск или фильтр.</p></div>';
+}
+function openBonusInfo(id){
+ const b=bonusCatalog.get(id);if(!b)return;
+ $('#bonusInfoTitle').textContent=b.name;$('#bonusInfoImage').src=b.image;$('#bonusInfoEffect').textContent=b.effect;
+ $('#bonusInfoTarget').textContent=TARGETS[b.target]+(b.proposed?' * — предлагаемый регламент':'')+(b.targetNote?' · '+b.targetNote:'');
+ $('#bonusInfoPhase').textContent=PHASES[b.phase];$('#bonusInfoSource').href=b.source;$('#bonusInfoDlg').showModal();
+}
+async function startNextTurn(){
+ if(!isMaster()||turnBusy)return;turnBusy=true;renderQuestMeta();
+ try{
+   let next;
+   await runTransaction(db,async tx=>{
+     const gameRef=doc(db,'game','main'),main=await tx.get(gameRef),origins={};
+     const tokens=await Promise.all([...tokenData.keys()].map(id=>tx.get(doc(db,'tokens',id))));
+     for(const token of tokens){if(token.exists()&&chars.has(token.id)){const p=token.data();origins[token.id]={x:finiteNumber(p.x),y:finiteNumber(p.y)}}}
+     if(!Object.keys(origins).length)throw new Error('Сначала добавьте персонажей на карту.');
+     next=finiteNumber(main.exists()?main.data().currentTurn:0)+1;
+     tx.set(gameRef,{currentTurn:next,turnOrigins:origins,turnStartedAt:Date.now()},{merge:true});
+   });
+   currentHistoryTurn=next;notify('Начат ход '+next+'. Исходные позиции зафиксированы.');
+ }catch(err){handleError(err)}finally{turnBusy=false;renderQuestMeta()}
+}
+function renderRules(){
+ $('#rulesText').textContent=savedQuestRules||DEFAULT_RULES;
+ $('#editRulesBtn').hidden=!isMaster();
+}
+function renderHistory(){
+ const max=Math.max(3,finiteNumber(settings.currentTurn),...Array.from(turnRecords.values(),r=>finiteNumber(r.turn)));
+ if(currentHistoryTurn<1)currentHistoryTurn=1;
+ $('#historyTabs').innerHTML=Array.from({length:max},(_,i)=>{const n=i+1,r=turnRecords.get(n);return `<button role="tab" aria-selected="${currentHistoryTurn===n}" class="${currentHistoryTurn===n?'active':''}" data-history-turn="${n}">${n} ход${r?.image?'<i></i>':''}</button>`}).join('');
+ $('#historyTabs').querySelectorAll('[data-history-turn]').forEach(b=>b.onclick=()=>{currentHistoryTurn=+b.dataset.historyTurn;renderHistory()});
+ const r=turnRecords.get(currentHistoryTurn);
+ $('#historyTitle').textContent=currentHistoryTurn+' ход';
+ $('#uploadTurnBtn').textContent=r?.image?'Заменить скриншот':'Загрузить скриншот';
+ $('#uploadTurnBtn').hidden=!isMaster();
+ const box=$('#historyContent');
+ if(!r?.image){box.innerHTML='<div class="empty-state"><span class="empty-symbol">▧</span><h3>Скриншот ещё не загружен</h3><p>Мастер сможет сохранить здесь карту и расположение участников этого хода.</p></div>';return}
+ box.innerHTML=`<figure class="turn-figure"><button class="turn-image-button" aria-label="Открыть скриншот хода"><img src="${esc(r.image)}" alt="Карта, ${currentHistoryTurn} ход"></button>${r.caption?`<figcaption>${esc(r.caption)}</figcaption>`:''}</figure><div class="turn-meta">Сохранено ${esc(new Date(r.savedAt).toLocaleString('ru-RU'))}${r.positions?' · персонажей на карте: '+r.positions.length:''}</div>${r.positions?.length?`<details class="position-details"><summary>Позиции, сохранённые вместе со скриншотом</summary><div class="position-list">${r.positions.map(p=>`<div><span>${esc(p.name)}</span><small>X ${Math.round(p.x)} · Y ${Math.round(p.y)}</small></div>`).join('')}</div></details>`:''}`;
+ box.querySelector('.turn-image-button').onclick=()=>{$('#imagePreview').src=r.image;$('#imagePreviewDlg').showModal()};
+}
+function openTurnUpload(){
+ if(!isMaster())return;const r=turnRecords.get(currentHistoryTurn);
+ $('#historyTurnInput').value=currentHistoryTurn;$('#historyCaption').value=r?.caption||'';$('#historyFile').value='';$('#historyFileStatus').textContent=r?.image?'Текущий скриншот сохранится, если не выбрать новый.':'PNG, JPG или WebP. Изображение будет подготовлено для хранения.';$('#turnDlg').showModal();
+}
+async function prepareScreenshot(file){
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Выберите PNG, JPG или WebP.');
+ if(file.size>25*1024*1024)throw new Error('Файл должен быть меньше 25 МБ.');
+ const bitmap=await createImageBitmap(file);
+ try{
+   let scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height));
+   for(let attempt=0;attempt<8;attempt++){
+     const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+     const context=canvas.getContext('2d');context.drawImage(bitmap,0,0,canvas.width,canvas.height);
+     const url=canvas.toDataURL('image/webp',.84);
+     if(url.length<=700000)return url;scale*=.78;
+   }
+   throw new Error('Не удалось подготовить изображение. Попробуйте уменьшить его.');
+ }finally{bitmap.close()}
+}
+async function saveTurnScreenshot(e){
+ e.preventDefault();if(!isMaster())return;
+ const turn=Number($('#historyTurnInput').value),caption=$('#historyCaption').value.trim(),file=$('#historyFile').files[0];
+ if(!Number.isInteger(turn)||turn<1||turn>999)return notify('Номер хода должен быть от 1 до 999.');
+ const button=$('#saveTurnBtn');button.disabled=true;
+ try{
+   const old=turnRecords.get(turn);let image=old?.image;
+   if(file){$('#historyFileStatus').textContent='Подготавливаем скриншот…';image=await prepareScreenshot(file)}
+   if(!image)throw new Error('Выберите скриншот карты.');
+   const positions=[...tokenData.entries()].filter(([id])=>chars.has(id)).map(([id,p])=>({id,name:chars.get(id).name,x:finiteNumber(p.x),y:finiteNumber(p.y),faction:normalizeFaction(chars.get(id).faction),npc:!!chars.get(id).isNpc}));
+   const sameImage=!file&&!!old;
+   await setDoc(doc(db,'game','quest_turn_'+String(turn).padStart(4,'0')),{kind:'oculus_turn',turn,image,caption,savedAt:Date.now(),positions:sameImage?old.positions||[]:positions});
+   currentHistoryTurn=turn;$('#turnDlg').close();renderHistory();notify('Скриншот '+turn+' хода сохранён.');
+ }catch(err){handleError(err)}finally{button.disabled=false}
+}
+function questGameDocuments(snap){
+ turnRecords.clear();savedQuestRules='';
+ snap.forEach(d=>{const r=d.data();if(r.kind==='oculus_turn'&&Number.isInteger(r.turn)&&r.turn>0&&r.turn<=999&&typeof r.image==='string'&&r.image.startsWith('data:image/'))turnRecords.set(r.turn,r);if(d.id==='quest_rules')savedQuestRules=plainRules(r.text)});
+ renderHistory();renderRules();
+}
+function setupQuestUI(){
+ for(const f of FACTIONS){$('#factionFilter').insertAdjacentHTML('beforeend',`<option value="${f.id}">${f.name}</option>`);$('#cFaction').insertAdjacentHTML('beforeend',`<option value="${f.id}">${f.name}</option>`)}
+ $('#factionFilter').insertAdjacentHTML('beforeend','<option value="unassigned">Не распределены</option>');
+ const options='<option value="">Без бонуса</option>'+BONUSES.map(b=>`<option value="${b.id}">${b.phase==='before'?'[До игры] ':''}${esc(b.name)} — ${esc(b.effect.slice(0,65))}</option>`).join('');
+ $('#bonusSlots').innerHTML=Array.from({length:5},(_,i)=>`<label>Бонус ${i+1}<select id="cBonusSlot${i}">${options}</select></label>`).join('');
+ for(let i=0;i<5;i++)$('#cBonusSlot'+i).onchange=renderBonusSelection;
+ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+ $('#mainTabs').addEventListener('keydown',e=>{const tabs=[...$('#mainTabs').querySelectorAll('[data-tab]')],i=tabs.indexOf(document.activeElement);if(i<0||!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;switchTab(tabs[next].dataset.tab);tabs[next].focus()});
+ $('#characterSearch').oninput=renderCards;$('#factionFilter').onchange=renderCards;
+ $('#bonusSearch').oninput=renderBonusCatalog;$('#bonusPhase').onchange=renderBonusCatalog;$('#bonusTarget').onchange=renderBonusCatalog;
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-bonus-info]');if(b)openBonusInfo(b.dataset.bonusInfo)});
+ $('#startTurnBtn').onclick=startNextTurn;
+ $('#uploadTurnBtn').onclick=openTurnUpload;$('#turnForm').onsubmit=saveTurnScreenshot;
+ $('#historyFile').onchange=()=>{$('#historyFileStatus').textContent=$('#historyFile').files[0]?.name||'Выберите изображение'};
+ $('#addHistoryTurn').onclick=()=>{if(!isMaster())return;currentHistoryTurn=Math.max(3,finiteNumber(settings.currentTurn),...turnRecords.keys())+1;openTurnUpload()};
+ $('#editRulesBtn').onclick=()=>{if(!isMaster())return;$('#rulesEditor').value=savedQuestRules||DEFAULT_RULES;$('#rulesDlg').showModal()};
+ $('#rulesForm').onsubmit=async e=>{e.preventDefault();if(!isMaster())return;try{await setDoc(doc(db,'game','quest_rules'),{text:plainRules($('#rulesEditor').value),updatedAt:Date.now()});$('#rulesDlg').close();notify('Правила сохранены.')}catch(err){handleError(err)}};
+ $('#charForm').onsubmit=saveQuestCharacter;
+ document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+ renderBonusCatalog();renderRules();renderHistory();renderQuestMeta();
+ let initial='characters';try{const saved=localStorage.getItem('oculus-tab');if(['characters','map','bonuses','rules','history'].includes(saved))initial=saved}catch{}
+ switchTab(initial);applyMap();
+}
+setupQuestUI();
+
 </script>
 </body>
 </html>
+
