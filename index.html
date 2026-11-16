@@ -77,6 +77,70 @@ dialog{background:#24202b;border-color:#655073;width:min(650px,94vw);max-height:
 @media(max-width:1100px){.faction-cards,.catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-toolbar{align-items:flex-start;flex-direction:column}.section-controls{width:100%}.section-controls input{flex:1}.quest-tabs button{padding:13px 16px}}
 @media(max-width:700px){.app{padding:20px 14px 36px}.quest-header{align-items:flex-start;gap:12px;margin-bottom:20px}.quest-header h1{font-size:36px}.quest-header p{max-width:220px;font-size:11px}.eyebrow{font-size:8px;letter-spacing:.12em}.header-right{gap:9px}.status{font-size:9px;max-width:140px;text-align:right}.header-actions button{font-size:10px;padding:7px 9px}.summary-numbers{gap:20px}.summary-numbers strong{font-size:20px}.summary-numbers span{font-size:9px}.summary-note{font-size:9px}.quest-tabs{margin-bottom:20px;gap:0}.quest-tabs button{font-size:11px;padding:12px 15px}.quest-tabs button span{font-size:9px}.section-controls input{width:150px}.section-controls select{flex:1;min-width:150px}.catalog-filters select{flex:1;min-width:150px}.catalog-grid{grid-template-columns:1fr}.faction-cards{gap:11px}.quest-card{padding:15px 12px 10px}.portrait{width:50px;height:62px;flex-basis:50px}.character-heading{gap:9px}.quest-card h3{font-size:17px}.quest-stats{gap:4px}.quest-stats>div{gap:4px}.quest-stats strong{font-size:19px}.quest-stats span{font-size:8px}.bonus-chip span{max-width:115px}.family-row button{font-size:9px;padding:5px 6px}.map-state{font-size:10px}.rules-reader{padding:20px;font-size:12px}.app-footer{font-size:8px}.toolbar label{font-size:10px}.toolbar input[type=range]{width:80px}.summary-bar{gap:10px}.history-heading{align-items:center}.section-title h2{font-size:23px}}
 @media(max-width:510px){.faction-cards{grid-template-columns:1fr}.quest-card h3{font-size:21px}.portrait{width:62px;height:72px;flex-basis:62px}.quest-stats>div{gap:9px}.quest-stats span{font-size:10px}.quest-stats strong{font-size:24px}.summary-note{display:none}.summary-numbers{justify-content:space-between;width:100%;gap:16px}.header-right{min-width:98px}.quest-header p{max-width:200px}.quest-header{gap:6px}.eyebrow:before{width:16px}.bonus-chip span{max-width:165px}.catalog-card{padding:15px}.family-row button{font-size:10px;padding:6px 10px}.row{grid-template-columns:1fr 1fr}.family-inputs{grid-template-columns:1fr 85px}.section-controls select{min-width:120px}.history-heading button{font-size:10px}.quest-header .status:before{display:none}.history-tabs button{padding:8px 12px}}
+/* Compact character cards */
+.faction-section{margin-bottom:18px}
+.faction-heading{gap:8px;margin-bottom:8px}
+.faction-heading h2{font-size:17px}
+.faction-sigil{width:24px;height:24px;font-size:8px}
+.faction-section>.small-note{margin-bottom:10px;font-size:11px}
+.faction-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:start}
+.quest-card.compact-card{display:grid;grid-template-columns:1fr;row-gap:4px;padding:8px;border-radius:8px;min-width:0;box-shadow:0 3px 12px #0002}
+.compact-heading{grid-row:1;display:flex;gap:7px;align-items:center;position:relative;min-width:0;padding-right:18px;min-height:40px}
+.compact-portrait{width:34px;height:40px;flex:0 0 34px;background:#37303e;border:1px solid #5b5065;border-radius:5px;overflow:hidden;display:grid;place-items:center}
+.compact-portrait img{display:block;width:100%;height:100%;object-fit:cover}
+.compact-portrait>span{font:21px Georgia,serif;color:#d6c4ae}
+.compact-identity{flex:1;min-width:0}
+.compact-card h3{font:14px/1.2 Georgia,serif;margin:0 0 2px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.compact-npc-label{font:7px Arial,sans-serif;color:#e7a4b5;border:1px solid #8a5966;border-radius:3px;padding:1px 3px;white-space:nowrap;vertical-align:middle;margin-left:5px}
+.compact-role{font-size:9px;line-height:1.25;color:#a69aae;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:2px}
+.compact-hp{font-size:9px;line-height:12px;color:#dca9b4;white-space:nowrap}
+.compact-hp strong{font-size:11px;font-weight:normal}
+.compact-hp>span{color:#a998ad;font-size:9px}
+.compact-edit{position:absolute;right:-4px;top:-3px;font-size:13px;line-height:18px;width:22px;height:22px;padding:0;border:0;background:none;color:#bbacc7}
+.compact-health-track{grid-row:2;height:2px;background:#15121b;border-radius:3px;overflow:hidden;margin:0 0 1px}
+.compact-health-track>span{display:block;height:100%;background:linear-gradient(90deg,#885866,#cb9399);border-radius:3px}
+.compact-statline{grid-row:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+.compact-statline>div{display:flex;align-items:center;justify-content:space-between;gap:3px;background:#1a1620;border:1px solid #3c3345;border-radius:4px;padding:3px 5px;min-width:0;min-height:24px}
+.compact-statline span{font-size:9px;line-height:12px;color:#a99ab8;white-space:nowrap}
+.compact-statline strong{font:15px/1 Georgia,serif;color:#e1d0ae}
+.compact-bonuses{grid-row:4;display:flex;align-items:center;gap:4px;min-width:0;min-height:22px}
+.compact-label{font-size:9px;color:#b9aac4;flex-shrink:0}
+.compact-bonus-icons{display:flex;align-items:center;gap:2px;min-width:0;margin-left:auto}
+.compact-bonuses>small{font-size:8px;color:#8f7f9e;white-space:nowrap;flex-shrink:0}
+.compact-bonus-icon{padding:0;border:1px solid #463950;border-radius:4px;background:#1a1521;width:22px;height:22px;display:grid;place-items:center;flex:0 0 22px;position:relative}
+.compact-bonus-icon img{width:19px;height:19px;object-fit:contain}
+.compact-bonus-icon.before:after{content:'';position:absolute;right:1px;bottom:1px;width:3px;height:3px;border-radius:50%;background:#e0c188}
+.compact-empty{font-size:10px;color:#7e708b;padding:0 3px}
+.compact-family{grid-row:5;display:flex;align-items:center;gap:6px;min-height:20px;padding-top:3px;border-top:1px solid #403648;font-size:9px;color:#afa0bc}
+.compact-charges{display:flex;align-items:center;gap:4px;margin-left:auto;white-space:nowrap}
+.compact-charges i{width:6px;height:6px;transform:rotate(45deg);border:1px solid #6f597f;border-radius:1px;background:#19131f}
+.compact-charges i.filled{background:#af91c9;border-color:#c6abd9}
+.compact-charges b{font-size:9px;font-weight:normal;color:#c9b7d7;margin-left:3px}
+.compact-family>button{font-size:9px;padding:1px 4px;height:19px;line-height:14px;border-radius:4px}
+.compact-details{grid-row:6;grid-column:1/-1;min-width:0;border-top:1px solid #403648;padding-top:2px}
+.compact-details>summary{font-size:9px;line-height:22px;min-height:22px;color:#a895b7;cursor:pointer;padding-right:106px;list-style:none;white-space:nowrap}
+.compact-details>summary::-webkit-details-marker{display:none}
+.compact-details>summary:before{content:'▸';display:inline-block;margin-right:4px;color:#c8b396}
+.compact-details[open]>summary:before{transform:rotate(90deg)}
+.compact-details-body{font-size:10px;color:#c0aecb;line-height:1.65;padding:7px 0 2px;border-top:1px solid #3e3249;overflow-wrap:anywhere}
+.compact-details-body p{font-size:10px;margin:0 0 6px}
+.compact-details-body b{font-weight:normal;color:#dfcda9}
+.compact-full-bonuses{display:grid;gap:4px;margin:0 0 8px}
+.compact-full-bonuses>button{display:flex;align-items:center;gap:5px;padding:3px 5px;text-align:left;font-size:10px;line-height:1.4;background:#1a1521;border-radius:5px}
+.compact-full-bonuses img{width:22px;height:22px;object-fit:contain;flex-shrink:0}
+.compact-full-bonuses em{font-style:normal;font-size:8px;color:#dcc18c;margin-left:5px;white-space:nowrap}
+.compact-inventory p{white-space:pre-wrap;margin-top:3px}
+.compact-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.compact-badges img{width:22px;height:22px;object-fit:contain}
+.compact-card-actions{grid-row:6;grid-column:1/-1;display:flex;align-items:center;justify-self:end;align-self:start;gap:2px;padding-top:3px;z-index:1}
+.compact-card-actions>button{font-size:9px;line-height:20px;height:22px;padding:0 4px;border-radius:4px;background:none;border-color:transparent;color:#cbb592}
+.compact-card-actions>.compact-order{width:18px;padding:0;color:#b8a7c5}
+@media(min-width:1250px){.faction-cards{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:1050px){.faction-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.faction-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-card h3{font-size:13px}}
+@media(max-width:450px){.quest-card.compact-card{padding:7px;row-gap:3px}.compact-heading{gap:5px;padding-right:15px}.compact-portrait{width:29px;height:36px;flex-basis:29px}.compact-card h3{font-size:12px}.compact-role{font-size:8px}.compact-statline>div{padding:3px;gap:2px}.compact-statline span{font-size:8px}.compact-statline strong{font-size:14px}.compact-bonus-icon{width:18px;height:20px;flex-basis:18px}.compact-bonus-icon img{width:16px;height:16px}.compact-label{font-size:8px}.compact-bonuses{gap:3px}.compact-family{font-size:8px;gap:4px}.compact-charges{gap:3px}.compact-details>summary{font-size:8px;padding-right:96px}.compact-card-actions>button{font-size:8px;padding:0 2px}.compact-card-actions>.compact-order{width:16px}.faction-heading h2{font-size:16px}}
+@media(max-width:350px){.faction-cards{grid-template-columns:1fr}.compact-card h3{font-size:14px}.compact-portrait{width:34px;height:40px;flex-basis:34px}.compact-statline span{font-size:9px}.compact-family{font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -1583,17 +1647,23 @@ function characterCard(c,list){
  const hp=Math.max(0,finiteNumber(c.hp)),maxHp=Math.max(0,finiteNumber(c.maxHp));
  const fraction=maxHp?Math.max(0,Math.min(100,hp/maxHp*100)):0;
  const uses=familyUses(c.familyUsesRemaining),bonuses=selectedBonuses(c.bonusIds,knownBonusIds),i=list.findIndex(x=>x.id===c.id);
- return `<article class="card quest-card ${c.isNpc?'npc':''}">
-   <div class="character-heading"><div class="portrait">${c.avatar?`<img src="${esc(c.avatar)}" alt="Фото ${esc(c.name)}" loading="lazy">`:`<span>${esc(String(c.name).slice(0,1))}</span>`}</div><div class="character-name"><div class="type-label">${c.isNpc?'<span class="npc-label">НПС</span>':'Персонаж'}</div><h3>${esc(c.name)}</h3><p>${esc(c.role||'')}</p></div>${isMaster()?`<button class="edit-card" data-edit="${esc(c.id)}" aria-label="Изменить ${esc(c.name)}">✎</button>`:''}</div>
-   <div class="health-row"><span>Здоровье</span><strong>${hp}<small> / ${maxHp} HP</small></strong></div><div class="health-track"><span style="width:${fraction}%"></span></div>
-   <div class="quest-stats"><div><strong>${finiteNumber(c.spellRange)}</strong><span>Длина заклинания<small>клеток</small></span></div><div><strong>${finiteNumber(c.area)}</strong><span>Радиус площадного<small>клеток</small></span></div><div><strong>${finiteNumber(c.speed)}</strong><span>Скорость<small>клеток</small></span></div></div>
-   <div class="bonus-heading"><span>Бонусы</span><small>${bonuses.length} / 5</small></div><div class="character-bonuses">${bonuses.length?bonuses.map(id=>{const b=bonusCatalog.get(id);return `<button class="bonus-chip" data-bonus-info="${id}" title="${esc(b.name+' — '+b.effect)}"><img src="${esc(b.image)}" alt=""><span>${esc(b.name)}</span>${b.phase==='before'?'<em>до игры</em>':''}</button>`}).join(''):'<span class="muted">Бонусы не выбраны</span>'}</div>
-   ${c.bonus?`<p class="legacy-bonus"><b>Дополнительно:</b> ${esc(c.bonus)}</p>`:''}
-   <div class="family-row"><div><span>Родовая магия</span><div class="family-charges" aria-label="Осталось ${uses} из 2 использований"><i class="${uses>=1?'filled':''}"></i><i class="${uses>=2?'filled':''}"></i><small>${uses} / 2</small></div></div>${isMaster()?`<button data-family-use="${esc(c.id)}" ${uses===0?'disabled':''}>Использовать</button>`:''}</div>
-   ${c.familyMagic?`<p class="family-description">${esc(c.familyMagic)}</p>`:''}
-   ${c.items?`<details class="inventory"><summary>С собой</summary><p>${esc(c.items)}</p></details>`:''}
-   ${c.badges?`<div class="badge-row">${String(c.badges).split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>`<img src="${esc(u)}" alt="Значок" loading="lazy">`).join('')}</div>`:''}
-   <div class="card-footer"><button class="locate-card" data-locate="${esc(c.id)}">На карту <span>↗</span></button>${isMaster()?`<div class="order-card"><button data-left="${esc(c.id)}" ${i===0?'disabled':''} aria-label="Переместить раньше">←</button><button data-right="${esc(c.id)}" ${i===list.length-1?'disabled':''} aria-label="Переместить позже">→</button></div>`:''}</div>
+ const bonusIcons=bonuses.map(id=>{const b=bonusCatalog.get(id);return `<button class="compact-bonus-icon ${b.phase==='before'?'before':''}" data-bonus-info="${id}" aria-label="${esc(b.name)}" title="${esc(b.name+' — '+b.effect)}"><img src="${esc(b.image)}" alt="" loading="lazy"></button>`}).join('');
+ return `<article class="card quest-card compact-card ${c.isNpc?'npc':''}">
+   <div class="compact-heading"><div class="compact-portrait">${c.avatar?`<img src="${esc(c.avatar)}" alt="Фото ${esc(c.name)}" loading="lazy">`:`<span>${esc(String(c.name).slice(0,1))}</span>`}</div><div class="compact-identity"><h3 title="${esc(c.name)}">${esc(c.name)}${c.isNpc?'<span class="compact-npc-label">НПС</span>':''}</h3>${c.role?`<div class="compact-role" title="${esc(c.role)}">${esc(c.role)}</div>`:''}<div class="compact-hp" aria-label="Здоровье ${hp} из ${maxHp} HP">♥ <strong>${hp}</strong><span> / ${maxHp} HP</span></div></div>${isMaster()?`<button class="compact-edit" data-edit="${esc(c.id)}" aria-label="Изменить ${esc(c.name)}" title="Изменить карточку">✎</button>`:''}</div>
+   <div class="compact-health-track"><span style="width:${fraction}%"></span></div>
+   <div class="compact-statline"><div title="Длина заклинания, клеток"><span>Длина</span><strong>${finiteNumber(c.spellRange)}</strong></div><div title="Радиус площадного заклинания, клеток"><span>Радиус</span><strong>${finiteNumber(c.area)}</strong></div><div title="Скорость, клеток"><span>Скорость</span><strong>${finiteNumber(c.speed)}</strong></div></div>
+   <div class="compact-bonuses"><span class="compact-label">Бонусы</span><div class="compact-bonus-icons">${bonusIcons||'<span class="compact-empty">—</span>'}</div><small>${bonuses.length}/5</small></div>
+   <div class="compact-family"><span>Родовая магия</span><span class="compact-charges" aria-label="Осталось ${uses} из 2 использований"><i class="${uses>=1?'filled':''}"></i><i class="${uses>=2?'filled':''}"></i><b>${uses}/2</b></span>${isMaster()?`<button data-family-use="${esc(c.id)}" ${uses===0?'disabled':''} aria-label="Использовать родовую магию ${esc(c.name)}" title="Потратить одно использование">−1</button>`:''}</div>
+   <details class="compact-details"><summary aria-label="Подробнее о ${esc(c.name)}">Подробнее</summary><div class="compact-details-body">
+     ${c.role?`<p><b>Роль:</b> ${esc(c.role)}</p>`:''}
+     ${bonuses.length?`<div class="compact-full-bonuses"><b>Бонусы</b>${bonuses.map(id=>{const b=bonusCatalog.get(id);return `<button data-bonus-info="${id}"><img src="${esc(b.image)}" alt=""><span>${esc(b.name)}${b.phase==='before'?'<em>до игры</em>':''}</span></button>`}).join('')}</div>`:''}
+     ${c.bonus?`<p><b>Дополнительно:</b> ${esc(c.bonus)}</p>`:''}
+     ${c.familyMagic?`<p><b>Родовая магия:</b> ${esc(c.familyMagic)}</p>`:''}
+     ${c.items?`<div class="compact-inventory"><b>С собой</b><p>${esc(c.items)}</p></div>`:''}
+     ${c.badges?`<div class="compact-badges">${String(c.badges).split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>`<img src="${esc(u)}" alt="Значок" loading="lazy">`).join('')}</div>`:''}
+     ${!c.role&&!bonuses.length&&!c.bonus&&!c.familyMagic&&!c.items&&!c.badges?'<p>Дополнительных сведений нет.</p>':''}
+   </div></details>
+   <div class="compact-card-actions"><button class="compact-locate" data-locate="${esc(c.id)}" aria-label="Показать ${esc(c.name)} на карте">На карту ↗</button>${isMaster()?`<button class="compact-order" data-left="${esc(c.id)}" ${i===0?'disabled':''} aria-label="Переместить ${esc(c.name)} раньше">←</button><button class="compact-order" data-right="${esc(c.id)}" ${i===list.length-1?'disabled':''} aria-label="Переместить ${esc(c.name)} позже">→</button>`:''}</div>
  </article>`;
 }
 async function useFamilyMagic(id){
@@ -1750,5 +1820,6 @@ setupQuestUI();
 </script>
 </body>
 </html>
+
 
 
